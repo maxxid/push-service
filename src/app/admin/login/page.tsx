@@ -35,12 +35,17 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-zinc-50">
       <div className="w-full max-w-sm bg-white rounded-xl shadow-sm border border-zinc-200 p-8">
-        <h1 className="text-2xl font-bold text-zinc-900 mb-2">
-          Panel Administrativo
-        </h1>
-        <p className="text-sm text-zinc-500 mb-6">
-          Ingresá con tu email institucional
-        </p>
+        <div className="text-center mb-6">
+          <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+            <span className="text-white font-bold text-lg">P</span>
+          </div>
+          <h1 className="text-xl font-bold text-zinc-900">
+            Panel Administrativo
+          </h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            Plataforma de Comunicación Institucional
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -52,6 +57,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="admin@plataforma.com"
               required
             />
           </div>
@@ -79,6 +85,10 @@ export default function LoginPage() {
             {loading ? "Ingresando..." : "Ingresar"}
           </Button>
         </form>
+
+        <p className="text-xs text-zinc-400 text-center mt-6">
+          Acceso exclusivo para administradores de instituciones
+        </p>
       </div>
     </div>
   )

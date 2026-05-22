@@ -1,18 +1,35 @@
+import { headers } from "next/headers"
+import { getCompanyFromHeaders } from "@/lib/company-context"
 import { Button } from "@/components/ui/button"
 
-export default function PortalPage() {
+export default async function PortalPage() {
+  const headersList = await headers()
+  const subdomain = headersList.get("x-company-subdomain")
+  const company = await getCompanyFromHeaders(subdomain)
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 text-center">
-      <h1 className="text-3xl font-bold text-zinc-900 mb-4">
-        Recibí avisos importantes de la institución
+      <h1
+        className="text-3xl font-bold mb-4"
+        style={{ color: company?.primaryColor ?? "#1a56db" }}
+      >
+        Recibí avisos importantes de{" "}
+        {company?.name ? ` ${company.name}` : "la institución"}
       </h1>
       <p className="text-zinc-500 mb-8 max-w-md mx-auto">
         Activá las notificaciones para estar al día con comunicados, alertas y
-        novedades de tu institución. Directo en tu pantalla.
+        novedades. Directo en tu pantalla.
       </p>
 
       <form className="max-w-sm mx-auto space-y-4">
-        <Button className="w-full" size="lg">
+        <Button
+          className="w-full"
+          size="lg"
+          style={{
+            backgroundColor: company?.primaryColor ?? "#1a56db",
+            borderColor: company?.primaryColor ?? "#1a56db",
+          }}
+        >
           Activar notificaciones
         </Button>
         <p className="text-xs text-zinc-400">

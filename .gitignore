@@ -20,6 +20,9 @@
 # production
 /build
 
+# prisma dev
+prisma-dev.log
+
 # misc
 .DS_Store
 *.pem
