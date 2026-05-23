@@ -24,11 +24,12 @@ export default async function PublicLandingPage({
 
   if (!page) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-20 text-center">
-        <h1 className="text-2xl font-bold text-zinc-900 mb-2">
+      <div className="max-w-2xl mx-auto px-6 pt-24 pb-20 text-center">
+        <div className="text-6xl mb-4">📄</div>
+        <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">
           Página no encontrada
         </h1>
-        <p className="text-zinc-600">
+        <p className="text-[var(--muted-foreground)]">
           Esta landing no existe o no está publicada.
         </p>
       </div>
@@ -37,28 +38,36 @@ export default async function PublicLandingPage({
 
   const blocks = (page.content as LandingBlock[]) || []
   const company = page.company
+  const primaryColor = company?.primaryColor ?? "#1a56db"
 
   return (
-    <div className="min-h-screen bg-white">
-      <header
-        className="border-b"
-        style={{ backgroundColor: company?.primaryColor ?? "#1a56db" }}
+    <div className="max-w-2xl mx-auto px-6 pt-8 pb-20 space-y-5 animate-fade-in">
+      <div
+        className="flex items-center gap-3 pb-6 border-b border-[var(--card-border)]"
+        style={{ borderColor: primaryColor + "20" }}
       >
-        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-3">
-          <span className="font-semibold text-white">
-            {company?.name ?? "Portal"}
-          </span>
-        </div>
-      </header>
+        <div
+          className="h-2 w-12 rounded-full"
+          style={{ backgroundColor: primaryColor }}
+        />
+        <h1 className="text-3xl font-extrabold text-[var(--foreground)] tracking-tight">
+          {page.title}
+        </h1>
+      </div>
 
-      <main className="max-w-2xl mx-auto px-6 py-8 space-y-4">
-        <h1 className="text-2xl font-bold text-zinc-900">{page.title}</h1>
-        {blocks.length === 0 ? (
-          <p className="text-zinc-500">Sin contenido</p>
-        ) : (
-          blocks.map((block) => <BlockPreview key={block.id} block={block} />)
-        )}
-      </main>
+      {blocks.length === 0 ? (
+        <p className="text-[var(--muted-foreground)] py-8 text-center">Sin contenido aún</p>
+      ) : (
+        blocks.map((block, i) => (
+          <div
+            key={block.id}
+            className="animate-fade-in"
+            style={{ animationDelay: `${i * 80}ms` }}
+          >
+            <BlockPreview block={block} />
+          </div>
+        ))
+      )}
     </div>
   )
 }

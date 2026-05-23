@@ -2,28 +2,26 @@ import type { LandingBlock } from "./landing-blocks"
 
 export function BlockPreview({ block }: { block: LandingBlock }) {
   if (block.type === "texto") {
-    const hasMd =
-      block.content.includes("##") || block.content.includes("**")
+    const text = block.content || ""
+    const hasMd = text.includes("##") || text.includes("**")
+
     if (hasMd) {
-      const html = block.content
-        .replace(
-          /^## (.+)$/gm,
-          '<h2 class="text-xl font-bold mb-2 text-zinc-900">$1</h2>'
-        )
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      const html = text
+        .replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold mb-3 mt-6" style="color: var(--foreground)">$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, "<br>")
-      return <div dangerouslySetInnerHTML={{ __html: html }} />
+      return <div className="leading-relaxed" dangerouslySetInnerHTML={{ __html: html }} />
     }
     return (
-      <p className="text-zinc-700 whitespace-pre-wrap leading-relaxed text-[15px]">
-        {block.content}
-      </p>
+      <div className="text-[15px] leading-relaxed whitespace-pre-wrap" style={{ color: "var(--foreground)", opacity: 0.9 }}>
+        {text}
+      </div>
     )
   }
 
   if (block.type === "imagen" && block.url) {
     return (
-      <img src={block.url} alt="" className="max-w-full rounded-xl" />
+      <img src={block.url} alt="" className="max-w-full rounded-2xl shadow-md" />
     )
   }
 
@@ -33,7 +31,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
         href={block.url || "#"}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-block px-6 py-3 rounded-xl font-medium text-sm transition-colors ${
+        className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
           block.type === "boton"
             ? "bg-blue-600 text-white hover:bg-blue-700"
             : "bg-red-600 text-white hover:bg-red-700"
@@ -51,7 +49,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
     )
     if (youtubeMatch) {
       return (
-        <div className="rounded-xl overflow-hidden">
+        <div className="rounded-2xl overflow-hidden shadow-md">
           <iframe
             src={`https://www.youtube.com/embed/${youtubeMatch[1]}`}
             className="w-full aspect-video"
@@ -60,17 +58,11 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
         </div>
       )
     }
-    return (
-      <video
-        src={block.url}
-        controls
-        className="max-w-full rounded-xl"
-      />
-    )
+    return <video src={block.url} controls className="max-w-full rounded-2xl shadow-md" />
   }
 
   if (block.type === "separador") {
-    return <hr className="border-zinc-200 my-4" />
+    return <hr className="border-[var(--card-border)] my-6" />
   }
 
   return null
