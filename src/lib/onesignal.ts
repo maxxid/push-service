@@ -22,8 +22,8 @@ export async function sendPushNotification({
 
   const body: Record<string, unknown> = {
     app_id: ONESIGNAL_APP_ID,
-    headings,
-    contents,
+    headings: { en: Object.values(headings)[0], ...headings },
+    contents: { en: Object.values(contents)[0], ...contents },
     priority,
   }
 
