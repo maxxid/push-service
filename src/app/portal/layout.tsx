@@ -45,12 +45,6 @@ export default async function PortalLayout({
           </div>
 
           <div className="flex items-center gap-2">
-            <a
-              href="/admin/login"
-              className="text-xs px-3 py-1.5 rounded-full border border-[var(--card-border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-zinc-400 transition-all duration-200"
-            >
-              Admin
-            </a>
             <ThemeToggle />
           </div>
         </div>
@@ -63,12 +57,6 @@ export default async function PortalLayout({
           <p className="text-xs text-[var(--muted-foreground)]">
             Plataforma de Comunicación Institucional
           </p>
-          <a
-            href="/admin/login"
-            className="text-xs text-zinc-400 hover:text-[var(--foreground)] transition-colors mt-1 inline-block"
-          >
-            Panel Admin
-          </a>
         </footer>
       )}
 
