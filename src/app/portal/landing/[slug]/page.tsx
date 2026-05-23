@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import type { LandingBlock } from "@/components/portal/landing-blocks"
 import { headers } from "next/headers"
-import { LandingSubscriptionGate } from "@/components/portal/landing-subscription-gate"
+import { BlockPreview } from "@/components/portal/landing-preview"
 
 export default async function PublicLandingPage({
   params,
@@ -28,12 +28,9 @@ export default async function PublicLandingPage({
         <h1 className="text-2xl font-bold text-zinc-900 mb-2">
           Página no encontrada
         </h1>
-        <p className="text-zinc-500 mb-4">
+        <p className="text-zinc-600">
           Esta landing no existe o no está publicada.
         </p>
-        <a href="/portal" className="text-blue-600 hover:text-blue-800 text-sm">
-          Volver al inicio
-        </a>
       </div>
     )
   }
@@ -54,12 +51,14 @@ export default async function PublicLandingPage({
         </div>
       </header>
 
-      <LandingSubscriptionGate
-        landingTitle={page.title}
-        blocks={blocks}
-        companyId={company?.id ?? ""}
-        companyName={company?.name ?? "la institución"}
-      />
+      <main className="max-w-2xl mx-auto px-6 py-8 space-y-4">
+        <h1 className="text-2xl font-bold text-zinc-900">{page.title}</h1>
+        {blocks.length === 0 ? (
+          <p className="text-zinc-500">Sin contenido</p>
+        ) : (
+          blocks.map((block) => <BlockPreview key={block.id} block={block} />)
+        )}
+      </main>
     </div>
   )
 }
