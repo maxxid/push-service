@@ -88,6 +88,15 @@ export default function EditCompanyPage() {
         </Button>
       </div>
 
+      <div className="flex gap-3 mb-6">
+        <a href="/admin/branding" className="text-sm text-blue-600 hover:text-blue-800">
+          Branding y módulos →
+        </a>
+        <a href={`/admin/companies/${params.id}/users`} className="text-sm text-blue-600 hover:text-blue-800">
+          Usuarios →
+        </a>
+      </div>
+
       <div className="max-w-lg space-y-6">
         <form
           onSubmit={handleSubmit}

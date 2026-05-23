@@ -26,25 +26,28 @@ export default function BrandingPage() {
   const [activeModules, setActiveModules] = useState<string[]>([])
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!companyId && role !== "SUPERADMIN") return
-    fetch("/api/companies")
-      .then((r) => r.json())
-      .then((companies) => {
-        const myCompany = Array.isArray(companies) && companies.length > 0 ? companies[0] : null
-        if (myCompany) {
-          setName(myCompany.name || "")
-          setLogo(myCompany.logo || "")
-          setPrimaryColor(myCompany.primaryColor || "#1a56db")
-          setSecondaryColor(myCompany.secondaryColor || "#ffffff")
-          setTextColor(myCompany.textColor || "#1a1a1a")
-          setPortalTitle(myCompany.portalTitle || "")
-          setPortalDescription(myCompany.portalDescription || "")
-          setActiveModules(myCompany.modules || [])
-        }
-      })
-      .finally(() => setLoading(false))
+    if (!companyId && role !== "SUPERADMIN") { setLoading(false); return }
+
+    const fetchCompany = role === "SUPERADMIN"
+      ? fetch("/api/companies").then(r => r.json()).then((d: any[]) => d?.[0])
+      : fetch("/api/companies").then(r => r.json()).then((d: any[]) => Array.isArray(d) ? d[0] : null)
+
+    fetchCompany.then((myCompany) => {
+      if (myCompany) {
+        setName(myCompany.name || "")
+        setLogo(myCompany.logo || "")
+        setPrimaryColor(myCompany.primaryColor || "#1a56db")
+        setSecondaryColor(myCompany.secondaryColor || "#ffffff")
+        setTextColor(myCompany.textColor || "#1a1a1a")
+        setPortalTitle(myCompany.portalTitle || "")
+        setPortalDescription(myCompany.portalDescription || "")
+        setActiveModules(myCompany.modules || [])
+        setSelectedCompanyId(myCompany.id)
+      }
+    }).finally(() => setLoading(false))
   }, [companyId, role])
 
   const toggleModule = (key: string) => {
@@ -52,9 +55,10 @@ export default function BrandingPage() {
   }
 
   const handleSave = async () => {
-    if (!companyId) return
+    const targetId = role === "SUPERADMIN" ? selectedCompanyId : companyId
+    if (!targetId) return
 
-    await fetch(`/api/companies/${companyId}`, {
+    await fetch(`/api/companies/${targetId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
