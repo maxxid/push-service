@@ -178,9 +178,14 @@ export default function CampaignDetailPage() {
                 </p>
               )}
 
-              <Button onClick={handleSend} disabled={sending}>
-                {sending ? "Enviando..." : "Enviar ahora"}
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={handleSend} disabled={sending}>
+                  {sending ? "Enviando..." : "Enviar ahora"}
+                </Button>
+                <Button variant="outline" onClick={() => router.push(`/admin/campaigns/${params.id}/edit`)}>
+                  Editar
+                </Button>
+              </div>
             </div>
           )}
 
@@ -226,7 +231,21 @@ export default function CampaignDetailPage() {
               {campaign.segment && (
                 <div className="flex justify-between">
                   <dt className="text-zinc-500">Segmento</dt>
-                  <dd className="text-zinc-900">{campaign.segment.name}</dd>
+                  <dd>
+                    <a href={`/admin/segments/${campaign.segment.id}`} className="text-blue-600 hover:text-blue-800">
+                      {campaign.segment.name}
+                    </a>
+                  </dd>
+                </div>
+              )}
+              {campaign.landingPage && (
+                <div className="flex justify-between">
+                  <dt className="text-zinc-500">Landing</dt>
+                  <dd>
+                    <a href={`/admin/landing-pages/${campaign.landingPage.id}`} className="text-blue-600 hover:text-blue-800">
+                      {campaign.landingPage.title}
+                    </a>
+                  </dd>
                 </div>
               )}
               {campaign.scheduledAt && (
