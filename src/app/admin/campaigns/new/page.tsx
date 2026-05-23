@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 
 type Segment = { id: string; name: string; companyId: string }
 type Company = { id: string; name: string }
+type LandingPage = { id: string; title: string; slug: string; companyId: string }
 
 const actionTypes = [
   { value: "LANDING_INTERNA", label: "Landing interna" },
@@ -33,16 +34,19 @@ export default function NewCampaignPage() {
   const [priority, setPriority] = useState("NORMAL")
   const [segmentId, setSegmentId] = useState("")
   const [companyId, setCompanyId] = useState(userCompanyId || "")
+  const [landingPageId, setLandingPageId] = useState("")
   const [scheduledAt, setScheduledAt] = useState("")
   const [sendNow, setSendNow] = useState(true)
 
   const [segments, setSegments] = useState<Segment[]>([])
   const [companies, setCompanies] = useState<Company[]>([])
+  const [landingPages, setLandingPages] = useState<LandingPage[]>([])
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetch("/api/segments").then((r) => r.json()).then((d) => setSegments(Array.isArray(d) ? d : []))
+    fetch("/api/landing-pages").then((r) => r.json()).then((d) => setLandingPages(Array.isArray(d) ? d : []))
     if (role === "SUPERADMIN") {
       fetch("/api/companies").then((r) => r.json()).then(setCompanies)
     }
@@ -59,6 +63,7 @@ export default function NewCampaignPage() {
       imageUrl: imageUrl || undefined,
       actionType,
       actionValue: actionValue || undefined,
+      landingPageId: landingPageId || undefined,
       priority,
       segmentId: segmentId || undefined,
       companyId: role === "SUPERADMIN" ? companyId : undefined,
@@ -256,6 +261,27 @@ export default function NewCampaignPage() {
                     : "https://..."
                 }
               />
+            </div>
+          )}
+
+          {(actionType === "LANDING_INTERNA" ||
+            actionType === "FORMULARIO") && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1">
+                Landing page de destino
+              </label>
+              <select
+                value={landingPageId}
+                onChange={(e) => setLandingPageId(e.target.value)}
+                className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Ninguna (sin landing)</option>
+                {landingPages.map((lp) => (
+                  <option key={lp.id} value={lp.id}>
+                    {lp.title} ({lp.slug})
+                  </option>
+                ))}
+              </select>
             </div>
           )}
         </div>
