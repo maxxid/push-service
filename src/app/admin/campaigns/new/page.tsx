@@ -67,7 +67,7 @@ export default function NewCampaignPage() {
       priority,
       segmentId: segmentId || undefined,
       companyId: role === "SUPERADMIN" ? companyId : undefined,
-      scheduledAt: sendNow ? undefined : scheduledAt || undefined,
+      scheduledAt: sendNow ? undefined : scheduledAt ? `${scheduledAt}:00-03:00` : undefined,
     }
 
     const res = await fetch("/api/campaigns", {
@@ -300,7 +300,7 @@ export default function NewCampaignPage() {
           {!sendNow && (
             <div className="mt-3">
               <label className="block text-sm font-medium text-zinc-700 mb-1">
-                Programar para
+                Programar para <span className="text-xs text-zinc-400">(UTC-3, Buenos Aires)</span>
               </label>
               <input
                 type="datetime-local"

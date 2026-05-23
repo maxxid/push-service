@@ -155,7 +155,7 @@ export default function CampaignsPage() {
                     )}
                     {c.scheduledAt && (
                       <span>
-                        🕐 {new Date(c.scheduledAt).toLocaleString("es-AR")}
+                        🕐 {new Date(c.scheduledAt).toLocaleString("es-AR", { timeZone: "America/Argentina/Buenos_Aires" })}
                       </span>
                     )}
                     {c.sentAt && (

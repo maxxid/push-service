@@ -40,7 +40,7 @@ export default function EventsPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title,
-        date,
+        date: date ? `${date}:00-03:00` : date,
         description: description || undefined,
         location: location || undefined,
       }),
@@ -101,7 +101,7 @@ export default function EventsPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-zinc-600 mb-1">
-                Fecha y hora
+                Fecha y hora <span className="text-zinc-400">(UTC-3 Bs As)</span>
               </label>
               <input
                 type="datetime-local"
