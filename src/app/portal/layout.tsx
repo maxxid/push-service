@@ -1,5 +1,7 @@
 import { headers } from "next/headers"
 import { getCompanyFromHeaders } from "@/lib/company-context"
+import { getOneSignalAppId } from "@/lib/onesignal"
+import { OneSignalInit } from "@/components/portal/onesignal-init"
 import Link from "next/link"
 
 export default async function PortalLayout({
@@ -10,6 +12,7 @@ export default async function PortalLayout({
   const headersList = await headers()
   const subdomain = headersList.get("x-company-subdomain")
   const company = await getCompanyFromHeaders(subdomain)
+  const onesignalAppId = getOneSignalAppId()
 
   return (
     <div className="min-h-screen bg-white">
@@ -54,6 +57,7 @@ export default async function PortalLayout({
           </Link>
         </footer>
       )}
+      {onesignalAppId && <OneSignalInit appId={onesignalAppId} />}
     </div>
   )
 }
