@@ -24,19 +24,37 @@ export function NotificationPrompt({
   }, [])
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "OneSignal" in window) {
-      setSupported(true)
+    let cancelled = false
+    let oneSignalRef: any = null
 
-      const OneSignal = (window as any).OneSignal
+    function waitForOneSignal() {
+      if (cancelled) return
+      if (typeof window !== "undefined" && "OneSignal" in window) {
+        const OneSignal = (window as any).OneSignal
+        if (OneSignal.User?.PushSubscription) {
+          oneSignalRef = OneSignal
+          setSupported(true)
 
-      OneSignal.User.PushSubscription.addEventListener("change", handleChange)
+          OneSignal.User.PushSubscription.addEventListener(
+            "change",
+            handleChange
+          )
 
-      OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
-        setSubscribed(optedIn)
-      })
+          OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
+            if (!cancelled) setSubscribed(optedIn)
+          })
+          return
+        }
+      }
+      setTimeout(waitForOneSignal, 300)
+    }
 
-      return () => {
-        OneSignal.User.PushSubscription.removeEventListener(
+    waitForOneSignal()
+
+    return () => {
+      cancelled = true
+      if (oneSignalRef?.User?.PushSubscription) {
+        oneSignalRef.User.PushSubscription.removeEventListener(
           "change",
           handleChange
         )
