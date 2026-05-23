@@ -1,9 +1,7 @@
 import { headers } from "next/headers"
 import { getCompanyFromHeaders } from "@/lib/company-context"
-import { NotificationPrompt } from "@/components/portal/notification-prompt"
-import { PortalModules } from "@/components/portal/portal-modules"
-
 import { prisma } from "@/lib/prisma"
+import { PortalContent } from "@/components/portal/portal-content"
 
 export default async function PortalPage({
   searchParams,
@@ -35,19 +33,18 @@ export default async function PortalPage({
         Recibí avisos importantes de{" "}
         {company?.name ? company.name : "la institución"}
       </h1>
-      <p className="text-zinc-500 mb-8 max-w-md mx-auto">
+      <p className="text-zinc-600 mb-8 max-w-md mx-auto">
         Activá las notificaciones para estar al día con comunicados, alertas y
         novedades. Directo en tu pantalla, sin instalar nada.
       </p>
 
       {company ? (
-        <div className="max-w-sm mx-auto">
-          <NotificationPrompt
-            companyId={company.id}
-            companyName={company.name}
-            primaryColor={primaryColor}
-          />
-        </div>
+        <PortalContent
+          companyId={company.id}
+          companyName={company.name}
+          primaryColor={primaryColor}
+          modules={activeModules}
+        />
       ) : (
         <div className="max-w-sm mx-auto bg-amber-50 border border-amber-200 rounded-xl p-4">
           <p className="text-amber-700 text-sm">
@@ -61,39 +58,20 @@ export default async function PortalPage({
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-zinc-50 rounded-xl p-4">
             <p className="text-2xl mb-2">📢</p>
-            <h3 className="font-semibold text-zinc-900 text-sm">
-              Comunicados
-            </h3>
-            <p className="text-xs text-zinc-500 mt-1">
-              Información oficial al instante
-            </p>
+            <h3 className="font-semibold text-zinc-900 text-sm">Comunicados</h3>
+            <p className="text-xs text-zinc-500 mt-1">Información oficial al instante</p>
           </div>
           <div className="bg-zinc-50 rounded-xl p-4">
             <p className="text-2xl mb-2">⚡</p>
-            <h3 className="font-semibold text-zinc-900 text-sm">
-              Alertas Urgentes
-            </h3>
-            <p className="text-xs text-zinc-500 mt-1">
-              Enterate de cambios importantes
-            </p>
+            <h3 className="font-semibold text-zinc-900 text-sm">Alertas Urgentes</h3>
+            <p className="text-xs text-zinc-500 mt-1">Enterate de cambios importantes</p>
           </div>
           <div className="bg-zinc-50 rounded-xl p-4">
             <p className="text-2xl mb-2">📄</p>
-            <h3 className="font-semibold text-zinc-900 text-sm">
-              Documentación
-            </h3>
-            <p className="text-xs text-zinc-500 mt-1">
-              Accedé a PDFs y formularios
-            </p>
+            <h3 className="font-semibold text-zinc-900 text-sm">Documentación</h3>
+            <p className="text-xs text-zinc-500 mt-1">Accedé a PDFs y formularios</p>
           </div>
         </div>
-      )}
-
-      {company && activeModules.length > 0 && (
-        <PortalModules
-          modules={activeModules}
-          primaryColor={primaryColor}
-        />
       )}
     </div>
   )
