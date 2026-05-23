@@ -34,6 +34,19 @@ export default function LandingPagesPage() {
     fetchPages()
   }
 
+  const handleDuplicate = async (lp: LandingPage) => {
+    await fetch("/api/landing-pages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: `${lp.title} (copia)`,
+        slug: `${lp.slug}-copia`,
+        companyId: null,
+      }),
+    })
+    fetchPages()
+  }
+
   const handleTogglePublish = async (lp: LandingPage) => {
     await fetch(`/api/landing-pages/${lp.id}`, {
       method: "PUT",
@@ -112,6 +125,20 @@ export default function LandingPagesPage() {
                 >
                   Editar
                 </Link>
+                <button
+                  onClick={() => handleDuplicate(lp)}
+                  className="text-zinc-500 hover:text-zinc-700 text-sm"
+                >
+                  Duplicar
+                </button>
+                <a
+                  href={`/portal/landing/${lp.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-600 hover:text-green-800 text-sm"
+                >
+                  Ver →
+                </a>
                 <button
                   onClick={() => handleDelete(lp.id)}
                   className="text-red-500 hover:text-red-700 text-sm"
