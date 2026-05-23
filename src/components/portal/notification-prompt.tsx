@@ -29,14 +29,14 @@ export function NotificationPrompt({
 
       const OneSignal = (window as any).OneSignal
 
-      OneSignal.User.PushNotification.addEventListener("change", handleChange)
+      OneSignal.User.PushSubscription.addEventListener("change", handleChange)
 
       OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
         setSubscribed(optedIn)
       })
 
       return () => {
-        OneSignal.User.PushNotification.removeEventListener(
+        OneSignal.User.PushSubscription.removeEventListener(
           "change",
           handleChange
         )

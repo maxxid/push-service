@@ -22,7 +22,7 @@ export default async function PortalPage({
     })
   }
 
-  if (!company && !subdomain && !companyParam) {
+  if (!company) {
     company = await prisma.company.findFirst({ orderBy: { createdAt: "asc" } })
   }
 
