@@ -18,28 +18,17 @@ export function NotificationPrompt({
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showInstall, setShowInstall] = useState(false)
-
-  const handleChange = useCallback((subscription: any) => {
-    setSubscribed(subscription.current.optedIn)
-  }, [])
+  const [regError, setRegError] = useState("")
 
   useEffect(() => {
     let cancelled = false
-    let oneSignalRef: any = null
 
     function waitForOneSignal() {
       if (cancelled) return
       if (typeof window !== "undefined" && "OneSignal" in window) {
         const OneSignal = (window as any).OneSignal
         if (OneSignal.User?.PushSubscription) {
-          oneSignalRef = OneSignal
           setSupported(true)
-
-          OneSignal.User.PushSubscription.addEventListener(
-            "change",
-            handleChange
-          )
-
           OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
             if (!cancelled) setSubscribed(optedIn)
           })
@@ -53,24 +42,19 @@ export function NotificationPrompt({
 
     return () => {
       cancelled = true
-      if (oneSignalRef?.User?.PushSubscription) {
-        oneSignalRef.User.PushSubscription.removeEventListener(
-          "change",
-          handleChange
-        )
-      }
     }
-  }, [handleChange])
+  }, [])
 
   const handleSubscribe = async () => {
     if (!supported) {
-      alert(
+      setRegError(
         "Tu navegador no soporta notificaciones push. Probá con Chrome, Edge o Safari en iOS 16.4+."
       )
       return
     }
 
     setLoading(true)
+    setRegError("")
 
     try {
       const OneSignal = (window as any).OneSignal
@@ -79,26 +63,35 @@ export function NotificationPrompt({
 
       const playerId = await OneSignal.User.PushSubscription.id
 
-      if (playerId) {
-        await fetch("/api/onesignal/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            onesignalId: playerId,
-            companyId,
-            deviceInfo: {
-              userAgent: navigator.userAgent,
-              platform: navigator.platform,
-              language: navigator.language,
-            },
-          }),
-        })
+      if (!playerId) {
+        setRegError("No se pudo obtener el ID de suscripción")
+        return
+      }
+
+      const res = await fetch("/api/onesignal/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          onesignalId: playerId,
+          companyId,
+          deviceInfo: {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+          },
+        }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setRegError(data.error || "Error al registrar suscriptor")
+        return
       }
 
       setSubscribed(true)
       setShowInstall(true)
     } catch (err) {
-      console.error("Error al suscribir:", err)
+      setRegError("Error de conexión al registrar")
     } finally {
       setLoading(false)
     }
@@ -134,6 +127,11 @@ export function NotificationPrompt({
       >
         {loading ? "Activando..." : "Activar notificaciones"}
       </Button>
+      {regError && (
+        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+          {regError}
+        </p>
+      )}
       <p className="text-xs text-zinc-400 text-center">
         No enviamos spam. Solo avisos institucionales importantes.
       </p>
