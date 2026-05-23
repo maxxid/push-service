@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 import { getCompanyFromHeaders } from "@/lib/company-context"
 import { getOneSignalAppId } from "@/lib/onesignal"
 import { OneSignalInit } from "@/components/portal/onesignal-init"
-import Link from "next/link"
+import { ThemeToggle } from "@/components/portal/theme-toggle"
 
 export default async function PortalLayout({
   children,
@@ -14,49 +14,64 @@ export default async function PortalLayout({
   const company = await getCompanyFromHeaders(subdomain)
   const onesignalAppId = getOneSignalAppId()
 
+  const primary = company?.primaryColor ?? "#1a56db"
+  const secondary = company?.secondaryColor ?? "#ffffff"
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
       <header
-        className="border-b"
-        style={{
-          backgroundColor: company?.primaryColor ?? "#1a56db",
-          borderColor: "transparent",
-        }}
+        className="sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--background)]/80 backdrop-blur-xl transition-all duration-300"
+        style={{ borderColor: primary + "20" }}
       >
-        <div className="max-w-2xl mx-auto px-6 py-4 flex items-center gap-3">
-          {company?.logo ? (
-            <img
-              src={company.logo}
-              alt={company.name}
-              className="w-8 h-8 rounded object-contain bg-white p-0.5"
-            />
-          ) : (
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
-              style={{
-                backgroundColor: company?.secondaryColor ?? "#fff",
-                color: company?.primaryColor ?? "#1a56db",
-              }}
+        <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            {company?.logo ? (
+              <img
+                src={company.logo}
+                alt={company.name}
+                className="h-9 w-9 rounded-xl object-contain bg-white p-0.5 shadow-sm ring-1 ring-black/5"
+              />
+            ) : (
+              <div
+                className="h-9 w-9 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md"
+                style={{ backgroundColor: primary }}
+              >
+                {(company?.name ?? "P").charAt(0).toUpperCase()}
+              </div>
+            )}
+            <span className="font-semibold text-[var(--foreground)] tracking-tight text-base">
+              {company?.name ?? "Portal Institucional"}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a
+              href="/admin/login"
+              className="text-xs px-3 py-1.5 rounded-full border border-[var(--card-border)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-zinc-400 transition-all duration-200"
             >
-              {(company?.name ?? "P").charAt(0)}
-            </div>
-          )}
-          <span
-            className="font-semibold"
-            style={{ color: company?.secondaryColor ?? "#fff" }}
-          >
-            {company?.name ?? "Portal Institucional"}
-          </span>
+              Admin
+            </a>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
-      <main>{children}</main>
+
+      <main className="relative">{children}</main>
+
       {!subdomain && (
-        <footer className="border-t border-zinc-200 py-8 text-center text-sm text-zinc-400">
-          <Link href="/admin/login" className="hover:text-zinc-600">
+        <footer className="border-t border-[var(--card-border)] py-10 text-center">
+          <p className="text-xs text-[var(--muted-foreground)]">
+            Plataforma de Comunicación Institucional
+          </p>
+          <a
+            href="/admin/login"
+            className="text-xs text-zinc-400 hover:text-[var(--foreground)] transition-colors mt-1 inline-block"
+          >
             Panel Admin
-          </Link>
+          </a>
         </footer>
       )}
+
       {onesignalAppId && <OneSignalInit appId={onesignalAppId} />}
     </div>
   )

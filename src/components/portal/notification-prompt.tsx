@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Button } from "@/components/ui/button"
 
 type Props = {
   companyId: string
@@ -9,11 +8,7 @@ type Props = {
   primaryColor: string
 }
 
-export function NotificationPrompt({
-  companyId,
-  companyName,
-  primaryColor,
-}: Props) {
+export function NotificationPrompt({ companyId, companyName, primaryColor }: Props) {
   const [supported, setSupported] = useState(false)
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -27,40 +22,24 @@ export function NotificationPrompt({
       if (cancelled) return
       if (typeof window !== "undefined" && "OneSignal" in window) {
         const OneSignal = (window as any).OneSignal
-        if (OneSignal?.User?.PushSubscription) {
+        if (OneSignal.User?.PushSubscription) {
           setSupported(true)
-
-          OneSignal.User.PushSubscription.addEventListener("change", onSubChange)
           const opt = OneSignal.User.PushSubscription.optedIn
-          if (typeof opt === "boolean") {
-            if (!cancelled) setSubscribed(opt)
-          } else if (opt && typeof opt.then === "function") {
-            opt.then((optedIn: boolean) => {
-              if (!cancelled) setSubscribed(optedIn)
-            })
-          }
+          if (typeof opt === "boolean") { if (!cancelled) setSubscribed(opt) }
+          else if (opt && typeof opt.then === "function") opt.then((v: boolean) => { if (!cancelled) setSubscribed(v) })
           return
         }
       }
       setTimeout(waitForOneSignal, 300)
     }
 
-    function onSubChange(sub: any) {
-      if (!cancelled) setSubscribed(sub.current?.optedIn ?? false)
-    }
-
     waitForOneSignal()
-
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [])
 
   const handleSubscribe = async () => {
     if (!supported) {
-      setRegError(
-        "Tu navegador no soporta notificaciones push. Probá con Chrome, Edge o Safari en iOS 16.4+."
-      )
+      setRegError("Tu navegador no soporta notificaciones. Probá Chrome, Edge o Safari en iOS 16.4+.")
       return
     }
 
@@ -69,9 +48,7 @@ export function NotificationPrompt({
 
     try {
       const OneSignal = (window as any).OneSignal
-
       await OneSignal.User.PushSubscription.optIn()
-
       const playerId = await OneSignal.User.PushSubscription.id
 
       if (!playerId) {
@@ -85,72 +62,65 @@ export function NotificationPrompt({
         body: JSON.stringify({
           onesignalId: playerId,
           companyId,
-          deviceInfo: {
-            userAgent: navigator.userAgent,
-            platform: navigator.platform,
-            language: navigator.language,
-          },
+          deviceInfo: { userAgent: navigator.userAgent, platform: navigator.platform, language: navigator.language },
         }),
       })
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        setRegError(data.error || "Error al registrar suscriptor")
+        setRegError(data.error || "Error al registrar")
         return
       }
 
       setSubscribed(true)
       setShowInstall(true)
-    } catch (err) {
-      setRegError("Error de conexión al registrar")
+    } catch {
+      setRegError("Error de conexión")
     } finally {
       setLoading(false)
     }
   }
 
-  if (subscribed) {
-    return (
-      <div className="space-y-4">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-          <p className="text-green-700 font-medium">
-            ¡Notificaciones activadas!
-          </p>
-          <p className="text-green-600 text-sm mt-1">
-            Recibirás los avisos de {companyName}
-          </p>
-        </div>
-        {showInstall && <InstallGuide primaryColor={primaryColor} />}
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-4">
-      <Button
+      <button
         onClick={handleSubscribe}
         disabled={loading}
-        className="w-full"
-        size="lg"
-        style={{
-          backgroundColor: primaryColor,
-          borderColor: primaryColor,
-        }}
+        className="group relative w-full px-8 py-4 rounded-2xl font-semibold text-white text-lg tracking-tight overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70"
+        style={{ backgroundColor: primaryColor }}
       >
-        {loading ? "Activando..." : "Activar notificaciones"}
-      </Button>
+        <span className="relative z-10 flex items-center justify-center gap-2">
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Activando...
+            </>
+          ) : (
+            <>🔔 Activar notificaciones</>
+          )}
+        </span>
+        <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+      </button>
+
       {regError && (
-        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+        <div className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 p-4 text-sm text-red-600 dark:text-red-400 animate-scale-in">
           {regError}
-        </p>
+        </div>
       )}
-      <p className="text-xs text-zinc-400 text-center">
-        No enviamos spam. Solo avisos institucionales importantes.
+
+      <p className="text-xs text-[var(--muted-foreground)]">
+        Sin spam. Solo avisos de {companyName}.
       </p>
+
+      {showInstall && <InstallGuide />}
     </div>
   )
 }
 
-function InstallGuide({ primaryColor }: { primaryColor: string }) {
+function InstallGuide() {
   const [isIOS, setIsIOS] = useState(false)
   const [isAndroid, setIsAndroid] = useState(false)
 
@@ -161,30 +131,28 @@ function InstallGuide({ primaryColor }: { primaryColor: string }) {
   }, [])
 
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-left">
-      <h3 className="font-semibold text-blue-900 text-sm mb-2">
-        Instalar en tu pantalla principal
+    <div className="mt-6 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50 p-5 text-left animate-slide-up">
+      <h3 className="font-semibold text-blue-900 dark:text-blue-200 text-sm mb-3 flex items-center gap-2">
+        <span className="h-5 w-5 rounded-md bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-xs">📲</span>
+        Instalar en pantalla principal
       </h3>
       {isIOS ? (
-        <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-          <li>Tocá <strong>Compartir</strong> en Safari (↑)</li>
-          <li>Seleccioná <strong>Agregar a la pantalla de inicio</strong></li>
-          <li>Tocá <strong>Agregar</strong></li>
-          <li>Abrí la app desde el nuevo ícono</li>
+        <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside leading-relaxed">
+          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Compartir</strong> en Safari</li>
+          <li>Seleccioná <strong className="text-blue-900 dark:text-blue-100">Agregar a pantalla de inicio</strong></li>
+          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Agregar</strong> y abrí desde el nuevo ícono</li>
         </ol>
       ) : isAndroid ? (
-        <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-          <li>Tocá <strong>⋮</strong> (tres puntos) en Chrome</li>
-          <li>Seleccioná <strong>Agregar a pantalla principal</strong></li>
-          <li>Tocá <strong>Instalar</strong></li>
+        <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside leading-relaxed">
+          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">⋮</strong> en Chrome</li>
+          <li>Seleccioná <strong className="text-blue-900 dark:text-blue-100">Agregar a pantalla principal</strong></li>
+          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Instalar</strong></li>
         </ol>
       ) : (
-        <p className="text-xs text-blue-800">
-          Buscá el botón de instalar en la barra del navegador o en el menú de opciones.
-        </p>
+        <p className="text-xs text-blue-800 dark:text-blue-300">Usá el botón de instalar en la barra del navegador.</p>
       )}
-      <p className="text-xs text-blue-600 mt-2">
-        Cuando abras desde el ícono, las notificaciones mostrarán el nombre de la institución.
+      <p className="text-xs text-blue-600 dark:text-blue-400 mt-3 pt-3 border-t border-blue-100 dark:border-blue-900">
+        Al abrir desde el ícono, las notificaciones muestran el nombre de la institución.
       </p>
     </div>
   )
