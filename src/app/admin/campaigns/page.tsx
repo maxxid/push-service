@@ -11,11 +11,16 @@ type Campaign = {
   status: string
   priority: string
   actionType: string
+  actionValue: string | null
+  imageUrl: string | null
+  segmentId: string | null
+  landingPageId: string | null
   deliveries: number
   clicks: number
   scheduledAt: string | null
   sentAt: string | null
-  segment?: { name: string }
+  segment?: { name: string; id: string }
+  landingPage?: { title: string; id: string }
   company?: { name: string }
   createdAt: string
 }
@@ -67,8 +72,11 @@ export default function CampaignsPage() {
         title: `${c.title} (copia)`,
         pushMessage: c.pushMessage,
         actionType: c.actionType,
-        actionValue: null,
+        actionValue: c.actionValue,
+        imageUrl: c.imageUrl,
         priority: c.priority,
+        segmentId: c.segmentId ?? c.segment?.id ?? null,
+        landingPageId: c.landingPageId ?? c.landingPage?.id ?? null,
         companyId: null,
       }),
     })
