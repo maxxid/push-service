@@ -27,8 +27,10 @@ export function NotificationPrompt({
       if (cancelled) return
       if (typeof window !== "undefined" && "OneSignal" in window) {
         const OneSignal = (window as any).OneSignal
-        if (OneSignal.User?.PushSubscription) {
+        if (OneSignal?.User?.PushSubscription) {
           setSupported(true)
+
+          OneSignal.User.PushSubscription.addEventListener("change", onSubChange)
           OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
             if (!cancelled) setSubscribed(optedIn)
           })
@@ -36,6 +38,10 @@ export function NotificationPrompt({
         }
       }
       setTimeout(waitForOneSignal, 300)
+    }
+
+    function onSubChange(sub: any) {
+      if (!cancelled) setSubscribed(sub.current?.optedIn ?? false)
     }
 
     waitForOneSignal()
