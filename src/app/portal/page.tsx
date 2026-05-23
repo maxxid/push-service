@@ -3,10 +3,28 @@ import { getCompanyFromHeaders } from "@/lib/company-context"
 import { NotificationPrompt } from "@/components/portal/notification-prompt"
 import { PortalModules } from "@/components/portal/portal-modules"
 
-export default async function PortalPage() {
+import { prisma } from "@/lib/prisma"
+
+export default async function PortalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ company?: string }>
+}) {
   const headersList = await headers()
   const subdomain = headersList.get("x-company-subdomain")
-  const company = await getCompanyFromHeaders(subdomain)
+  const { company: companyParam } = await searchParams
+
+  let company = await getCompanyFromHeaders(subdomain)
+
+  if (!company && companyParam) {
+    company = await prisma.company.findFirst({
+      where: { OR: [{ slug: companyParam }, { subdomain: companyParam }] },
+    })
+  }
+
+  if (!company && !subdomain && !companyParam) {
+    company = await prisma.company.findFirst({ orderBy: { createdAt: "asc" } })
+  }
 
   const primaryColor = company?.primaryColor ?? "#1a56db"
   const activeModules: string[] = (company?.modules as string[]) ?? []
