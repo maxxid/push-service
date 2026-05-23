@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
 
 type SubscriberData = {
   id: string
@@ -53,11 +54,17 @@ export default function SubscribersPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Suscriptores</h1>
-        <span className="text-sm text-zinc-500">
-          {subscribers.length} total
-          {subscribers.filter((s) => s.active).length} activos
-        </span>
+        <div>
+          <h1 className="text-2xl font-bold text-zinc-900">Suscriptores</h1>
+          <p className="text-sm text-zinc-500 mt-1">
+            {subscribers.length} total · {subscribers.filter((s) => s.active).length} activos
+          </p>
+        </div>
+        <a href="/api/export/subscribers" download>
+          <Button variant="outline" size="sm">
+            Exportar CSV
+          </Button>
+        </a>
       </div>
 
       <div className="mb-4">
