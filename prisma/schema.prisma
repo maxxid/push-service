@@ -98,6 +98,8 @@ model Company {
   segments    Segment[]
   campaigns   Campaign[]
   landingPages LandingPage[]
+  documents   Document[]
+  events      Event[]
   modules     Json      @default("[]")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -186,4 +188,28 @@ model AuditLog {
   userId    String?
   companyId String?
   createdAt DateTime @default(now())
+}
+
+model Document {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  fileUrl     String
+  category    String   @default("general")
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  location    String?
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

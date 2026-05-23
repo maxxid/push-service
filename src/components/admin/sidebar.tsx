@@ -10,6 +10,8 @@ const adminLinks = [
   { href: "/admin/segments", label: "Segmentos", icon: "👥" },
   { href: "/admin/subscribers", label: "Suscriptores", icon: "📱" },
   { href: "/admin/landing-pages", label: "Landing Pages", icon: "📄" },
+  { href: "/admin/documents", label: "Documentos", icon: "📁" },
+  { href: "/admin/events", label: "Agenda", icon: "📅" },
 ]
 
 const superadminLinks = [
