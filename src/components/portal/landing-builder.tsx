@@ -124,6 +124,12 @@ function BlockEditor({
   )
 }
 
+function fixUrl(url: string): string {
+  if (!url) return "#"
+  if (/^(https?:\/\/|mailto:|tel:|\/)/i.test(url)) return url
+  return `https://${url}`
+}
+
 function BlockPreview({ block }: { block: LandingBlock }) {
   if (block.type === "texto") {
     const hasMd =
@@ -161,7 +167,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
   ) {
     return (
       <a
-        href={block.url || "#"}
+        href={fixUrl(block.url || "")}
         target="_blank"
         rel="noopener noreferrer"
         className={`inline-block px-6 py-3 rounded-xl font-medium text-sm transition-colors ${

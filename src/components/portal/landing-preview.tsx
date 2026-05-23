@@ -1,5 +1,11 @@
 import type { LandingBlock } from "./landing-blocks"
 
+function fixUrl(url: string): string {
+  if (!url) return "#"
+  if (/^(https?:\/\/|mailto:|tel:|\/)/i.test(url)) return url
+  return `https://${url}`
+}
+
 export function BlockPreview({ block }: { block: LandingBlock }) {
   if (block.type === "texto") {
     const text = block.content || ""
@@ -28,7 +34,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
   if ((block.type === "boton" || block.type === "pdf") && block.label) {
     return (
       <a
-        href={block.url || "#"}
+        href={fixUrl(block.url || "")}
         target="_blank"
         rel="noopener noreferrer"
         className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
