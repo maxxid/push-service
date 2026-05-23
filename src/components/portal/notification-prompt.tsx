@@ -141,9 +141,12 @@ export function NotificationPrompt({
 
 function InstallGuide({ primaryColor }: { primaryColor: string }) {
   const [isIOS, setIsIOS] = useState(false)
+  const [isAndroid, setIsAndroid] = useState(false)
 
   useEffect(() => {
-    setIsIOS(/iPhone|iPad|iPod/.test(navigator.userAgent))
+    const ua = navigator.userAgent
+    setIsIOS(/iPhone|iPad|iPod/.test(ua))
+    setIsAndroid(/Android/.test(ua))
   }, [])
 
   return (
@@ -153,25 +156,24 @@ function InstallGuide({ primaryColor }: { primaryColor: string }) {
       </h3>
       {isIOS ? (
         <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-          <li>
-            Tocá el botón <strong>Compartir</strong> en Safari
-          </li>
-          <li>
-            Seleccioná{" "}
-            <strong>&quot;Agregar a la pantalla de inicio&quot;</strong>
-          </li>
-          <li>
-            Tocá <strong>Agregar</strong>
-          </li>
+          <li>Tocá <strong>Compartir</strong> en Safari (↑)</li>
+          <li>Seleccioná <strong>Agregar a la pantalla de inicio</strong></li>
+          <li>Tocá <strong>Agregar</strong></li>
+          <li>Abrí la app desde el nuevo ícono</li>
+        </ol>
+      ) : isAndroid ? (
+        <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+          <li>Tocá <strong>⋮</strong> (tres puntos) en Chrome</li>
+          <li>Seleccioná <strong>Agregar a pantalla principal</strong></li>
+          <li>Tocá <strong>Instalar</strong></li>
         </ol>
       ) : (
         <p className="text-xs text-blue-800">
-          Se instalará automáticamente. También podés usar el botón de instalar
-          en la barra del navegador.
+          Buscá el botón de instalar en la barra del navegador o en el menú de opciones.
         </p>
       )}
       <p className="text-xs text-blue-600 mt-2">
-        Así accedés más rápido y sin abrir el navegador.
+        Cuando abras desde el ícono, las notificaciones mostrarán el nombre de la institución.
       </p>
     </div>
   )
