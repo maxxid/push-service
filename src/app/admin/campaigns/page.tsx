@@ -142,7 +142,7 @@ export default function CampaignsPage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-zinc-500 truncate">
+                  <p className="text-sm text-zinc-500 break-words line-clamp-2">
                     {c.pushMessage}
                   </p>
                   <div className="flex items-center gap-4 mt-2 text-xs text-zinc-400">

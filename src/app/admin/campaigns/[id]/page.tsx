@@ -118,7 +118,7 @@ export default function CampaignDetailPage() {
             <div className="space-y-3">
               <div>
                 <p className="text-xs text-zinc-500 mb-1">Mensaje push</p>
-                <p className="text-sm text-zinc-900 bg-zinc-50 rounded-lg p-3">
+                <p className="text-sm text-zinc-900 bg-zinc-50 rounded-lg p-3 break-words whitespace-pre-wrap">
                   {campaign.pushMessage}
                 </p>
               </div>
