@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 
 type Props = {
   companyId: string
@@ -122,13 +122,12 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
 
 function InstallGuide() {
   const [isIOS, setIsIOS] = useState(false)
-  const [isAndroid, setIsAndroid] = useState(false)
 
   useEffect(() => {
-    const ua = navigator.userAgent
-    setIsIOS(/iPhone|iPad|iPod/.test(ua))
-    setIsAndroid(/Android/.test(ua))
+    setIsIOS(/iPhone|iPad|iPod/.test(navigator.userAgent))
   }, [])
+
+  if (!isIOS) return null
 
   return (
     <div className="mt-6 rounded-2xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50 p-5 text-left animate-slide-up">
@@ -136,23 +135,13 @@ function InstallGuide() {
         <span className="h-5 w-5 rounded-md bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-xs">📲</span>
         Instalar en pantalla principal
       </h3>
-      {isIOS ? (
-        <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside leading-relaxed">
-          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Compartir</strong> en Safari</li>
-          <li>Seleccioná <strong className="text-blue-900 dark:text-blue-100">Agregar a pantalla de inicio</strong></li>
-          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Agregar</strong> y abrí desde el nuevo ícono</li>
-        </ol>
-      ) : isAndroid ? (
-        <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside leading-relaxed">
-          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">⋮</strong> en Chrome</li>
-          <li>Seleccioná <strong className="text-blue-900 dark:text-blue-100">Agregar a pantalla principal</strong></li>
-          <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Instalar</strong></li>
-        </ol>
-      ) : (
-        <p className="text-xs text-blue-800 dark:text-blue-300">Usá el botón de instalar en la barra del navegador.</p>
-      )}
+      <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside leading-relaxed">
+        <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Compartir</strong> en Safari</li>
+        <li>Seleccioná <strong className="text-blue-900 dark:text-blue-100">Agregar a pantalla de inicio</strong></li>
+        <li>Tocá <strong className="text-blue-900 dark:text-blue-100">Agregar</strong> y abrí desde el nuevo ícono</li>
+      </ol>
       <p className="text-xs text-blue-600 dark:text-blue-400 mt-3 pt-3 border-t border-blue-100 dark:border-blue-900">
-        Al abrir desde el ícono, las notificaciones muestran el nombre de la institución.
+        iPhone/iPad requiere instalar la app para recibir notificaciones.
       </p>
     </div>
   )
