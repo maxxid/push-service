@@ -31,9 +31,14 @@ export function NotificationPrompt({
           setSupported(true)
 
           OneSignal.User.PushSubscription.addEventListener("change", onSubChange)
-          OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
-            if (!cancelled) setSubscribed(optedIn)
-          })
+          const opt = OneSignal.User.PushSubscription.optedIn
+          if (typeof opt === "boolean") {
+            if (!cancelled) setSubscribed(opt)
+          } else if (opt && typeof opt.then === "function") {
+            opt.then((optedIn: boolean) => {
+              if (!cancelled) setSubscribed(optedIn)
+            })
+          }
           return
         }
       }

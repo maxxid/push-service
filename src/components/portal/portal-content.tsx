@@ -24,10 +24,18 @@ export function PortalContent({
     if (typeof window !== "undefined" && "OneSignal" in window) {
       const OneSignal = (window as any).OneSignal
       if (OneSignal?.User?.PushSubscription) {
-        OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
-          setSubscribed(optedIn)
+        const opt = OneSignal.User.PushSubscription.optedIn
+        if (typeof opt === "boolean") {
+          setSubscribed(opt)
           setLoading(false)
-        })
+        } else if (opt && typeof opt.then === "function") {
+          opt.then((optedIn: boolean) => {
+            setSubscribed(optedIn)
+            setLoading(false)
+          })
+        } else {
+          setLoading(false)
+        }
         OneSignal.User.PushSubscription.addEventListener("change", (sub: any) => {
           setSubscribed(sub.current?.optedIn ?? false)
         })

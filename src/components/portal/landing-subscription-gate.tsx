@@ -36,9 +36,16 @@ export function LandingSubscriptionGate({
       return
     }
 
-    OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
-      setStatus(optedIn ? "subscribed" : "unsubscribed")
-    })
+    const opt = OneSignal.User.PushSubscription.optedIn
+    if (typeof opt === "boolean") {
+      setStatus(opt ? "subscribed" : "unsubscribed")
+    } else if (opt && typeof opt.then === "function") {
+      opt.then((optedIn: boolean) => {
+        setStatus(optedIn ? "subscribed" : "unsubscribed")
+      })
+    } else {
+      setStatus("unsubscribed")
+    }
 
     OneSignal.User.PushSubscription.addEventListener("change", async (sub: any) => {
       const optedIn = sub.current?.optedIn ?? false
