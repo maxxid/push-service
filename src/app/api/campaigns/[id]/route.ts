@@ -2,16 +2,39 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
+async function getUser() {
+  const session = await auth()
+  if (!session?.user?.id) return null
+  return prisma.user.findUnique({ where: { id: session.user.id } })
+}
+
+async function checkCampaignAccess(campaignId: string) {
+  const user = await getUser()
+  if (!user) return { error: "No autorizado", status: 401 }
+
+  if (user.role === "SUPERADMIN") return { user }
+
+  const campaign = await prisma.campaign.findUnique({
+    where: { id: campaignId },
+  })
+  if (!campaign) return { error: "Campaña no encontrada", status: 404 }
+  if (campaign.companyId !== user.companyId)
+    return { error: "Acceso denegado", status: 403 }
+
+  return { user }
+}
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
-
   const { id } = await params
+  const access = await checkCampaignAccess(id)
+  if ("error" in access)
+    return NextResponse.json(
+      { error: access.error },
+      { status: access.status }
+    )
 
   const campaign = await prisma.campaign.findUnique({
     where: { id },
@@ -22,13 +45,6 @@ export async function GET(
     },
   })
 
-  if (!campaign) {
-    return NextResponse.json(
-      { error: "Campaña no encontrada" },
-      { status: 404 }
-    )
-  }
-
   return NextResponse.json(campaign)
 }
 
@@ -36,12 +52,14 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
-
   const { id } = await params
+  const access = await checkCampaignAccess(id)
+  if ("error" in access)
+    return NextResponse.json(
+      { error: access.error },
+      { status: access.status }
+    )
+
   const body = await request.json()
 
   const campaign = await prisma.campaign.findUnique({ where: { id } })
@@ -82,12 +100,21 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
-
   const { id } = await params
+  const access = await checkCampaignAccess(id)
+  if ("error" in access)
+    return NextResponse.json(
+      { error: access.error },
+      { status: access.status }
+    )
+
+  const campaign = await prisma.campaign.findUnique({ where: { id } })
+  if (!campaign) {
+    return NextResponse.json(
+      { error: "Campaña no encontrada" },
+      { status: 404 }
+    )
+  }
 
   await prisma.campaign.delete({ where: { id } })
 

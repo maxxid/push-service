@@ -3,12 +3,18 @@ import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 import { sendPushNotification } from "@/lib/onesignal"
 
+async function getUser() {
+  const session = await auth()
+  if (!session?.user?.id) return null
+  return prisma.user.findUnique({ where: { id: session.user.id } })
+}
+
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
+  const user = await getUser()
+  if (!user) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
@@ -19,9 +25,7 @@ export async function POST(
     include: {
       segment: {
         include: {
-          subscribers: {
-            include: { subscriber: true },
-          },
+          subscribers: { include: { subscriber: true } },
         },
       },
       company: true,
@@ -33,6 +37,10 @@ export async function POST(
       { error: "Campaña no encontrada" },
       { status: 404 }
     )
+  }
+
+  if (user.role !== "SUPERADMIN" && campaign.companyId !== user.companyId) {
+    return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
   }
 
   if (campaign.status === "SENT") {
@@ -90,7 +98,9 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Error al enviar notificación",
+          error instanceof Error
+            ? error.message
+            : "Error al enviar notificación",
       },
       { status: 500 }
     )

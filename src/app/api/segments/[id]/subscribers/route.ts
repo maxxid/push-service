@@ -2,16 +2,38 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
+async function getUserCompany() {
+  const session = await auth()
+  if (!session?.user?.id) return null
+  return prisma.user.findUnique({ where: { id: session.user.id } })
+}
+
+async function checkSegmentAccess(segmentId: string) {
+  const user = await getUserCompany()
+  if (!user) return { error: "No autorizado", status: 401 }
+
+  if (user.role === "SUPERADMIN") return { user }
+
+  const segment = await prisma.segment.findUnique({ where: { id: segmentId } })
+  if (!segment) return { error: "Segmento no encontrado", status: 404 }
+  if (segment.companyId !== user.companyId)
+    return { error: "Acceso denegado", status: 403 }
+
+  return { user }
+}
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
-
   const { id } = await params
+  const access = await checkSegmentAccess(id)
+  if ("error" in access)
+    return NextResponse.json(
+      { error: access.error },
+      { status: access.status }
+    )
+
   const body = await request.json()
   const { subscriberIds } = body as { subscriberIds: string[] }
 
@@ -19,14 +41,6 @@ export async function POST(
     return NextResponse.json(
       { error: "subscriberIds es obligatorio" },
       { status: 400 }
-    )
-  }
-
-  const segment = await prisma.segment.findUnique({ where: { id } })
-  if (!segment) {
-    return NextResponse.json(
-      { error: "Segmento no encontrado" },
-      { status: 404 }
     )
   }
 
@@ -45,12 +59,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
-  }
-
   const { id } = await params
+  const access = await checkSegmentAccess(id)
+  if ("error" in access)
+    return NextResponse.json(
+      { error: access.error },
+      { status: access.status }
+    )
+
   const body = await request.json()
   const { subscriberIds } = body as { subscriberIds: string[] }
 

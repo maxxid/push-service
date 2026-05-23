@@ -1,13 +1,12 @@
 import { prisma } from "./prisma"
 
 export async function getCompanyBySubdomain(host: string) {
-  const subdomain = host.split(".")[0]
+  const parts = host.split(".")
+  if (parts.length < 3) return null
 
-  if (
-    subdomain === "localhost" ||
-    subdomain === "www" ||
-    subdomain === "admin"
-  ) {
+  const subdomain = parts[0]
+
+  if (subdomain === "www" || subdomain === "admin") {
     return null
   }
 

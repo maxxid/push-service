@@ -14,31 +14,30 @@ export async function GET() {
   }
 
   const companyWhere =
-    user.role !== "SUPERADMIN" ? { companyId: user.companyId ?? undefined } : {}
+    user.role !== "SUPERADMIN"
+      ? { companyId: user.companyId ?? undefined }
+      : {}
 
   const [
     totalSubscribers,
     activeSubscribers,
     totalCampaigns,
     sentCampaigns,
+    scheduledCampaigns,
     totalDeliveries,
     totalClicks,
     recentCampaigns,
     recentSubscribers,
     segmentStats,
-    campaignsByMonth,
   ] = await Promise.all([
-    prisma.subscriber.count({
-      where: companyWhere,
-    }),
-    prisma.subscriber.count({
-      where: { ...companyWhere, active: true },
-    }),
-    prisma.campaign.count({
-      where: companyWhere,
-    }),
+    prisma.subscriber.count({ where: companyWhere }),
+    prisma.subscriber.count({ where: { ...companyWhere, active: true } }),
+    prisma.campaign.count({ where: companyWhere }),
     prisma.campaign.count({
       where: { ...companyWhere, status: "SENT" },
+    }),
+    prisma.campaign.count({
+      where: { ...companyWhere, status: "SCHEDULED" },
     }),
     prisma.campaign
       .aggregate({
@@ -84,13 +83,6 @@ export async function GET() {
       orderBy: { subscribers: { _count: "desc" } },
       take: 10,
     }),
-    prisma.campaign.groupBy({
-      by: ["createdAt"],
-      where: { ...companyWhere, status: "SENT" },
-      _count: { id: true },
-      orderBy: { createdAt: "desc" },
-      take: 12,
-    }),
   ])
 
   const ctr =
@@ -107,7 +99,7 @@ export async function GET() {
     campaigns: {
       total: totalCampaigns,
       sent: sentCampaigns,
-      scheduled: totalCampaigns - sentCampaigns,
+      scheduled: scheduledCampaigns,
       totalDeliveries,
       totalClicks,
       ctr: `${ctr}%`,

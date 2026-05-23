@@ -2,6 +2,13 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
+function csvEscape(val: string): string {
+  if (val.includes(",") || val.includes('"') || val.includes("\n")) {
+    return `"${val.replace(/"/g, '""')}"`
+  }
+  return val
+}
+
 export async function GET() {
   const session = await auth()
   if (!session?.user?.id) {
@@ -14,7 +21,9 @@ export async function GET() {
   }
 
   const companyWhere =
-    user.role !== "SUPERADMIN" ? { companyId: user.companyId ?? undefined } : {}
+    user.role !== "SUPERADMIN"
+      ? { companyId: user.companyId ?? undefined }
+      : {}
 
   const subscribers = await prisma.subscriber.findMany({
     where: companyWhere,
@@ -36,16 +45,18 @@ export async function GET() {
   ]
 
   const rows = subscribers.map((s) => [
-    s.id,
-    s.onesignalId,
+    csvEscape(s.id),
+    csvEscape(s.onesignalId),
     s.active ? "Sí" : "No",
-    s.company?.name ?? "",
-    s.segments.map((seg) => seg.segment.name).join("; "),
-    typeof s.deviceInfo === "object" &&
-    s.deviceInfo &&
-    "platform" in (s.deviceInfo as Record<string, unknown>)
-      ? (s.deviceInfo as Record<string, string>).platform
-      : "",
+    csvEscape(s.company?.name ?? ""),
+    csvEscape(s.segments.map((seg) => seg.segment.name).join("; ")),
+    csvEscape(
+      typeof s.deviceInfo === "object" &&
+        s.deviceInfo &&
+        "platform" in (s.deviceInfo as Record<string, unknown>)
+        ? (s.deviceInfo as Record<string, string>).platform
+        : ""
+    ),
     new Date(s.subscribedAt).toLocaleDateString("es-AR"),
   ])
 
@@ -53,7 +64,7 @@ export async function GET() {
 
   return new NextResponse(csv, {
     headers: {
-      "Content-Type": "text/csv",
+      "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": "attachment; filename=suscriptores.csv",
     },
   })

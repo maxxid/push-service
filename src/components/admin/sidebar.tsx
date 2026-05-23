@@ -10,7 +10,6 @@ const adminLinks = [
   { href: "/admin/segments", label: "Segmentos", icon: "👥" },
   { href: "/admin/subscribers", label: "Suscriptores", icon: "📱" },
   { href: "/admin/landing-pages", label: "Landing Pages", icon: "📄" },
-  { href: "/admin/branding", label: "Branding", icon: "🎨" },
 ]
 
 const superadminLinks = [
@@ -20,13 +19,15 @@ const superadminLinks = [
 export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
-  const userData = session?.user as Record<string, unknown> | undefined
-  const role = userData?.role as string | undefined
+  const role = session?.user?.role
 
   return (
     <aside className="w-64 bg-zinc-900 text-white flex flex-col min-h-screen">
       <div className="p-6 border-b border-zinc-800">
-        <Link href="/admin/dashboard" className="text-lg font-bold hover:text-blue-400 transition-colors">
+        <Link
+          href="/admin/dashboard"
+          className="text-lg font-bold hover:text-blue-400 transition-colors"
+        >
           Panel Admin
         </Link>
         {role === "SUPERADMIN" && (

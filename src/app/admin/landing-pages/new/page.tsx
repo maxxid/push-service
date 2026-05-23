@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
@@ -32,6 +32,17 @@ export default function NewLandingPage() {
   const [template, setTemplate] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [companies, setCompanies] = useState<{ id: string; name: string }[]>(
+    []
+  )
+
+  useEffect(() => {
+    if (role === "SUPERADMIN") {
+      fetch("/api/companies")
+        .then((r) => r.json())
+        .then(setCompanies)
+    }
+  }, [role])
 
   const handleTemplateChange = (val: string) => {
     setTemplate(val)
@@ -112,6 +123,27 @@ export default function NewLandingPage() {
               />
             </div>
           </div>
+
+          {role === "SUPERADMIN" && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1">
+                Empresa
+              </label>
+              <select
+                value={companyId}
+                onChange={(e) => setCompanyId(e.target.value)}
+                className="w-full max-w-xs px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Seleccionar</option>
+                {companies.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1">

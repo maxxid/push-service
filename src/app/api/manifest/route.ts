@@ -3,11 +3,13 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(request: Request) {
   const host = request.headers.get("host") || ""
-  const subdomain = host.split(".")[0]
+  const parts = host.split(".")
+  const subdomain = parts.length >= 3 ? parts[0] : null
 
-  const company = await prisma.company.findUnique({
-    where: { subdomain },
-  })
+  const company =
+    subdomain && subdomain !== "localhost" && subdomain !== "www"
+      ? await prisma.company.findUnique({ where: { subdomain } })
+      : null
 
   const name = company?.name ?? "Portal Institucional"
   const color = company?.primaryColor ?? "#1a56db"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 
 type Props = {
@@ -19,24 +19,30 @@ export function NotificationPrompt({
   const [loading, setLoading] = useState(false)
   const [showInstall, setShowInstall] = useState(false)
 
+  const handleChange = useCallback((subscription: any) => {
+    setSubscribed(subscription.current.optedIn)
+  }, [])
+
   useEffect(() => {
     if (typeof window !== "undefined" && "OneSignal" in window) {
       setSupported(true)
 
       const OneSignal = (window as any).OneSignal
 
-      OneSignal.User.PushSubscription.addEventListener(
-        "change",
-        (subscription: any) => {
-          setSubscribed(subscription.current.optedIn)
-        }
-      )
+      OneSignal.User.PushNotification.addEventListener("change", handleChange)
 
       OneSignal.User.PushSubscription.optedIn.then((optedIn: boolean) => {
         setSubscribed(optedIn)
       })
+
+      return () => {
+        OneSignal.User.PushNotification.removeEventListener(
+          "change",
+          handleChange
+        )
+      }
     }
-  }, [])
+  }, [handleChange])
 
   const handleSubscribe = async () => {
     if (!supported) {
@@ -84,7 +90,9 @@ export function NotificationPrompt({
     return (
       <div className="space-y-4">
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-          <p className="text-green-700 font-medium">¡Notificaciones activadas!</p>
+          <p className="text-green-700 font-medium">
+            ¡Notificaciones activadas!
+          </p>
           <p className="text-green-600 text-sm mt-1">
             Recibirás los avisos de {companyName}
           </p>
@@ -129,9 +137,16 @@ function InstallGuide({ primaryColor }: { primaryColor: string }) {
       </h3>
       {isIOS ? (
         <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-          <li>Tocá el botón <strong>Compartir</strong> en Safari</li>
-          <li>Seleccioná <strong>&quot;Agregar a la pantalla de inicio&quot;</strong></li>
-          <li>Tocá <strong>Agregar</strong></li>
+          <li>
+            Tocá el botón <strong>Compartir</strong> en Safari
+          </li>
+          <li>
+            Seleccioná{" "}
+            <strong>&quot;Agregar a la pantalla de inicio&quot;</strong>
+          </li>
+          <li>
+            Tocá <strong>Agregar</strong>
+          </li>
         </ol>
       ) : (
         <p className="text-xs text-blue-800">

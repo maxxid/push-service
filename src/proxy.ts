@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export default function proxy(request: NextRequest) {
+export default function middleware(request: NextRequest) {
   const host = request.headers.get("host") || ""
-  const subdomain = host.split(".")[0]
+  const parts = host.split(".")
+  const subdomain = parts.length >= 3 ? parts[0] : null
 
   if (
     subdomain &&
     subdomain !== "localhost" &&
-    subdomain !== "www"
+    subdomain !== "www" &&
+    subdomain !== "admin"
   ) {
     const url = request.nextUrl.clone()
     url.pathname = `/portal${url.pathname}`

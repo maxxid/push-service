@@ -1,6 +1,6 @@
 import { SessionProvider } from "next-auth/react"
 import { AdminGuard } from "@/components/admin/admin-guard"
-import { Sidebar } from "@/components/admin/sidebar"
+import { AdminInnerLayout } from "@/components/admin/admin-inner-layout"
 
 export const metadata = {
   title: "Panel Administrativo",
@@ -14,10 +14,7 @@ export default function AdminLayout({
   return (
     <SessionProvider>
       <AdminGuard>
-        <div className="flex min-h-screen bg-zinc-50">
-          <Sidebar />
-          <main className="flex-1 p-8">{children}</main>
-        </div>
+        <AdminInnerLayout>{children}</AdminInnerLayout>
       </AdminGuard>
     </SessionProvider>
   )

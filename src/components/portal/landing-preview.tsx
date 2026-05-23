@@ -10,7 +10,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
           /^## (.+)$/gm,
           '<h2 class="text-xl font-bold mb-2 text-zinc-900">$1</h2>'
         )
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\n/g, "<br>")
       return <div dangerouslySetInnerHTML={{ __html: html }} />
     }
@@ -23,11 +23,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
 
   if (block.type === "imagen" && block.url) {
     return (
-      <img
-        src={block.url}
-        alt=""
-        className="max-w-full rounded-xl"
-      />
+      <img src={block.url} alt="" className="max-w-full rounded-xl" />
     )
   }
 

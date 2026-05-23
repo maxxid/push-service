@@ -13,15 +13,10 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
     if (status === "unauthenticated" && pathname !== "/admin/login") {
       router.push("/admin/login")
     }
-  }, [status, pathname, router])
-
-  if (pathname === "/admin/login") {
-    if (status === "authenticated") {
+    if (status === "authenticated" && pathname === "/admin/login") {
       router.push("/admin/dashboard")
-      return null
     }
-    return <>{children}</>
-  }
+  }, [status, pathname]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (status === "loading") {
     return (
@@ -29,6 +24,10 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
         <p className="text-zinc-500">Cargando...</p>
       </div>
     )
+  }
+
+  if (pathname === "/admin/login" && status === "unauthenticated") {
+    return <>{children}</>
   }
 
   if (!session) return null

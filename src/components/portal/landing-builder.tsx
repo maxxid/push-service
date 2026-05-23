@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   type LandingBlock,
@@ -35,6 +35,7 @@ function BlockEditor({
               onClick={onMoveUp}
               className="text-xs text-zinc-400 hover:text-zinc-600"
               title="Subir"
+              type="button"
             >
               ↑
             </button>
@@ -44,6 +45,7 @@ function BlockEditor({
               onClick={onMoveDown}
               className="text-xs text-zinc-400 hover:text-zinc-600"
               title="Bajar"
+              type="button"
             >
               ↓
             </button>
@@ -52,6 +54,7 @@ function BlockEditor({
             onClick={onRemove}
             className="text-xs text-red-400 hover:text-red-600"
             title="Eliminar"
+            type="button"
           >
             ✕
           </button>
@@ -127,13 +130,16 @@ function BlockPreview({ block }: { block: LandingBlock }) {
       block.content.includes("##") || block.content.includes("**")
     if (hasMd) {
       const html = block.content
-        .replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold mb-2">$1</h2>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(
+          /^## (.+)$/gm,
+          '<h2 class="text-xl font-bold mb-2 text-zinc-900">$1</h2>'
+        )
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\n/g, "<br>")
       return <div dangerouslySetInnerHTML={{ __html: html }} />
     }
     return (
-      <p className="text-zinc-700 whitespace-pre-wrap leading-relaxed">
+      <p className="text-zinc-700 whitespace-pre-wrap leading-relaxed text-[15px]">
         {block.content}
       </p>
     )
@@ -144,7 +150,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
       <img
         src={block.url}
         alt=""
-        className="max-w-full rounded-lg"
+        className="max-w-full rounded-xl"
       />
     )
   }
@@ -158,7 +164,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
         href={block.url || "#"}
         target="_blank"
         rel="noopener noreferrer"
-        className={`inline-block px-6 py-3 rounded-lg font-medium text-sm transition-colors ${
+        className={`inline-block px-6 py-3 rounded-xl font-medium text-sm transition-colors ${
           block.type === "boton"
             ? "bg-blue-600 text-white hover:bg-blue-700"
             : "bg-red-600 text-white hover:bg-red-700"
@@ -176,15 +182,21 @@ function BlockPreview({ block }: { block: LandingBlock }) {
     )
     if (youtubeMatch) {
       return (
-        <iframe
-          src={`https://www.youtube.com/embed/${youtubeMatch[1]}`}
-          className="w-full aspect-video rounded-lg"
-          allowFullScreen
-        />
+        <div className="rounded-xl overflow-hidden">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeMatch[1]}`}
+            className="w-full aspect-video"
+            allowFullScreen
+          />
+        </div>
       )
     }
     return (
-      <video src={block.url} controls className="max-w-full rounded-lg" />
+      <video
+        src={block.url}
+        controls
+        className="max-w-full rounded-xl"
+      />
     )
   }
 
@@ -204,6 +216,10 @@ export function LandingBuilder({
 }) {
   const [blocks, setBlocks] = useState<LandingBlock[]>(initialBlocks)
   const [preview, setPreview] = useState(false)
+
+  useEffect(() => {
+    setBlocks(initialBlocks)
+  }, [initialBlocks])
 
   const updateBlock = (index: number, block: LandingBlock) => {
     const next = [...blocks]
@@ -240,11 +256,12 @@ export function LandingBuilder({
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-1">
+        <div className="flex gap-1 flex-wrap">
           {blockTypes.map((bt) => (
             <button
               key={bt.value}
               onClick={() => addBlock(bt.value)}
+              type="button"
               className="text-xs px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors flex items-center gap-1"
             >
               <span>{bt.icon}</span> {bt.label}
@@ -253,6 +270,7 @@ export function LandingBuilder({
         </div>
         <button
           onClick={() => setPreview(!preview)}
+          type="button"
           className="text-xs text-blue-600 hover:text-blue-800"
         >
           {preview ? "Editar" : "Vista previa"}
