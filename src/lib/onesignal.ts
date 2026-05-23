@@ -36,6 +36,9 @@ export async function sendPushNotification({
     body.include_aliases = { onesignal_id: onesignalPlayerIds }
   }
 
+  console.log("[OneSignal] sending to:", onesignalPlayerIds?.length ?? 0, "players")
+  console.log("[OneSignal] body:", JSON.stringify(body).slice(0, 200))
+
   const res = await fetch("https://onesignal.com/api/v1/notifications", {
     method: "POST",
     headers: {
@@ -45,12 +48,14 @@ export async function sendPushNotification({
     body: JSON.stringify(body),
   })
 
+  const responseText = await res.text()
+  console.log("[OneSignal] status:", res.status, "response:", responseText.slice(0, 300))
+
   if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`OneSignal error: ${err}`)
+    throw new Error(`OneSignal error: ${responseText}`)
   }
 
-  return res.json()
+  return JSON.parse(responseText)
 }
 
 export function getOneSignalAppId() {

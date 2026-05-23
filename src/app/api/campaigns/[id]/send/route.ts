@@ -56,6 +56,11 @@ export async function POST(
         .map((s) => s.subscriber.onesignalId)
     : []
 
+  console.log("[SEND] campaign:", campaign.id, "segment:", campaign.segmentId,
+    "total subs in segment:", campaign.segment?.subscribers.length ?? 0,
+    "active playerIds:", playerIds.length,
+    "playerIds:", playerIds)
+
   if (playerIds.length === 0) {
     return NextResponse.json(
       { error: "No hay suscriptores activos en el segmento seleccionado" },
