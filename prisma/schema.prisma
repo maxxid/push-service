@@ -93,6 +93,9 @@ model Company {
   logo        String?
   primaryColor String   @default("#1a56db")
   secondaryColor String @default("#ffffff")
+  textColor   String   @default("#1a1a1a")
+  portalTitle String?
+  portalDescription String?
   users       User[]
   subscribers Subscriber[]
   segments    Segment[]

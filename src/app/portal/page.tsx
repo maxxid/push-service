@@ -25,17 +25,18 @@ export default async function PortalPage({
   }
 
   const primaryColor = company?.primaryColor ?? "#1a56db"
+  const textColor = company?.textColor ?? "#1a1a1a"
   const activeModules: string[] = (company?.modules as string[]) ?? []
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-16 text-center">
       <h1 className="text-3xl font-bold mb-4" style={{ color: primaryColor }}>
-        Recibí avisos importantes de{" "}
-        {company?.name ? company.name : "la institución"}
+        {company?.portalTitle ||
+          `Recibí avisos importantes de ${company?.name || "la institución"}`}
       </h1>
-      <p className="text-zinc-600 mb-8 max-w-md mx-auto">
-        Activá las notificaciones para estar al día con comunicados, alertas y
-        novedades. Directo en tu pantalla, sin instalar nada.
+      <p className="mb-8 max-w-md mx-auto" style={{ color: textColor }}>
+        {company?.portalDescription ||
+          "Activá las notificaciones para estar al día con comunicados, alertas y novedades. Directo en tu pantalla, sin instalar nada."}
       </p>
 
       {company ? (
