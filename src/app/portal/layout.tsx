@@ -40,7 +40,7 @@ export default async function PortalLayout({
               </div>
             )}
             <span className="font-semibold text-[var(--foreground)] tracking-tight text-base">
-              {company?.name ?? "Portal Institucional"}
+              {company?.name ? `Notificaciones ${company.name}` : "Notificaciones"}
             </span>
           </div>
 
