@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { rateLimit, getRateLimitKey } from "@/lib/rate-limit"
 
 export async function POST(request: Request) {
+  if (!rateLimit(getRateLimitKey(request), 10, 60000)) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes. Intenta de nuevo en un minuto." },
+      { status: 429 }
+    )
+  }
+
   try {
     const body = await request.json()
     const { onesignalId, companyId, deviceInfo } = body

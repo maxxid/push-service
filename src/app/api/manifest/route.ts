@@ -1,7 +1,14 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { rateLimit, getRateLimitKey } from "@/lib/rate-limit"
 
 export async function GET(request: Request) {
+  if (!rateLimit(getRateLimitKey(request), 60, 60000)) {
+    return NextResponse.json(
+      { error: "Demasiadas solicitudes" },
+      { status: 429 }
+    )
+  }
   const host = request.headers.get("host") || ""
   const parts = host.split(".")
   const subdomain = parts.length >= 3 ? parts[0] : null
