@@ -33,14 +33,14 @@ export async function sendPushNotification({
     body.filters = [{ field: "tag", key: "company_id", relation: "=", value: segmentId }]
   }
   if (onesignalPlayerIds?.length) {
-    body.include_player_ids = onesignalPlayerIds
+    body.include_aliases = { onesignal_id: onesignalPlayerIds }
   }
 
   const res = await fetch("https://onesignal.com/api/v1/notifications", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Basic ${ONESIGNAL_REST_API_KEY}`,
+      Authorization: `Key ${ONESIGNAL_REST_API_KEY}`,
     },
     body: JSON.stringify(body),
   })
