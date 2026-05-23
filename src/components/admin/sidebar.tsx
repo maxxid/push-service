@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
+import { CompanySwitcher } from "./company-switcher"
 
 const adminLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: "📊" },
@@ -37,6 +38,8 @@ export function Sidebar() {
         )}
       </div>
       <nav className="flex-1 p-4 space-y-1">
+        {role === "SUPERADMIN" && <CompanySwitcher />}
+
         {adminLinks.map((link) => {
           const active = pathname.startsWith(link.href)
           return (

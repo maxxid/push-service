@@ -93,7 +93,13 @@ export default function CompaniesPage() {
                   <td className="px-6 py-4 text-zinc-900">
                     {c._count.campaigns}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-6 py-4 text-right space-x-3">
+                    <Link
+                      href={`/admin/companies/${c.id}/users`}
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                    >
+                      Usuarios
+                    </Link>
                     <Link
                       href={`/admin/companies/${c.id}`}
                       className="text-blue-600 hover:text-blue-800 text-sm font-medium"

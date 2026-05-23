@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { getCompanyWhere } from "@/lib/selected-company"
 
 export async function GET() {
   const session = await auth()
@@ -13,10 +14,7 @@ export async function GET() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
-  const companyWhere =
-    user.role !== "SUPERADMIN"
-      ? { companyId: user.companyId ?? undefined }
-      : {}
+  const companyWhere = await getCompanyWhere(user.role, user.companyId)
 
   const [
     totalSubscribers,
