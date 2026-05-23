@@ -28,6 +28,7 @@ export async function POST(
           subscribers: { include: { subscriber: true } },
         },
       },
+      landingPage: true,
       company: true,
     },
   })
@@ -68,7 +69,7 @@ export async function POST(
     )
   }
 
-  const actionUrl = buildActionUrl(campaign.actionType, campaign.actionValue)
+  const actionUrl = buildActionUrl(campaign)
   const priority = campaign.priority === "URGENTE" ? 10 : 5
 
   try {
@@ -112,15 +113,25 @@ export async function POST(
   }
 }
 
-function buildActionUrl(
-  actionType: string,
+function buildActionUrl(campaign: {
+  actionType: string
   actionValue: string | null
-): string | undefined {
+  landingPage?: { slug: string } | null
+}): string | undefined {
+  const { actionType, actionValue, landingPage } = campaign
+
+  if (actionType === "LANDING_INTERNA" || actionType === "FORMULARIO") {
+    const base = process.env.NEXTAUTH_URL || ""
+    if (landingPage) return `${base}/portal/landing/${landingPage.slug}`
+    if (actionValue) return actionValue
+    return undefined
+  }
+
   switch (actionType) {
     case "WHATSAPP":
       return actionValue ? `https://wa.me/${actionValue}` : undefined
     case "URL_EXTERNA":
-      return actionValue || undefined
+      return actionValue ? actionValue : undefined
     case "MAPS":
       return actionValue
         ? `https://maps.google.com/?q=${encodeURIComponent(actionValue)}`
@@ -128,8 +139,6 @@ function buildActionUrl(
     case "LLAMAR":
       return actionValue ? `tel:${actionValue}` : undefined
     case "PDF":
-    case "LANDING_INTERNA":
-    case "FORMULARIO":
       return actionValue || undefined
     default:
       return undefined
