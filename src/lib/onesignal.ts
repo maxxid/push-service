@@ -33,7 +33,7 @@ export async function sendPushNotification({
     body.filters = [{ field: "tag", key: "company_id", relation: "=", value: segmentId }]
   }
   if (onesignalPlayerIds?.length) {
-    body.include_aliases = { onesignal_id: onesignalPlayerIds }
+    body.include_subscription_ids = onesignalPlayerIds
   }
 
   console.log("[OneSignal] sending to:", onesignalPlayerIds?.length ?? 0, "players")

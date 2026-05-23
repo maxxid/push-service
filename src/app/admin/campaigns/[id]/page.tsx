@@ -89,7 +89,7 @@ export default function CampaignDetailPage() {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => router.push("/admin/campaigns")}
-          className="text-zinc-400 hover:text-zinc-600"
+          className="text-zinc-500 hover:text-zinc-600"
         >
           ← Volver
         </button>
@@ -117,7 +117,7 @@ export default function CampaignDetailPage() {
 
             <div className="space-y-3">
               <div>
-                <p className="text-xs text-zinc-400 mb-1">Mensaje push</p>
+                <p className="text-xs text-zinc-500 mb-1">Mensaje push</p>
                 <p className="text-sm text-zinc-900 bg-zinc-50 rounded-lg p-3">
                   {campaign.pushMessage}
                 </p>
@@ -125,7 +125,7 @@ export default function CampaignDetailPage() {
 
               {campaign.imageUrl && (
                 <div>
-                  <p className="text-xs text-zinc-400 mb-1">Imagen</p>
+                  <p className="text-xs text-zinc-500 mb-1">Imagen</p>
                   <img
                     src={campaign.imageUrl}
                     alt=""
@@ -136,7 +136,7 @@ export default function CampaignDetailPage() {
 
               <div className="flex gap-4 text-sm">
                 <div>
-                  <span className="text-xs text-zinc-400">Prioridad: </span>
+                  <span className="text-xs text-zinc-500">Prioridad: </span>
                   <span
                     className={
                       campaign.priority === "URGENTE"
@@ -148,7 +148,7 @@ export default function CampaignDetailPage() {
                   </span>
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-400">Acción al tocar: </span>
+                  <span className="text-xs text-zinc-500">Acción al tocar: </span>
                   <span className="text-zinc-700">{campaign.actionType}</span>
                   {campaign.actionValue && (
                     <code className="text-xs bg-zinc-100 px-1 ml-1 rounded">
@@ -194,17 +194,17 @@ export default function CampaignDetailPage() {
                   <p className="text-2xl font-bold text-zinc-900">
                     {campaign.deliveries}
                   </p>
-                  <p className="text-xs text-zinc-400">Entregas</p>
+                  <p className="text-xs text-zinc-500">Entregas</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-zinc-900">
                     {campaign.clicks}
                   </p>
-                  <p className="text-xs text-zinc-400">Clics</p>
+                  <p className="text-xs text-zinc-500">Clics</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-zinc-900">{ctr}%</p>
-                  <p className="text-xs text-zinc-400">CTR</p>
+                  <p className="text-xs text-zinc-500">CTR</p>
                 </div>
               </div>
             </div>
@@ -219,19 +219,19 @@ export default function CampaignDetailPage() {
             <dl className="space-y-2 text-sm">
               {campaign.company && (
                 <div className="flex justify-between">
-                  <dt className="text-zinc-400">Empresa</dt>
+                  <dt className="text-zinc-500">Empresa</dt>
                   <dd className="text-zinc-900">{campaign.company.name}</dd>
                 </div>
               )}
               {campaign.segment && (
                 <div className="flex justify-between">
-                  <dt className="text-zinc-400">Segmento</dt>
+                  <dt className="text-zinc-500">Segmento</dt>
                   <dd className="text-zinc-900">{campaign.segment.name}</dd>
                 </div>
               )}
               {campaign.scheduledAt && (
                 <div className="flex justify-between">
-                  <dt className="text-zinc-400">Programada</dt>
+                  <dt className="text-zinc-500">Programada</dt>
                   <dd className="text-zinc-900">
                     {new Date(campaign.scheduledAt).toLocaleString("es-AR")}
                   </dd>
@@ -239,14 +239,14 @@ export default function CampaignDetailPage() {
               )}
               {campaign.sentAt && (
                 <div className="flex justify-between">
-                  <dt className="text-zinc-400">Enviada</dt>
+                  <dt className="text-zinc-500">Enviada</dt>
                   <dd className="text-zinc-900">
                     {new Date(campaign.sentAt).toLocaleString("es-AR")}
                   </dd>
                 </div>
               )}
               <div className="flex justify-between">
-                <dt className="text-zinc-400">Creada</dt>
+                <dt className="text-zinc-500">Creada</dt>
                 <dd className="text-zinc-900">
                   {new Date(campaign.createdAt).toLocaleString("es-AR")}
                 </dd>

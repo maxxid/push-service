@@ -89,7 +89,7 @@ export function Sidebar() {
         </p>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="text-xs text-zinc-400 hover:text-white transition-colors"
+          className="text-xs text-zinc-500 hover:text-white transition-colors"
         >
           Cerrar sesión
         </button>

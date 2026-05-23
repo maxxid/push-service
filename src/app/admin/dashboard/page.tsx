@@ -88,7 +88,7 @@ export default function DashboardPage() {
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white rounded-xl border border-zinc-200 p-5">
-              <p className="text-xs text-zinc-400 mb-1">Suscriptores</p>
+              <p className="text-xs text-zinc-500 mb-1">Suscriptores</p>
               <p className="text-3xl font-bold text-zinc-900">
                 {data.subscribers.total}
               </p>
@@ -97,25 +97,25 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="bg-white rounded-xl border border-zinc-200 p-5">
-              <p className="text-xs text-zinc-400 mb-1">Campañas enviadas</p>
+              <p className="text-xs text-zinc-500 mb-1">Campañas enviadas</p>
               <p className="text-3xl font-bold text-zinc-900">
                 {data.campaigns.sent}
               </p>
-              <p className="text-xs text-zinc-400 mt-1">
+              <p className="text-xs text-zinc-500 mt-1">
                 {data.campaigns.total} totales
               </p>
             </div>
             <div className="bg-white rounded-xl border border-zinc-200 p-5">
-              <p className="text-xs text-zinc-400 mb-1">Entregas</p>
+              <p className="text-xs text-zinc-500 mb-1">Entregas</p>
               <p className="text-3xl font-bold text-zinc-900">
                 {data.campaigns.totalDeliveries}
               </p>
-              <p className="text-xs text-zinc-400 mt-1">
+              <p className="text-xs text-zinc-500 mt-1">
                 {data.campaigns.totalClicks} clics
               </p>
             </div>
             <div className="bg-white rounded-xl border border-zinc-200 p-5">
-              <p className="text-xs text-zinc-400 mb-1">CTR</p>
+              <p className="text-xs text-zinc-500 mb-1">CTR</p>
               <p className="text-3xl font-bold text-zinc-900">
                 {data.campaigns.ctr}
               </p>
@@ -137,7 +137,7 @@ export default function DashboardPage() {
               </div>
               <div className="bg-white rounded-xl border border-zinc-200 p-4 space-y-3">
                 {data.recentActivity.campaigns.length === 0 ? (
-                  <p className="text-sm text-zinc-400 py-4 text-center">
+                  <p className="text-sm text-zinc-500 py-4 text-center">
                     No hay campañas todavía
                   </p>
                 ) : (
@@ -151,7 +151,7 @@ export default function DashboardPage() {
                         <p className="text-sm text-zinc-900 truncate">
                           {c.title}
                         </p>
-                        <p className="text-xs text-zinc-400">
+                        <p className="text-xs text-zinc-500">
                           {new Date(c.createdAt).toLocaleDateString("es-AR")}
                         </p>
                       </div>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
               </h2>
               <div className="bg-white rounded-xl border border-zinc-200 p-4 space-y-2">
                 {data.segments.length === 0 ? (
-                  <p className="text-sm text-zinc-400 py-4 text-center">
+                  <p className="text-sm text-zinc-500 py-4 text-center">
                     No hay segmentos
                   </p>
                 ) : (
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                       className="flex items-center justify-between text-sm"
                     >
                       <span className="text-zinc-700">{s.name}</span>
-                      <span className="text-xs text-zinc-400">
+                      <span className="text-xs text-zinc-500">
                         {s.subscribers} suscriptores
                       </span>
                     </div>
@@ -205,7 +205,7 @@ export default function DashboardPage() {
               </div>
               <div className="bg-white rounded-xl border border-zinc-200 p-4 space-y-3">
                 {data.recentActivity.subscribers.length === 0 ? (
-                  <p className="text-sm text-zinc-400 py-4 text-center">
+                  <p className="text-sm text-zinc-500 py-4 text-center">
                     No hay suscriptores todavía
                   </p>
                 ) : (
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                         <code className="text-xs text-zinc-600 bg-zinc-100 px-1.5 py-0.5 rounded">
                           {s.onesignalId.slice(0, 14)}...
                         </code>
-                        <p className="text-xs text-zinc-400">
+                        <p className="text-xs text-zinc-500">
                           {new Date(s.subscribedAt).toLocaleDateString("es-AR")}
                         </p>
                       </div>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
                           Activo
                         </span>
                       ) : (
-                        <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">
+                        <span className="text-xs text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded-full">
                           Inactivo
                         </span>
                       )}
