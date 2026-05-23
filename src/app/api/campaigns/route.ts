@@ -1,0 +1,110 @@
+import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { auth } from "@/lib/auth"
+
+async function getUserCompany() {
+  const session = await auth()
+  if (!session?.user?.id) return null
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  })
+
+  if (!user) return null
+  return user
+}
+
+export async function GET(request: Request) {
+  const user = await getUserCompany()
+  if (!user) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+
+  const { searchParams } = new URL(request.url)
+  const companyId =
+    user.role === "SUPERADMIN"
+      ? searchParams.get("companyId")
+      : user.companyId
+
+  const where: Record<string, unknown> = {}
+  if (companyId) where.companyId = companyId
+
+  const status = searchParams.get("status")
+  if (status) where.status = status
+
+  const campaigns = await prisma.campaign.findMany({
+    where,
+    include: {
+      segment: { select: { name: true } },
+      landingPage: { select: { title: true } },
+      company: { select: { name: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  })
+
+  return NextResponse.json(campaigns)
+}
+
+export async function POST(request: Request) {
+  const user = await getUserCompany()
+  if (!user) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+  }
+
+  if (!user.companyId && user.role !== "SUPERADMIN") {
+    return NextResponse.json(
+      { error: "No tenés una empresa asignada" },
+      { status: 400 }
+    )
+  }
+
+  const body = await request.json()
+  const {
+    title,
+    pushMessage,
+    imageUrl,
+    segmentId,
+    landingPageId,
+    actionType,
+    actionValue,
+    priority,
+    scheduledAt,
+    companyId,
+  } = body
+
+  if (!title || !pushMessage) {
+    return NextResponse.json(
+      { error: "Título y mensaje push son obligatorios" },
+      { status: 400 }
+    )
+  }
+
+  const targetCompanyId =
+    user.role === "SUPERADMIN" ? companyId : user.companyId
+
+  if (!targetCompanyId) {
+    return NextResponse.json(
+      { error: "Se requiere una empresa" },
+      { status: 400 }
+    )
+  }
+
+  const campaign = await prisma.campaign.create({
+    data: {
+      title,
+      pushMessage,
+      imageUrl: imageUrl || null,
+      segmentId: segmentId || null,
+      landingPageId: landingPageId || null,
+      actionType: actionType || "LANDING_INTERNA",
+      actionValue: actionValue || null,
+      priority: priority || "NORMAL",
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+      status: scheduledAt ? "SCHEDULED" : "DRAFT",
+      companyId: targetCompanyId,
+      createdBy: user.id,
+    },
+  })
+
+  return NextResponse.json(campaign, { status: 201 })
+}
