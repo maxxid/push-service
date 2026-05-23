@@ -40,7 +40,8 @@ export function PortalContent({
   useEffect(() => {
     if (checkSub()) return
     const iv = setInterval(() => { if (checkSub()) clearInterval(iv) }, 300)
-    return () => clearInterval(iv)
+    const timeout = setTimeout(() => setLoading(false), 5000)
+    return () => { clearInterval(iv); clearTimeout(timeout) }
   }, [checkSub])
 
   return (

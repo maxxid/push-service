@@ -61,8 +61,10 @@ export function LandingSubscriptionGate({
 
   useEffect(() => {
     checkSubscription()
+    const timeout = setTimeout(() => setStatus("unsubscribed"), 5000)
     return () => {
       if (pollRef.current) clearTimeout(pollRef.current)
+      clearTimeout(timeout)
     }
   }, [checkSubscription])
 
@@ -109,7 +111,7 @@ export function LandingSubscriptionGate({
   if (status === "loading") {
     return (
       <div className="max-w-2xl mx-auto px-6 py-20 text-center">
-        <p className="text-zinc-500">Cargando...</p>
+        <p className="text-zinc-500 animate-pulse">Cargando...</p>
       </div>
     )
   }
