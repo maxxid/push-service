@@ -8,6 +8,13 @@ import { toast } from "@/lib/toast"
 type Segment = { id: string; name: string; companyId: string }
 type LandingPage = { id: string; title: string; slug: string; companyId: string }
 
+type CampaignData = {
+  title: string; pushMessage: string; imageUrl: string | null
+  actionType: string; actionValue: string | null; priority: string
+  segmentId: string | null; landingPageId: string | null
+  landingPage?: { id: string; title: string; slug: string }
+}
+
 const actionTypes = [
   { value: "LANDING_INTERNA", label: "Landing interna" },
   { value: "WHATSAPP", label: "WhatsApp" },
@@ -33,6 +40,7 @@ export default function EditCampaignPage() {
   const [priority, setPriority] = useState("NORMAL")
   const [segmentId, setSegmentId] = useState("")
   const [landingPageId, setLandingPageId] = useState("")
+  const [linkedLanding, setLinkedLanding] = useState<{ id: string; title: string; slug: string } | null>(null)
 
   const [segments, setSegments] = useState<Segment[]>([])
   const [landingPages, setLandingPages] = useState<LandingPage[]>([])
@@ -52,6 +60,8 @@ export default function EditCampaignPage() {
       setPriority(campaign.priority || "NORMAL")
       setSegmentId(campaign.segmentId || "")
       setLandingPageId(campaign.landingPageId || "")
+      if (campaign.landingPage) setLinkedLanding(campaign.landingPage)
+      else setLinkedLanding(null)
       setSegments(Array.isArray(segs) ? segs : [])
       setLandingPages(Array.isArray(lands) ? lands : [])
     }).catch(() => setError("Error al cargar")).finally(() => setLoading(false))
@@ -161,6 +171,23 @@ export default function EditCampaignPage() {
                 <option value="">Ninguna</option>
                 {landingPages.map(lp => <option key={lp.id} value={lp.id}>{lp.title} ({lp.slug})</option>)}
               </select>
+
+              {linkedLanding && (
+                <div className="mt-3 flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl p-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-blue-800 truncate">{linkedLanding.title}</p>
+                    <p className="text-xs text-blue-500">/landing/{linkedLanding.slug}</p>
+                  </div>
+                  <a
+                    href={`/admin/landing-pages/${linkedLanding.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-white px-3 py-1.5 rounded-lg border border-blue-200 shrink-0"
+                  >
+                    Editar landing →
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>
