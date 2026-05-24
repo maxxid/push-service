@@ -27,6 +27,7 @@ type AvailableSubscriber = {
   onesignalId: string
   subscribedAt: string
   active: boolean
+  deviceInfo: unknown
 }
 
 export default function SegmentDetailPage() {
@@ -200,42 +201,44 @@ export default function SegmentDetailPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
-              {segment.subscribers.map(({ subscriber: sub }) => (
-                <div
-                  key={sub.id}
-                  className="bg-white rounded-lg border border-zinc-200 p-3 flex items-center justify-between"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-zinc-900 truncate max-w-[200px]">
-                      {sub.onesignalId.slice(0, 16)}...
-                    </p>
-                    <p className="text-xs text-zinc-400">
-                      {deviceLabel(sub.deviceInfo)} ·{" "}
-                      {new Date(sub.subscribedAt).toLocaleDateString("es-AR")}
-                    </p>
+              <div className="space-y-2">
+                {segment.subscribers.map(({ subscriber: sub }, i) => (
+                  <div
+                    key={sub.id}
+                    className="bg-white rounded-lg border border-zinc-200 p-3 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                        sub.active ? "bg-green-100 text-green-700" : "bg-zinc-100 text-zinc-400"
+                      }`}>
+                        {deviceLabel(sub.deviceInfo).slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-zinc-900">
+                          {deviceLabel(sub.deviceInfo)} · Suscriptor #{i + 1}
+                        </p>
+                        <p className="text-xs text-zinc-500">
+                          {new Date(sub.subscribedAt).toLocaleDateString("es-AR", { day: "numeric", month: "short", year: "numeric" })}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {sub.active ? (
+                        <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Activo</span>
+                      ) : (
+                        <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">Inactivo</span>
+                      )}
+                      <button
+                        onClick={() => handleRemoveSubscriber(sub.id)}
+                        className="text-red-400 hover:text-red-600 text-sm"
+                        title="Quitar del segmento"
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {sub.active ? (
-                      <span className="text-xs text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                        Activo
-                      </span>
-                    ) : (
-                      <span className="text-xs text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded-full">
-                        Inactivo
-                      </span>
-                    )}
-                    <button
-                      onClick={() => handleRemoveSubscriber(sub.id)}
-                      className="text-red-500 hover:text-red-700 text-sm"
-                      title="Quitar del segmento"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
           )}
         </div>
 
@@ -285,12 +288,17 @@ export default function SegmentDetailPage() {
                       onChange={() => toggleSelect(sub.id)}
                       className="rounded"
                     />
+                    <div className={`h-7 w-7 rounded-lg flex items-center justify-center text-[10px] font-bold ${
+                      selectedIds.has(sub.id) ? "bg-blue-600 text-white" : "bg-zinc-100 text-zinc-500"
+                    }`}>
+                      {deviceLabel(sub.deviceInfo).slice(0, 2).toUpperCase()}
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-zinc-900 truncate">
-                        {sub.onesignalId.slice(0, 20)}...
+                      <p className="text-sm font-medium text-zinc-900">
+                        {deviceLabel(sub.deviceInfo)} · Suscriptor
                       </p>
-                      <p className="text-xs text-zinc-400">
-                        {new Date(sub.subscribedAt).toLocaleDateString("es-AR")}
+                      <p className="text-xs text-zinc-500">
+                        {new Date(sub.subscribedAt).toLocaleDateString("es-AR", { day: "numeric", month: "short" })}
                       </p>
                     </div>
                   </label>
