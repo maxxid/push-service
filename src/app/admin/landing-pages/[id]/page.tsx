@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 import { LandingBuilder } from "@/components/portal/landing-builder"
 import { type LandingBlock } from "@/components/portal/landing-blocks"
 
@@ -55,9 +56,10 @@ export default function EditLandingPage() {
     })
 
     if (!res.ok) {
-      setError("Error al guardar")
+      toast.error("Error al guardar")
     } else {
       setSaved(true)
+      toast.success("Landing actualizada")
       setTimeout(() => setSaved(false), 2000)
     }
 

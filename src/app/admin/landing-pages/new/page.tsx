@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 import { LandingBuilder } from "@/components/portal/landing-builder"
 import { getDefaultBlocks, type LandingBlock } from "@/components/portal/landing-blocks"
 
@@ -77,11 +78,13 @@ export default function NewLandingPage() {
 
     if (!res.ok) {
       const data = await res.json()
+      toast.error(data.error || "Error al crear")
       setError(data.error || "Error al crear")
       setLoading(false)
       return
     }
 
+    toast.success("Landing creada")
     router.push("/admin/landing-pages")
   }
 
