@@ -76,6 +76,9 @@ export async function POST(
     : `${baseUrl}/api/click?c=${campaign.id}`
   const priority = campaign.priority === "URGENTE" ? 10 : 5
 
+  const isScheduled = !!campaign.scheduledAt
+  const sendAfter = isScheduled ? new Date(campaign.scheduledAt!).toISOString() : undefined
+
   try {
     const result = await sendPushNotification({
       headings: { es: campaign.title },
@@ -83,19 +86,22 @@ export async function POST(
       url: clickUrl,
       onesignalPlayerIds: playerIds,
       priority,
+      sendAfter,
     })
 
     await prisma.campaign.update({
       where: { id },
       data: {
-        status: "SENT",
-        sentAt: new Date(),
+        status: isScheduled ? "SCHEDULED" : "SENT",
+        sentAt: isScheduled ? null : new Date(),
         deliveries: playerIds.length,
       },
     })
 
     return NextResponse.json({
       ok: true,
+      scheduled: isScheduled,
+      sendAfter,
       sent: playerIds.length,
       result,
     })
