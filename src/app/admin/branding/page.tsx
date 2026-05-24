@@ -78,16 +78,16 @@ export default function BrandingPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Branding</h1>
+        <h1 className="text-2xl font-bold text-white">Branding</h1>
         <Button onClick={handleSave} disabled={saving}>{saving ? "Guardando..." : "Guardar cambios"}</Button>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="space-y-6">
           {/* Color */}
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-zinc-600">Color de marca</h2>
-            <p className="text-xs text-zinc-400">Elegí un solo color. El sistema deriva automáticamente texto, fondos y acentos.</p>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Color de marca</h2>
+            <p className="text-xs text-slate-400">Elegí un solo color. El sistema deriva automáticamente texto, fondos y acentos.</p>
             <div className="flex items-center gap-4">
               <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} className="w-14 h-14 rounded-xl border-2 border-zinc-200 cursor-pointer" />
               <div>
@@ -105,24 +105,24 @@ export default function BrandingPage() {
           </div>
 
           {/* Identity */}
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-zinc-600">Identidad</h2>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Identidad</h2>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Nombre institucional</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Nombre institucional</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Título del header (vacío = "Notificaciones Nombre")</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Título del header (vacío = "Notificaciones Nombre")</label>
               <input type="text" value={headerTitle} onChange={e => setHeaderTitle(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Notificaciones Cámara del Tabaco" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Logo / ícono</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Logo / ícono</label>
               <div className="flex gap-2 items-center">
                 <input type="url" value={logo} onChange={e => setLogo(e.target.value)}
                   className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://... o subir" />
-                <label className="text-xs px-3 py-2 rounded-lg border cursor-pointer hover:bg-zinc-50 font-medium text-zinc-600 shrink-0">
+                <label className="text-xs px-3 py-2 rounded-lg border cursor-pointer hover:bg-zinc-50 font-medium text-slate-300 shrink-0">
                   Subir
                   <input type="file" className="hidden" accept="image/*" onChange={async e => {
                     const f = e.target.files?.[0]; if (!f) return
@@ -138,16 +138,16 @@ export default function BrandingPage() {
           </div>
 
           {/* Portal texts */}
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-zinc-600">Texto del portal</h2>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Texto del portal</h2>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Título principal</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Título principal</label>
               <input type="text" value={portalTitle} onChange={e => setPortalTitle(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Recibí avisos importantes de..." />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Descripción</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Descripción</label>
               <textarea value={portalDescription} onChange={e => setPortalDescription(e.target.value)} rows={2}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Activá las notificaciones para estar al día..." />
@@ -155,13 +155,13 @@ export default function BrandingPage() {
           </div>
 
           {/* Modules */}
-          <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-zinc-600">Módulos activos</h2>
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Módulos activos</h2>
             <div className="space-y-2">
               {availableModules.map(mod => (
                 <label key={mod.key} className="flex items-start gap-3 p-3 rounded-lg border border-zinc-200 hover:border-blue-200 cursor-pointer transition-colors">
                   <input type="checkbox" checked={activeModules.includes(mod.key)} onChange={() => toggleModule(mod.key)} className="mt-0.5 rounded" />
-                  <div><p className="text-sm font-medium text-zinc-900">{mod.label}</p><p className="text-xs text-zinc-400">{mod.desc}</p></div>
+                  <div><p className="text-sm font-medium text-white">{mod.label}</p><p className="text-xs text-slate-400">{mod.desc}</p></div>
                 </label>
               ))}
             </div>
@@ -171,9 +171,9 @@ export default function BrandingPage() {
         {/* PREVIEW */}
         <div className="xl:sticky xl:top-24 space-y-4 h-fit">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-zinc-600">Vista previa</h2>
+            <h2 className="text-sm font-semibold text-slate-300">Vista previa</h2>
             <button onClick={() => setPreviewDark(!previewDark)}
-              className={`text-xs px-3 py-1 rounded-full border transition-colors ${previewDark ? "bg-zinc-800 text-white border-zinc-700" : "bg-white text-zinc-600 border-zinc-200"}`}>
+              className={`text-xs px-3 py-1 rounded-full border transition-colors ${previewDark ? "bg-zinc-800 text-white border-zinc-700" : "bg-white text-slate-300 border-zinc-200"}`}>
               {previewDark ? "🌙 Dark" : "☀️ Light"}
             </button>
           </div>

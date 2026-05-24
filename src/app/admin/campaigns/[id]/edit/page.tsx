@@ -100,20 +100,20 @@ export default function EditCampaignPage() {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <button onClick={() => router.back()} className="text-zinc-400 hover:text-zinc-600">← Volver</button>
-        <h1 className="text-2xl font-bold text-zinc-900">Editar campaña</h1>
+        <button onClick={() => router.back()} className="text-zinc-400 hover:text-slate-300">← Volver</button>
+        <h1 className="text-2xl font-bold text-white">Editar campaña</h1>
       </div>
 
       <form onSubmit={handleSave} className="max-w-2xl space-y-4">
-        <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Título</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Título</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} required
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Prioridad</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Prioridad</label>
               <select value={priority} onChange={e => setPriority(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="NORMAL">Normal</option>
@@ -123,20 +123,20 @@ export default function EditCampaignPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-600 mb-1">Mensaje push</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Mensaje push</label>
             <textarea value={pushMessage} onChange={e => setPushMessage(e.target.value)} required rows={3}
               className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-600 mb-1">URL de imagen (opcional)</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">URL de imagen (opcional)</label>
             <input type="url" value={imageUrl} onChange={e => setImageUrl(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Segmento</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Segmento</label>
               <select value={segmentId} onChange={e => setSegmentId(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Todos los suscriptores</option>
@@ -145,7 +145,7 @@ export default function EditCampaignPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Tipo de acción</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Tipo de acción</label>
               <select value={actionType} onChange={e => { setActionType(e.target.value); setActionValue("") }}
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 {actionTypes.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
@@ -155,7 +155,7 @@ export default function EditCampaignPage() {
 
           {(actionType === "WHATSAPP" || actionType === "URL_EXTERNA" || actionType === "MAPS" || actionType === "LLAMAR") && (
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">
+              <label className="block text-xs font-medium text-slate-300 mb-1">
                 {actionType === "WHATSAPP" ? "Número WhatsApp" : actionType === "MAPS" ? "Dirección" : actionType === "LLAMAR" ? "Teléfono" : "URL"}
               </label>
               <input type="text" value={actionValue} onChange={e => setActionValue(e.target.value)}
@@ -165,7 +165,7 @@ export default function EditCampaignPage() {
 
           {(actionType === "LANDING_INTERNA" || actionType === "FORMULARIO") && (
             <div>
-              <label className="block text-xs font-medium text-zinc-600 mb-1">Landing page de destino</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Landing page de destino</label>
               <select value={landingPageId} onChange={e => setLandingPageId(e.target.value)}
                 className="w-full max-w-xs px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="">Ninguna</option>
