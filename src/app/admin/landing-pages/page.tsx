@@ -1,151 +1,33 @@
 "use client"
-
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { toast } from "@/lib/toast"
-
-type LandingPage = {
-  id: string
-  title: string
-  slug: string
-  published: boolean
-  company?: { name: string }
-  updatedAt: string
-}
-
+import { useEffect, useState } from "react"; import Link from "next/link"; import { toast } from "@/lib/toast"
+type LP = { id: string; title: string; slug: string; published: boolean; company?: { name: string } }
 export default function LandingPagesPage() {
-  const [pages, setPages] = useState<LandingPage[]>([])
-  const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
-
-  const fetchPages = () => {
-    fetch("/api/landing-pages")
-      .then((r) => r.json())
-      .then((d) => setPages(Array.isArray(d) ? d : []))
-      .finally(() => setLoading(false))
-  }
-
-  useEffect(() => {
-    fetchPages()
-  }, [])
-
-  const handleDelete = async (id: string) => {
-    if (!confirm("¿Eliminar esta landing?")) return
-    setActionLoading(`del-${id}`)
-    await fetch(`/api/landing-pages/${id}`, { method: "DELETE" })
-    setActionLoading(null)
-    toast.success("Landing eliminada")
-    fetchPages()
-  }
-
-  const handleDuplicate = async (lp: LandingPage) => {
-    setActionLoading(`dup-${lp.id}`)
-    await fetch("/api/landing-pages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: `${lp.title} (copia)`, slug: `${lp.slug}-copia`, companyId: null }),
-    })
-    setActionLoading(null)
-    toast.success("Landing duplicada")
-    fetchPages()
-  }
-
-  const handleTogglePublish = async (lp: LandingPage) => {
-    setActionLoading(`pub-${lp.id}`)
-    await fetch(`/api/landing-pages/${lp.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ published: !lp.published }),
-    })
-    setActionLoading(null)
-    toast.success(lp.published ? "Landing despublicada" : "Landing publicada")
-    fetchPages()
-  }
-
-  if (loading) {
-    return <p className="text-zinc-500">Cargando...</p>
-  }
-
+  const [pages, setPages] = useState<LP[]>([]); const [loading, setLoading] = useState(true); const [al, setAl] = useState<string | null>(null)
+  const fp = () => { fetch("/api/landing-pages").then(r => r.json()).then((d: any[]) => setPages(Array.isArray(d) ? d : [])).finally(() => setLoading(false)) }
+  useEffect(() => { fp() }, [])
+  const hd = async (id: string) => { if (!confirm("¿Eliminar?")) return; setAl(`del-${id}`); await fetch(`/api/landing-pages/${id}`, { method: "DELETE" }); setAl(null); toast.success("Eliminada"); fp() }
+  const hdup = async (lp: LP) => { setAl(`dup-${lp.id}`); await fetch("/api/landing-pages", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: `${lp.title} (copia)`, slug: `${lp.slug}-copia`, companyId: null }) }); setAl(null); toast.success("Duplicada"); fp() }
+  const hpub = async (lp: LP) => { setAl(`pub-${lp.id}`); await fetch(`/api/landing-pages/${lp.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ published: !lp.published }) }); setAl(null); toast.success(lp.published ? "Despublicada" : "Publicada"); fp() }
+  if (loading) return <div className="animate-pulse space-y-3">{[1,2].map(i => <div key={i} className="h-16 bg-slate-800 rounded-2xl" />)}</div>
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Landing Pages</h1>
-        <Link href="/admin/landing-pages/new">
-          <Button>Nueva landing</Button>
-        </Link>
-      </div>
-
-      {pages.length === 0 ? (
-        <div className="bg-white rounded-xl border border-zinc-200 p-12 text-center">
-          <p className="text-zinc-500 mb-2">No hay landing pages</p>
-          <p className="text-sm text-zinc-400 mb-4">
-            Creá micrositios informativos con bloques de texto, imágenes,
-            botones y más.
-          </p>
-          <Link href="/admin/landing-pages/new">
-            <Button>Crear la primera</Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {pages.map((lp) => (
-            <div
-              key={lp.id}
-              className="bg-white rounded-xl border border-zinc-200 p-4 flex items-center justify-between hover:border-blue-200 transition-colors"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-semibold text-zinc-900 truncate">
-                    {lp.title}
-                  </h3>
-                  {lp.published ? (
-                    <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                      Publicada
-                    </span>
-                  ) : (
-                    <span className="text-xs bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded-full">
-                      Borrador
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-zinc-400">
-                  /landing/{lp.slug}
-                  {lp.company && ` · ${lp.company.name}`}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2 ml-4">
-                <button
-                  onClick={() => handleTogglePublish(lp)}
-                  disabled={actionLoading === `pub-${lp.id}`}
-                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
-                    lp.published
-                      ? "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                      : "bg-green-50 text-green-600 hover:bg-green-100"
-                  }`}
-                >
-                  {actionLoading === `pub-${lp.id}` ? "..." : lp.published ? "Despublicar" : "Publicar"}
-                </button>
-                <Link href={`/admin/landing-pages/${lp.id}`} className="text-blue-600 hover:text-blue-800 text-sm">Editar</Link>
-                <button
-                  onClick={() => handleDuplicate(lp)}
-                  disabled={actionLoading === `dup-${lp.id}`}
-                  className="text-zinc-500 hover:text-zinc-700 text-sm disabled:opacity-50"
-                >
-                  {actionLoading === `dup-${lp.id}` ? "..." : "Duplicar"}
-                </button>
-                <a href={`/portal/landing/${lp.slug}`} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 text-sm">Ver</a>
-                <button
-                  onClick={() => handleDelete(lp.id)}
-                  disabled={actionLoading === `del-${lp.id}`}
-                  className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
-                >
-                  {actionLoading === `del-${lp.id}` ? "..." : "Eliminar"}
-                </button>
-              </div>
+      <div className="flex items-center justify-between mb-6"><h1 className="text-2xl font-bold text-white">Landing Pages</h1><Link href="/admin/landing-pages/new" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl">✚ Nueva</Link></div>
+      {pages.length === 0 ? (<div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center"><p className="text-slate-400 mb-3">No hay landings</p><Link href="/admin/landing-pages/new" className="text-blue-400 text-sm">Crear la primera →</Link></div>) : (
+        <div className="space-y-2">{pages.map(lp => (
+          <div key={lp.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between hover:border-slate-700">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2"><h3 className="font-semibold text-white truncate">{lp.title}</h3>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full ${lp.published ? "bg-green-500/10 text-green-400" : "bg-slate-800 text-slate-400"}`}>{lp.published ? "Publicada" : "Borrador"}</span></div>
+              <p className="text-xs text-slate-500">/landing/{lp.slug}{lp.company && ` · ${lp.company.name}`}</p>
             </div>
-          ))}
+            <div className="flex items-center gap-2 ml-4 shrink-0">
+              <button onClick={() => hpub(lp)} disabled={al === `pub-${lp.id}`} className={`text-xs px-3 py-1.5 rounded-lg disabled:opacity-50 ${lp.published ? "bg-slate-800 text-slate-400" : "bg-green-500/10 text-green-400"}`}>{al === `pub-${lp.id}` ? "..." : lp.published ? "Despublicar" : "Publicar"}</button>
+              <Link href={`/admin/landing-pages/${lp.id}`} className="text-sm text-blue-400 hover:text-blue-300">Editar</Link>
+              <button onClick={() => hdup(lp)} disabled={al === `dup-${lp.id}`} className="text-sm text-slate-400 hover:text-white disabled:opacity-50">{al === `dup-${lp.id}` ? "..." : "Duplicar"}</button>
+              <a href={`/portal/landing/${lp.slug}`} target="_blank" rel="noopener noreferrer" className="text-sm text-green-400 hover:text-green-300">Ver</a>
+              <button onClick={() => hd(lp.id)} disabled={al === `del-${lp.id}`} className="text-sm text-red-400 hover:text-red-300 disabled:opacity-50">{al === `del-${lp.id}` ? "..." : "Eliminar"}</button>
+            </div>
+          </div>))}
         </div>
       )}
     </div>

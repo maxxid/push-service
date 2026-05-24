@@ -2,98 +2,55 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { toast } from "@/lib/toast"
 
-type Segment = {
-  id: string
-  name: string
-  companyId: string
-  company?: { name: string }
-  _count: { subscribers: number; campaigns: number }
-  createdAt: string
-}
+type Segment = { id: string; name: string; companyId: string; company?: { name: string }; _count: { subscribers: number; campaigns: number } }
 
 export default function SegmentsPage() {
   const [segments, setSegments] = useState<Segment[]>([])
   const [loading, setLoading] = useState(true)
 
   const fetchSegments = () => {
-    fetch("/api/segments")
-      .then((r) => r.json())
-      .then(setSegments)
-      .finally(() => setLoading(false))
+    fetch("/api/segments").then(r => r.json()).then((d: any[]) => setSegments(Array.isArray(d) ? d : [])).finally(() => setLoading(false))
   }
-
-  useEffect(() => {
-    fetchSegments()
-  }, [])
+  useEffect(() => { fetchSegments() }, [])
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar este segmento?")) return
-    await fetch(`/api/segments/${id}`, { method: "DELETE" })
-    toast.success("Segmento eliminado")
-    fetchSegments()
+    const res = await fetch(`/api/segments/${id}`, { method: "DELETE" })
+    if (!res.ok) { const d = await res.json(); toast.error(d.error || "Error"); return }
+    toast.success("Segmento eliminado"); fetchSegments()
   }
 
-  if (loading) {
-    return <p className="text-zinc-500">Cargando...</p>
-  }
+  if (loading) return <div className="animate-pulse space-y-3">{[1,2,3].map(i => <div key={i} className="h-20 bg-slate-800 rounded-2xl" />)}</div>
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Segmentos</h1>
-        <Link href="/admin/segments/new">
-          <Button>Nuevo segmento</Button>
-        </Link>
+        <h1 className="text-2xl font-bold text-white">Segmentos</h1>
+        <Link href="/admin/segments/new" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition-colors">✚ Nuevo</Link>
       </div>
-
       {segments.length === 0 ? (
-        <div className="bg-white rounded-xl border border-zinc-200 p-12 text-center">
-          <p className="text-zinc-500 mb-2">No hay segmentos creados</p>
-          <p className="text-sm text-zinc-400">
-            Creá segmentos como &ldquo;Productores&rdquo;,
-            &ldquo;Directivos&rdquo; o &ldquo;Zona Norte&rdquo; para segmentar
-            tus campañas.
-          </p>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
+          <p className="text-slate-400 mb-3">No hay segmentos creados</p>
+          <Link href="/admin/segments/new" className="text-blue-400 hover:text-blue-300 text-sm">Crear el primero →</Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {segments.map((s) => (
-            <div
-              key={s.id}
-              className="bg-white rounded-xl border border-zinc-200 p-5 hover:border-blue-300 transition-colors"
-            >
+          {segments.map(s => (
+            <div key={s.id} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h3 className="font-semibold text-zinc-900">{s.name}</h3>
-                  {s.company && (
-                    <p className="text-xs text-zinc-400">{s.company.name}</p>
-                  )}
+                  <h3 className="font-semibold text-white">{s.name}</h3>
+                  {s.company && <p className="text-xs text-slate-500">{s.company.name}</p>}
                 </div>
-                <span className="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium">
-                  {s._count.subscribers} suscriptores
-                </span>
+                <span className="text-xs bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded-full font-medium">{s._count.subscribers}</span>
               </div>
-
-              <div className="flex items-center gap-3 text-xs text-zinc-500 mb-4">
-                <span>{s._count.campaigns} campañas</span>
-              </div>
-
-              <div className="flex gap-2">
-                <Link
-                  href={`/admin/segments/${s.id}`}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  Gestionar
-                </Link>
-                <button
-                  onClick={() => handleDelete(s.id)}
-                  className="text-red-600 hover:text-red-800 text-sm"
-                >
-                  Eliminar
-                </button>
+              <div className="flex items-center gap-3">
+                <Link href={`/admin/segments/${s.id}`} className="text-sm text-blue-400 hover:text-blue-300 font-medium">Gestionar</Link>
+                {s.name !== "Todos" && (
+                  <button onClick={() => handleDelete(s.id)} className="text-sm text-red-400 hover:text-red-300">Eliminar</button>
+                )}
               </div>
             </div>
           ))}
