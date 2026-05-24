@@ -36,9 +36,9 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
       done("browser", isSafari ? "success" : "error",
         isSafari ? "Perfecto, estás en Safari" : "Abrí esta página en la app Safari de tu iPhone")
     } else {
-      const ok = /Chrome|Edge/.test(navigator.userAgent) && !/CriOS|EdgiOS/.test(navigator.userAgent)
+      const ok = /Chrome|Edge|Brave|Chromium/.test(navigator.userAgent) && !/CriOS|EdgiOS/.test(navigator.userAgent)
       done("browser", ok ? "success" : "warning",
-        ok ? "Perfecto, estás en Chrome" : "Probá abrir esta página en Google Chrome")
+        ok ? "Navegador compatible detectado" : "Probá abrir esta página en Google Chrome")
     }
 
     // 2. HTTPS
@@ -191,12 +191,41 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
 
           {/* Result */}
           {allDone && (
-            <div className={`mt-6 rounded-xl p-4 text-center ${allGood ? "bg-emerald-500/10 border border-emerald-500/20" : hasErrors ? "bg-red-500/10 border border-red-500/20" : "bg-amber-500/10 border border-amber-500/20"}`}>
-              <p className={`font-semibold text-sm ${allGood ? "text-emerald-300" : hasErrors ? "text-red-300" : "text-amber-300"}`}>
-                {allGood ? "✅ Todo listo. Ya podés recibir notificaciones." : hasErrors ? "❗ El ítem en rojo es lo que está trabando al resto." : "⚠️ Solo falta activar. Estás a un toque."}
-              </p>
+            <div className="space-y-3">
+              <div className={`mt-6 rounded-xl p-4 text-center ${allGood ? "bg-emerald-500/10 border border-emerald-500/20" : hasErrors ? "bg-red-500/10 border border-red-500/20" : "bg-amber-500/10 border border-amber-500/20"}`}>
+                <p className={`font-semibold text-sm ${allGood ? "text-emerald-300" : hasErrors ? "text-red-300" : "text-amber-300"}`}>
+                  {allGood ? "✅ Todo listo. Ya podés recibir notificaciones." : hasErrors ? "❗ El ítem en rojo es lo que está trabando al resto." : "⚠️ Solo falta activar. Estás a un toque."}
+                </p>
+              </div>
+
+              {/* Action buttons */}
+              {!allGood && (
+                <div className="flex gap-2">
+                  {checks.some(c => c.key === "permission" && c.status === "error") && (
+                    <button onClick={() => {
+                      if (platform === "ios") window.open("app-settings:", "_blank")
+                    }}
+                    className="flex-1 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-medium hover:bg-red-500/20 transition-colors">
+                      Abrir configuración de notificaciones
+                    </button>
+                  )}
+                  {checks.some(c => c.key === "browser" && c.status !== "success") && (
+                    <button onClick={() => { navigator.clipboard.writeText(window.location.href) }}
+                      className="flex-1 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors">
+                      Copiar enlace para abrir en Chrome
+                    </button>
+                  )}
+                  {!allGood && (
+                    <button onClick={() => window.location.reload()}
+                      className="flex-1 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors">
+                      Recargar página
+                    </button>
+                  )}
+                </div>
+              )}
+
               <button onClick={() => { setChecks([]); setRunning(false); runChecks(platform!) }}
-                className="mt-3 text-xs text-slate-400 hover:text-white underline underline-offset-2">
+                className="w-full text-xs text-slate-400 hover:text-white underline underline-offset-2">
                 Volver a ejecutar diagnóstico
               </button>
             </div>

@@ -17,7 +17,12 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
       if (cancelled) return
       if (typeof window !== "undefined" && "OneSignal" in window) {
         const OneSignal = (window as any).OneSignal
-        if (OneSignal.User?.PushSubscription) { setSupported(true); return }
+        setSupported(true)
+      if (!OneSignal.User?.PushSubscription) {
+        // Not fully ready yet, keep checking
+        setTimeout(wait, 300)
+        return
+      }
       }
       setTimeout(wait, 300)
     }
@@ -26,7 +31,7 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
   }, [])
 
   const handleSubscribe = async () => {
-    if (!supported) { setRegError("Navegador no compatible. Probá Chrome, Edge o Safari en iOS 16.4+."); return }
+    if (!supported) { setRegError("El sistema de notificaciones todavía no cargó. Recargá o usá el diagnóstico más abajo."); return }
     setLoading(true); setRegError("")
     try {
       const OneSignal = (window as any).OneSignal
