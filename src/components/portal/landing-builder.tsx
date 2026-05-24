@@ -24,16 +24,16 @@ function BlockEditor({
   const typeInfo = blockTypes.find((t) => t.value === block.type)
 
   return (
-    <div className="border border-zinc-200 rounded-lg p-3 bg-white group hover:border-blue-300 transition-colors">
+    <div className="border border-slate-700 rounded-lg p-3 bg-slate-900 group hover:border-blue-300 transition-colors">
       <div className="flex items-center justify-between mb-2">
-        <span className="text-xs text-zinc-400 flex items-center gap-1">
+        <span className="text-xs text-slate-400 flex items-center gap-1">
           <span>{typeInfo?.icon}</span> {typeInfo?.label}
         </span>
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           {onMoveUp && (
             <button
               onClick={onMoveUp}
-              className="text-xs text-zinc-400 hover:text-zinc-600"
+              className="text-xs text-slate-400 hover:text-zinc-600"
               title="Subir"
               type="button"
             >
@@ -43,7 +43,7 @@ function BlockEditor({
           {onMoveDown && (
             <button
               onClick={onMoveDown}
-              className="text-xs text-zinc-400 hover:text-zinc-600"
+              className="text-xs text-slate-400 hover:text-zinc-600"
               title="Bajar"
               type="button"
             >
@@ -65,7 +65,7 @@ function BlockEditor({
         <textarea
           value={block.content}
           onChange={(e) => onChange({ ...block, content: e.target.value })}
-          className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows={4}
           placeholder="Escribí el contenido acá..."
         />
@@ -77,14 +77,14 @@ function BlockEditor({
             type="url"
             value={block.url || ""}
             onChange={(e) => onChange({ ...block, url: e.target.value })}
-            className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="URL de la imagen"
           />
           {block.url && (
             <img
               src={block.url}
               alt="preview"
-              className="max-h-40 rounded-lg border border-zinc-200"
+              className="max-h-40 rounded-lg border border-slate-700"
             />
           )}
         </div>
@@ -96,14 +96,14 @@ function BlockEditor({
             type="text"
             value={block.label || ""}
             onChange={(e) => onChange({ ...block, label: e.target.value })}
-            className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Texto del botón"
           />
           <input
             type="url"
             value={block.url || ""}
             onChange={(e) => onChange({ ...block, url: e.target.value })}
-            className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="URL de destino"
           />
         </div>
@@ -114,12 +114,12 @@ function BlockEditor({
           type="url"
           value={block.url || ""}
           onChange={(e) => onChange({ ...block, url: e.target.value })}
-          className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="URL del video (YouTube, etc.)"
         />
       )}
 
-      {block.type === "separador" && <hr className="border-zinc-200" />}
+      {block.type === "separador" && <hr className="border-slate-700" />}
     </div>
   )
 }
@@ -145,7 +145,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
       return <div dangerouslySetInnerHTML={{ __html: html }} />
     }
     return (
-      <p className="text-zinc-700 whitespace-pre-wrap leading-relaxed text-[15px]">
+      <p className="text-slate-200 whitespace-pre-wrap leading-relaxed text-[15px]">
         {block.content}
       </p>
     )
@@ -207,7 +207,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
   }
 
   if (block.type === "separador") {
-    return <hr className="border-zinc-200 my-4" />
+    return <hr className="border-slate-700 my-4" />
   }
 
   return null
@@ -268,7 +268,7 @@ export function LandingBuilder({
               key={bt.value}
               onClick={() => addBlock(bt.value)}
               type="button"
-              className="text-xs px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-600 transition-colors flex items-center gap-1"
+              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors flex items-center gap-1"
             >
               <span>{bt.icon}</span> {bt.label}
             </button>
@@ -287,8 +287,8 @@ export function LandingBuilder({
         {!preview && (
           <div className="space-y-3">
             {blocks.length === 0 ? (
-              <div className="border-2 border-dashed border-zinc-200 rounded-xl p-12 text-center">
-                <p className="text-zinc-400 text-sm">
+              <div className="border-2 border-dashed border-slate-700 rounded-xl p-12 text-center">
+                <p className="text-slate-400 text-sm">
                   Agregá bloques con los botones de arriba
                 </p>
               </div>
@@ -312,15 +312,15 @@ export function LandingBuilder({
         )}
 
         <div
-          className={`bg-white border border-zinc-200 rounded-xl p-6 space-y-4 ${
+          className={`bg-slate-900 border border-slate-700 rounded-xl p-6 space-y-4 ${
             preview ? "max-w-lg mx-auto w-full" : ""
           }`}
         >
-          <div className="text-xs text-zinc-400 text-center pb-2 border-b border-zinc-100 mb-4">
+          <div className="text-xs text-slate-400 text-center pb-2 border-b border-slate-800 mb-4">
             Vista previa mobile
           </div>
           {blocks.length === 0 ? (
-            <p className="text-zinc-300 text-sm text-center py-12">
+            <p className="text-slate-500 text-sm text-center py-12">
               Sin contenido todavía
             </p>
           ) : (
