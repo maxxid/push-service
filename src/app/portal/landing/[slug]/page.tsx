@@ -16,6 +16,13 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
     include: { company: true },
   })
 
+  if (page) {
+    await prisma.landingPage.update({
+      where: { id: page.id },
+      data: { views: { increment: 1 } },
+    })
+  }
+
   if (!page) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -69,7 +76,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             <h1 className="flex-1 text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
               {page.title}
             </h1>
-            <ShareButton />
+            <ShareButton landingId={page.id} />
           </div>
 
           {/* Branding footer of hero */}

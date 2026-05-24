@@ -2,11 +2,12 @@
 
 import { useState } from "react"
 
-export function ShareButton() {
+export function ShareButton({ landingId }: { landingId: string }) {
   const [copied, setCopied] = useState(false)
 
   const handleShare = () => {
     const url = window.location.href
+    fetch(`/api/landing-pages/${landingId}/share`, { method: "POST" }).catch(() => {})
     if (navigator.share) {
       navigator.share({ url })
     } else {

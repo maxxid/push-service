@@ -175,6 +175,8 @@ model LandingPage {
   slug        String
   content     Json       @default("[]")
   published   Boolean    @default(false)
+  views       Int        @default(0)
+  shares      Int        @default(0)
   companyId   String
   company     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   campaigns   Campaign[]

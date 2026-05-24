@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState } from "react"; import Link from "next/link"; import { toast } from "@/lib/toast"
-type LP = { id: string; title: string; slug: string; published: boolean; company?: { name: string } }
+type LP = { id: string; title: string; slug: string; published: boolean; views: number; shares: number; company?: { name: string } }
 export default function LandingPagesPage() {
   const [pages, setPages] = useState<LP[]>([]); const [loading, setLoading] = useState(true); const [al, setAl] = useState<string | null>(null)
   const fp = () => { fetch("/api/landing-pages").then(r => r.json()).then((d: any[]) => setPages(Array.isArray(d) ? d : [])).finally(() => setLoading(false)) }
@@ -19,6 +19,9 @@ export default function LandingPagesPage() {
               <div className="flex items-center gap-2"><h3 className="font-semibold text-white truncate">{lp.title}</h3>
                 <span className={`text-[10px] px-2 py-0.5 rounded-full ${lp.published ? "bg-green-500/10 text-green-400" : "bg-slate-800 text-slate-400"}`}>{lp.published ? "Publicada" : "Borrador"}</span></div>
               <p className="text-xs text-slate-500">/landing/{lp.slug}{lp.company && ` · ${lp.company.name}`}</p>
+              {(lp.views > 0 || lp.shares > 0) && (
+                <p className="text-[10px] text-slate-600 mt-1">👁 {lp.views} vistas · 🔗 {lp.shares} compartidos</p>
+              )}
             </div>
             <div className="flex items-center gap-2 ml-4 shrink-0">
               <button onClick={() => hpub(lp)} disabled={al === `pub-${lp.id}`} className={`text-xs px-3 py-1.5 rounded-lg disabled:opacity-50 ${lp.published ? "bg-slate-800 text-slate-400" : "bg-green-500/10 text-green-400"}`}>{al === `pub-${lp.id}` ? "..." : lp.published ? "Despublicar" : "Publicar"}</button>
