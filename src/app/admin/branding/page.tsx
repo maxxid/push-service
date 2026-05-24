@@ -29,6 +29,7 @@ export default function BrandingPage() {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null)
+  const [logoUploading, setLogoUploading] = useState(false)
 
   useEffect(() => {
     if (!companyId && role !== "SUPERADMIN") { setLoading(false); return }
@@ -99,10 +100,30 @@ export default function BrandingPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-zinc-600 mb-1">URL del logo / ícono</label>
-            <input type="url" value={logo} onChange={(e) => setLogo(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://..." />
+            <label className="block text-xs font-medium text-zinc-600 mb-1">Logo / ícono</label>
+            <div className="flex gap-2 items-center">
+              <input type="url" value={logo} onChange={(e) => setLogo(e.target.value)}
+                className="flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="https://... o subir archivo" />
+              <label className="text-xs px-3 py-2 rounded-lg border border-zinc-300 cursor-pointer hover:bg-zinc-50 font-medium text-zinc-600">
+                {logoUploading ? "Subiendo..." : "Subir"}
+                <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                  const f = e.target.files?.[0]; if (!f) return
+                  setLogoUploading(true)
+                  const fd = new FormData(); fd.append("file", f); fd.append("name", `logo-${Date.now()}.${f.name.split(".").pop()}`)
+                  const res = await fetch("/api/upload", { method: "POST", body: fd })
+                  if (res.ok) { const b = await res.json(); setLogo(b.url); toast.success("Logo subido") }
+                  else toast.error("Error al subir")
+                  setLogoUploading(false)
+                }} />
+              </label>
+            </div>
+            {logo && (
+              <div className="mt-2 flex items-center gap-2">
+                <img src={logo} alt="preview" className="h-10 w-10 rounded-xl object-contain bg-white border p-1" />
+                <span className="text-xs text-zinc-400 truncate">{logo}</span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-3">
