@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useSession } from "next-auth/react"
+import { InlineLandingPicker } from "@/components/admin/inline-landing-picker"
 
 type Segment = { id: string; name: string; companyId: string; _count?: { subscribers: number } }
 type LandingPage = { id: string; title: string; slug: string }
@@ -158,11 +159,11 @@ export default function NewCampaignPage() {
               {(actionType === "LANDING_INTERNA" || actionType === "FORMULARIO") && (
                 <div className="pt-2">
                   <label className="block text-xs font-medium text-slate-400 mb-1.5">Landing page de destino</label>
-                  <select value={landingPageId} onChange={e => setLandingPageId(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Ninguna (sin landing)</option>
-                    {landingPages.map(lp => <option key={lp.id} value={lp.id}>{lp.title}</option>)}
-                  </select>
+                  <InlineLandingPicker
+                    companyId={role === "SUPERADMIN" ? companyId : userCompanyId || ""}
+                    selectedId={landingPageId}
+                    onSelect={(id, title) => { setLandingPageId(id) }}
+                  />
                 </div>
               )}
             </div>
