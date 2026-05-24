@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 const availableModules = [
   { key: "documentos", label: "Documentación", desc: "Compartir PDFs, resoluciones, estatutos" },
@@ -74,6 +75,7 @@ export default function BrandingPage() {
     })
 
     setSaved(true)
+    toast.success("Ajustes guardados")
     setTimeout(() => setSaved(false), 2000)
   }
 

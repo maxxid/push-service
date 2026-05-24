@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type Template = {
   id: string
@@ -37,6 +38,7 @@ export default function TemplatesPage() {
     const res = await fetch(`/api/templates/${t.id}/use`, { method: "POST" })
     setActionLoading(null)
     if (res.ok) {
+      toast.success("Campaña y landing creadas desde plantilla")
       const { campaign } = await res.json()
       router.push(`/admin/campaigns/${campaign.id}`)
     }
@@ -48,16 +50,13 @@ export default function TemplatesPage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: `${t.name} (copia)`,
-        description: t.description,
-        pushMessage: t.pushMessage,
-        landingTitle: t.landingTitle,
-        actionType: t.actionType,
-        priority: t.priority,
-        companyId: null,
+        name: `${t.name} (copia)`, description: t.description,
+        pushMessage: t.pushMessage, landingTitle: t.landingTitle,
+        actionType: t.actionType, priority: t.priority, companyId: null,
       }),
     })
     setActionLoading(null)
+    toast.success("Plantilla duplicada")
     fetchTemplates()
   }
 
@@ -66,6 +65,7 @@ export default function TemplatesPage() {
     setActionLoading(`del-${id}`)
     await fetch(`/api/templates/${id}`, { method: "DELETE" })
     setActionLoading(null)
+    toast.success("Plantilla eliminada")
     fetchTemplates()
   }
 

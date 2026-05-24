@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type Campaign = {
   id: string
@@ -64,6 +65,7 @@ export default function CampaignsPage() {
     setActionLoading(`del-${id}`)
     await fetch(`/api/campaigns/${id}`, { method: "DELETE" })
     setActionLoading(null)
+    toast.success("Campaña eliminada")
     fetchCampaigns()
   }
 
@@ -85,7 +87,7 @@ export default function CampaignsPage() {
       }),
     })
     setActionLoading(null)
-    if (res.ok) fetchCampaigns()
+    if (res.ok) { toast.success("Campaña duplicada"); fetchCampaigns() }
   }
 
   if (loading) {

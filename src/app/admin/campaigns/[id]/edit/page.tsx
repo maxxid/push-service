@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type Segment = { id: string; name: string; companyId: string }
 type LandingPage = { id: string; title: string; slug: string; companyId: string }
@@ -76,6 +77,7 @@ export default function EditCampaignPage() {
       const d = await res.json().catch(() => ({}))
       setError(d.error || "Error al guardar")
     } else {
+      toast.success("Campaña actualizada")
       router.push(`/admin/campaigns/${params.id}`)
     }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type SubscriberInfo = {
   subscriber: {
@@ -99,6 +100,7 @@ export default function SegmentDetailPage() {
     })
     setSelectedIds(new Set())
     setActionLoading(false)
+    toast.success(`${selectedIds.size} suscriptor${selectedIds.size > 1 ? "es" : ""} agregado${selectedIds.size > 1 ? "s" : ""}`)
     fetchSegment()
   }
 
@@ -111,6 +113,7 @@ export default function SegmentDetailPage() {
       body: JSON.stringify({ subscriberIds: [subscriberId] }),
     })
     setActionLoading(false)
+    toast.info("Suscriptor quitado del segmento")
     fetchSegment()
   }
 

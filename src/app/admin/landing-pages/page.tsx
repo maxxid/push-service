@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type LandingPage = {
   id: string
@@ -34,6 +35,7 @@ export default function LandingPagesPage() {
     setActionLoading(`del-${id}`)
     await fetch(`/api/landing-pages/${id}`, { method: "DELETE" })
     setActionLoading(null)
+    toast.success("Landing eliminada")
     fetchPages()
   }
 
@@ -42,13 +44,10 @@ export default function LandingPagesPage() {
     await fetch("/api/landing-pages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: `${lp.title} (copia)`,
-        slug: `${lp.slug}-copia`,
-        companyId: null,
-      }),
+      body: JSON.stringify({ title: `${lp.title} (copia)`, slug: `${lp.slug}-copia`, companyId: null }),
     })
     setActionLoading(null)
+    toast.success("Landing duplicada")
     fetchPages()
   }
 
@@ -60,6 +59,7 @@ export default function LandingPagesPage() {
       body: JSON.stringify({ published: !lp.published }),
     })
     setActionLoading(null)
+    toast.success(lp.published ? "Landing despublicada" : "Landing publicada")
     fetchPages()
   }
 

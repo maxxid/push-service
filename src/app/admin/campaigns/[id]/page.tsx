@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type CampaignDetail = {
   id: string
@@ -65,6 +66,7 @@ export default function CampaignDetailPage() {
     }
 
     setSendSuccess(`Enviada a ${data.sent} suscriptores`)
+    toast.success(`Campaña enviada a ${data.sent} suscriptores`)
     setCampaign((prev) =>
       prev ? { ...prev, status: "SENT", deliveries: data.sent } : prev
     )

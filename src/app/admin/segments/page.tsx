@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type Segment = {
   id: string
@@ -31,6 +32,7 @@ export default function SegmentsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar este segmento?")) return
     await fetch(`/api/segments/${id}`, { method: "DELETE" })
+    toast.success("Segmento eliminado")
     fetchSegments()
   }
 
