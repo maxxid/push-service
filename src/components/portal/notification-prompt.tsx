@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { PWAInstallGuide } from "./pwa-install-guide"
 
 type Props = { companyId: string; companyName: string; primaryColor: string }
 
@@ -69,27 +70,8 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
         <p className="text-xs text-zinc-400 dark:text-slate-500 mt-4 text-center">Sin spam. Solo avisos importantes.</p>
       </div>
 
-      {showInstall && <InstallGuide />}
+      {showInstall && <PWAInstallGuide />}
     </div>
   )
 }
 
-function InstallGuide() {
-  const [isIOS, setIsIOS] = useState(false)
-  useEffect(() => { setIsIOS(/iPhone|iPad|iPod/.test(navigator.userAgent)) }, [])
-  if (!isIOS) return null
-
-  return (
-    <div className="mt-4 rounded-2xl border border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/30 p-5 text-left animate-slide-up">
-      <h3 className="font-semibold text-blue-900 dark:text-blue-200 text-sm mb-3 flex items-center gap-2">
-        <span className="h-5 w-5 rounded-md bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-xs">📲</span>
-        Instalar en pantalla principal
-      </h3>
-      <ol className="text-xs text-blue-800 dark:text-blue-300 space-y-2 list-decimal list-inside">
-        <li>Tocá <strong>Compartir</strong> en Safari</li>
-        <li>Seleccioná <strong>Agregar a pantalla de inicio</strong></li>
-        <li>Tocá <strong>Agregar</strong> y abrí desde el nuevo ícono</li>
-      </ol>
-    </div>
-  )
-}
