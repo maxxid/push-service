@@ -36,7 +36,7 @@ export function NotificationPreview({ title, message, imageUrl, priority }: Prop
                       <div className={`h-4 w-4 rounded-full ${priority === "URGENTE" ? "bg-red-500" : "bg-blue-500"} flex items-center justify-center`}>
                         <span className="text-[8px] text-white">P</span>
                       </div>
-                      <span className="text-[10px] text-zinc-400">ahora · push-service.vercel.app</span>
+                      <span className="text-[10px] text-zinc-400">ahora · Notificaciones</span>
                     </div>
                     <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título de la notificación"}</p>
                     <p className="text-[11px] text-zinc-300 mt-0.5 leading-tight">{message || "Mensaje de la notificación..."}</p>
@@ -58,7 +58,7 @@ export function NotificationPreview({ title, message, imageUrl, priority }: Prop
                         <div className={`h-5 w-5 rounded-md ${priority === "URGENTE" ? "bg-red-500" : "bg-blue-500"} flex items-center justify-center`}>
                           <span className="text-[9px] text-white font-bold">P</span>
                         </div>
-                        <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300">Plataforma</span>
+                        <span className="text-[10px] font-semibold text-zinc-600 dark:text-zinc-300">Notificaciones</span>
                       </div>
                       <span className="text-[9px] text-zinc-400">ahora</span>
                     </div>
