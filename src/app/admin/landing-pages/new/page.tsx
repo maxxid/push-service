@@ -105,7 +105,7 @@ export default function NewLandingPage() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Comunicado - Mayo 2026"
                 required
               />
@@ -120,7 +120,7 @@ export default function NewLandingPage() {
                 onChange={(e) =>
                   setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))
                 }
-                className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="comunicado-mayo-2026"
                 required
               />
@@ -135,7 +135,7 @@ export default function NewLandingPage() {
               <select
                 value={companyId}
                 onChange={(e) => setCompanyId(e.target.value)}
-                className="w-full max-w-xs px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full max-w-xs px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">Seleccionar</option>
@@ -155,7 +155,7 @@ export default function NewLandingPage() {
             <select
               value={template}
               onChange={(e) => handleTemplateChange(e.target.value)}
-              className="w-full max-w-xs px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full max-w-xs px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {templates.map((t) => (
                 <option key={t.value} value={t.value}>

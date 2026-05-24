@@ -49,7 +49,7 @@ export default function NewCompanyPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Cámara del Tabaco de Jujuy"
             required
           />
@@ -63,7 +63,7 @@ export default function NewCompanyPage() {
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="camara-tabaco-jujuy"
             required
           />

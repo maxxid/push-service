@@ -72,7 +72,7 @@ export default function EditCompanyPage() {
   }
 
   if (loading) {
-    return <p className="text-zinc-500">Cargando...</p>
+    return <p className="text-slate-400">Cargando...</p>
   }
 
   if (error && !company) {
@@ -110,7 +110,7 @@ export default function EditCompanyPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -123,7 +123,7 @@ export default function EditCompanyPage() {
               type="text"
               value={company?.subdomain ?? ""}
               disabled
-              className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-zinc-50 text-zinc-500"
+              className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm bg-slate-800 text-slate-400"
             />
             <p className="text-xs text-zinc-400 mt-1">El subdominio no se puede cambiar</p>
           </div>
@@ -136,7 +136,7 @@ export default function EditCompanyPage() {
               type="url"
               value={logo}
               onChange={(e) => setLogo(e.target.value)}
-              className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://..."
             />
           </div>
@@ -151,13 +151,13 @@ export default function EditCompanyPage() {
                   type="color"
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
-                  className="w-10 h-10 rounded-lg border border-zinc-300 cursor-pointer"
+                  className="w-10 h-10 rounded-lg border border-slate-700 cursor-pointer"
                 />
                 <input
                   type="text"
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
@@ -171,20 +171,20 @@ export default function EditCompanyPage() {
                   type="color"
                   value={secondaryColor}
                   onChange={(e) => setSecondaryColor(e.target.value)}
-                  className="w-10 h-10 rounded-lg border border-zinc-300 cursor-pointer"
+                  className="w-10 h-10 rounded-lg border border-slate-700 cursor-pointer"
                 />
                 <input
                   type="text"
                   value={secondaryColor}
                   onChange={(e) => setSecondaryColor(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-zinc-50 rounded-lg p-4">
-            <p className="text-xs font-medium text-zinc-500 mb-2">PREVIEW</p>
+          <div className="bg-slate-800 rounded-lg p-4">
+            <p className="text-xs font-medium text-slate-400 mb-2">PREVIEW</p>
             <div
               className="rounded-lg p-4 flex items-center gap-3"
               style={{ backgroundColor: primaryColor, color: secondaryColor }}

@@ -86,22 +86,22 @@ export default function UsersPage() {
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Nombre</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Email</label>
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Contraseña</label>
             <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Rol</label>
             <select value={role} onChange={(e) => setRole(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="COMPANY_OWNER">Dueño (acceso total a su empresa)</option>
               <option value="COMPANY_EDITOR">Editor (gestiona campañas)</option>
             </select>

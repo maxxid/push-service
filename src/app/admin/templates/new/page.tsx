@@ -77,13 +77,13 @@ export default function NewTemplatePage() {
             <div>
               <label className="block text-xs font-medium text-zinc-600 mb-1">Nombre de la plantilla</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)} required
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Comunicado semanal" />
             </div>
             <div>
               <label className="block text-xs font-medium text-zinc-600 mb-1">Prioridad</label>
               <select value={priority} onChange={e => setPriority(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <option value="NORMAL">Normal</option>
                 <option value="URGENTE">Urgente</option>
               </select>
@@ -93,14 +93,14 @@ export default function NewTemplatePage() {
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Descripción (opcional)</label>
             <input type="text" value={description} onChange={e => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Para qué se usa esta plantilla" />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Mensaje push</label>
             <textarea value={pushMessage} onChange={e => setPushMessage(e.target.value)} required rows={2}
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Mensaje que verán en la notificación..." />
           </div>
 
@@ -108,13 +108,13 @@ export default function NewTemplatePage() {
             <div>
               <label className="block text-xs font-medium text-zinc-600 mb-1">Título de la landing</label>
               <input type="text" value={landingTitle} onChange={e => setLandingTitle(e.target.value)} required
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Comunicado - Mayo 2026" />
             </div>
             <div>
               <label className="block text-xs font-medium text-zinc-600 mb-1">Tipo de acción</label>
               <select value={actionType} onChange={e => { setActionType(e.target.value); setActionValue("") }}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 {actionTypes.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
               </select>
             </div>

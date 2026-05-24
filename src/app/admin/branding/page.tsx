@@ -110,12 +110,12 @@ export default function BrandingPage() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Nombre institucional</label>
               <input type="text" value={name} onChange={e => setName(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Título del header (vacío = "Notificaciones Nombre")</label>
               <input type="text" value={headerTitle} onChange={e => setHeaderTitle(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Notificaciones Cámara del Tabaco" />
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Notificaciones Cámara del Tabaco" />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Logo / ícono</label>
@@ -143,13 +143,13 @@ export default function BrandingPage() {
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Título principal</label>
               <input type="text" value={portalTitle} onChange={e => setPortalTitle(e.target.value)}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Recibí avisos importantes de..." />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Descripción</label>
               <textarea value={portalDescription} onChange={e => setPortalDescription(e.target.value)} rows={2}
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Activá las notificaciones para estar al día..." />
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function BrandingPage() {
             <h2 className="text-sm font-semibold text-slate-300">Módulos activos</h2>
             <div className="space-y-2">
               {availableModules.map(mod => (
-                <label key={mod.key} className="flex items-start gap-3 p-3 rounded-lg border border-zinc-200 hover:border-blue-200 cursor-pointer transition-colors">
+                <label key={mod.key} className="flex items-start gap-3 p-3 rounded-lg border border-slate-700 hover:border-blue-500/50 cursor-pointer transition-colors">
                   <input type="checkbox" checked={activeModules.includes(mod.key)} onChange={() => toggleModule(mod.key)} className="mt-0.5 rounded" />
                   <div><p className="text-sm font-medium text-white">{mod.label}</p><p className="text-xs text-slate-400">{mod.desc}</p></div>
                 </label>
