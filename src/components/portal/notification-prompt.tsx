@@ -62,7 +62,7 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
           </div>
         </div>
 
-        <button onClick={handleSubscribe} disabled={loading}
+        <button onClick={handleSubscribe} disabled={loading} data-activar="true"
           className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
           style={{ backgroundColor: primaryColor }}>
           {loading ? "Activando..." : "Activar notificaciones"}

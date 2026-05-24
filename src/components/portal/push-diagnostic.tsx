@@ -77,7 +77,10 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
     add("permission", "Diste permiso para recibir notificaciones")
     await new Promise(r => setTimeout(r, 300))
     if (permBlocked) {
-      done("permission", "error", "⚠️ Este es el problema principal. Andá a Ajustes > Chrome/Safari > Notificaciones > Permitir.")
+      const msg = p === "ios"
+        ? "⚠️ Bloqueado. Andá a Ajustes > Safari > Notificaciones > Permitir."
+        : "⚠️ Bloqueado. Tocá el candado 🔒 junto a la URL > Permisos > Notificaciones > Permitir."
+      done("permission", "error", msg)
     } else if (permGranted) {
       done("permission", "success", "Sí, ya diste permiso")
     } else {
@@ -200,24 +203,34 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
 
               {/* Action buttons */}
               {!allGood && (
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   {checks.some(c => c.key === "permission" && c.status === "error") && (
-                    <button onClick={() => {
-                      if (platform === "ios") window.open("app-settings:", "_blank")
-                    }}
-                    className="flex-1 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm font-medium hover:bg-red-500/20 transition-colors">
-                      Abrir configuración de notificaciones
+                    <div className="rounded-xl bg-slate-800/50 border border-slate-700 p-3 text-left">
+                      <p className="text-xs text-slate-300 mb-2">🛠️ Cómo arreglarlo:</p>
+                      {platform === "android" ? (
+                        <ol className="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                          <li>Tocá el ícono 🔒 a la izquierda de la URL</li>
+                          <li>Seleccioná <strong className="text-white">Permisos</strong></li>
+                          <li>Activá <strong className="text-white">Notificaciones</strong></li>
+                        </ol>
+                      ) : (
+                        <ol className="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                          <li>Abrí <strong className="text-white">Ajustes</strong> del iPhone</li>
+                          <li>Bajá hasta <strong className="text-white">Safari</strong></li>
+                          <li>Entrá a <strong className="text-white">Notificaciones</strong> y permitilas</li>
+                        </ol>
+                      )}
+                    </div>
+                  )}
+                  {checks.some(c => c.status === "warning" && c.key !== "permission" && c.key !== "onesignal") && (
+                    <button onClick={() => { onClose(); setTimeout(() => document.querySelector<HTMLButtonElement>('[data-activar]')?.click(), 300) }}
+                      className="py-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-sm font-medium hover:bg-blue-500/20 transition-colors">
+                      Volver a intentar activar notificaciones
                     </button>
                   )}
-                  {checks.some(c => c.key === "browser" && c.status !== "success") && (
-                    <button onClick={() => { navigator.clipboard.writeText(window.location.href) }}
-                      className="flex-1 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors">
-                      Copiar enlace para abrir en Chrome
-                    </button>
-                  )}
-                  {!allGood && (
+                  {!allGood && !checks.some(c => c.key === "permission" && c.status === "error") && (
                     <button onClick={() => window.location.reload()}
-                      className="flex-1 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors">
+                      className="py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 text-sm font-medium hover:bg-slate-700 transition-colors">
                       Recargar página
                     </button>
                   )}
