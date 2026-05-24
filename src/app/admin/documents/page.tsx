@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { toast } from "@/lib/toast"
 
 type Document = {
   id: string
@@ -38,29 +39,46 @@ export default function DocumentsPage() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (!title) { toast.error("Poné un título"); return }
+    if (!file && !fileUrl) { toast.error("Subí un archivo o pegá una URL"); return }
+
     let url = fileUrl
     if (file) {
       setUploading(true)
-      const fd = new FormData()
-      fd.append("file", file)
-      const uploadRes = await fetch("/api/upload", { method: "POST", body: fd })
-      if (!uploadRes.ok) { setUploading(false); return }
-      const blob = await uploadRes.json()
-      url = blob.url
+      try {
+        const fd = new FormData()
+        fd.append("file", file)
+        const uploadRes = await fetch("/api/upload", { method: "POST", body: fd })
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json().catch(() => ({}))
+          toast.error(err.error || "Error al subir el archivo. ¿Configuraste BLOB_READ_WRITE_TOKEN en Vercel?")
+          setUploading(false)
+          return
+        }
+        const blob = await uploadRes.json()
+        url = blob.url
+      } catch {
+        toast.error("Error de conexión al subir")
+        setUploading(false)
+        return
+      }
       setUploading(false)
     }
-
-    if (!url) return
 
     const res = await fetch("/api/documents", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, fileUrl: url, description: description || undefined, category }),
     })
+
     if (res.ok) {
+      toast.success("Documento agregado")
       setTitle(""); setFileUrl(""); setDescription(""); setCategory("general")
       setShowForm(false); setFile(null)
       fetchDocs()
+    } else {
+      const data = await res.json().catch(() => ({}))
+      toast.error(data.error || "Error al guardar")
     }
   }
 
