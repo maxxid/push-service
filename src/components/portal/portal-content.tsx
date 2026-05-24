@@ -38,10 +38,13 @@ export function PortalContent({ companyId, companyName, primaryColor, modules }:
   return (
     <div>
       {loading ? (
-        <div className="flex items-center justify-center gap-2 py-8">
-          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
-          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: "0.1s" }} />
-          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.3, animationDelay: "0.2s" }} />
+        <div className="flex flex-col items-center gap-3 py-8">
+          <div className="flex items-center justify-center gap-2">
+            <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
+            <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.7, animationDelay: "0.12s" }} />
+            <div className="h-3 w-3 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.4, animationDelay: "0.24s" }} />
+          </div>
+          <p className="text-xs text-slate-500">Verificando estado de notificaciones...</p>
         </div>
       ) : subscribed ? (
         <div className="rounded-2xl border border-emerald-900/50 bg-emerald-950/30 p-7 text-center animate-scale-in">
