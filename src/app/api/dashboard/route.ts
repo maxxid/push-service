@@ -42,13 +42,13 @@ export async function GET() {
         where: { ...companyWhere, status: "SENT" },
         _sum: { deliveries: true },
       })
-      .then((r) => r._sum.deliveries ?? 0),
+      .then((r) => r._sum?.deliveries ?? 0),
     prisma.campaign
       .aggregate({
         where: { ...companyWhere, status: "SENT" },
         _sum: { clicks: true },
       })
-      .then((r) => r._sum.clicks ?? 0),
+      .then((r) => r._sum?.clicks ?? 0),
     prisma.campaign.findMany({
       where: companyWhere,
       orderBy: { createdAt: "desc" },

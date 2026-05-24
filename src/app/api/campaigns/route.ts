@@ -89,6 +89,17 @@ export async function POST(request: Request) {
     )
   }
 
+  if (segmentId) {
+    const seg = await prisma.segment.findUnique({ where: { id: segmentId } })
+    if (!seg) return NextResponse.json({ error: "El segmento no existe" }, { status: 400 })
+    if (seg.companyId !== targetCompanyId) return NextResponse.json({ error: "El segmento no pertenece a esta empresa" }, { status: 400 })
+  }
+  if (landingPageId) {
+    const lp = await prisma.landingPage.findUnique({ where: { id: landingPageId } })
+    if (!lp) return NextResponse.json({ error: "La landing no existe" }, { status: 400 })
+    if (lp.companyId !== targetCompanyId) return NextResponse.json({ error: "La landing no pertenece a esta empresa" }, { status: 400 })
+  }
+
   const campaign = await prisma.campaign.create({
     data: {
       title,

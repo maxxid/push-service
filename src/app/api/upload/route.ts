@@ -10,16 +10,30 @@ export async function POST(request: Request): Promise<NextResponse> {
   const user = await prisma.user.findUnique({ where: { id: session.user.id } })
   if (!user) return NextResponse.json({ error: "No autorizado" }, { status: 401 })
 
-  const formData = await request.formData()
-  const file = formData.get("file") as File | null
-  const customName = formData.get("name") as string | null
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return NextResponse.json(
+      { error: "BLOB_READ_WRITE_TOKEN no configurado en Vercel. Configuralo en Storage > Blob." },
+      { status: 500 }
+    )
+  }
 
-  if (!file) return NextResponse.json({ error: "No se envió ningún archivo" }, { status: 400 })
+  try {
+    const formData = await request.formData()
+    const file = formData.get("file") as File | null
+    const customName = formData.get("name") as string | null
 
-  const blob = await put(customName || file.name, file, {
-    access: "public",
-    token: process.env.BLOB_READ_WRITE_TOKEN,
-  })
+    if (!file) return NextResponse.json({ error: "No se envió ningún archivo" }, { status: 400 })
 
-  return NextResponse.json({ url: blob.url, name: customName || file.name, size: file.size })
+    const blob = await put(customName || file.name, file, {
+      access: "public",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    })
+
+    return NextResponse.json({ url: blob.url, name: customName || file.name, size: file.size })
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Error al subir el archivo. Verificá BLOB_READ_WRITE_TOKEN en Vercel." },
+      { status: 500 }
+    )
+  }
 }
