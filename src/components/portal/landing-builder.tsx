@@ -33,7 +33,7 @@ function BlockEditor({
           {onMoveUp && (
             <button
               onClick={onMoveUp}
-              className="text-xs text-slate-400 hover:text-zinc-600"
+              className="text-xs text-slate-400 hover:text-white"
               title="Subir"
               type="button"
             >
@@ -43,7 +43,7 @@ function BlockEditor({
           {onMoveDown && (
             <button
               onClick={onMoveDown}
-              className="text-xs text-slate-400 hover:text-zinc-600"
+              className="text-xs text-slate-400 hover:text-white"
               title="Bajar"
               type="button"
             >
