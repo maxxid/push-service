@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { toast } from "@/lib/toast"
+import { NotificationPreview } from "@/components/admin/notification-preview"
+import { LandingMobilePreview } from "@/components/admin/landing-mobile-preview"
 
 type CampaignDetail = {
   id: string
@@ -19,7 +21,7 @@ type CampaignDetail = {
   scheduledAt: string | null
   sentAt: string | null
   segment?: { id: string; name: string }
-  landingPage?: { id: string; title: string }
+  landingPage?: { id: string; title: string; slug: string }
   company?: { name: string }
   createdAt: string
 }
@@ -113,9 +115,20 @@ export default function CampaignDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-zinc-200 p-6">
-            <h2 className="text-sm font-semibold text-zinc-600 mb-3">
-              Contenido
-            </h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-zinc-600">Contenido</h2>
+              <div className="flex gap-3">
+                <NotificationPreview
+                  title={campaign.title}
+                  message={campaign.pushMessage}
+                  imageUrl={campaign.imageUrl}
+                  priority={campaign.priority}
+                />
+                {campaign.landingPage && (
+                  <LandingMobilePreview slug={campaign.landingPage.slug} />
+                )}
+              </div>
+            </div>
 
             <div className="space-y-3">
               <div>
