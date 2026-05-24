@@ -65,7 +65,7 @@ function BlockEditor({
         <textarea
           value={block.content}
           onChange={(e) => onChange({ ...block, content: e.target.value })}
-          className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows={4}
           placeholder="Escribí el contenido acá..."
         />
@@ -77,7 +77,7 @@ function BlockEditor({
             type="url"
             value={block.url || ""}
             onChange={(e) => onChange({ ...block, url: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="URL de la imagen"
           />
           {block.url && (
@@ -96,14 +96,14 @@ function BlockEditor({
             type="text"
             value={block.label || ""}
             onChange={(e) => onChange({ ...block, label: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Texto del botón"
           />
           <input
             type="url"
             value={block.url || ""}
             onChange={(e) => onChange({ ...block, url: e.target.value })}
-            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="URL de destino"
           />
         </div>
@@ -114,7 +114,7 @@ function BlockEditor({
           type="url"
           value={block.url || ""}
           onChange={(e) => onChange({ ...block, url: e.target.value })}
-          className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="URL del video (YouTube, etc.)"
         />
       )}
@@ -138,7 +138,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
       const html = block.content
         .replace(
           /^## (.+)$/gm,
-          '<h2 class="text-xl font-bold mb-2 text-zinc-900">$1</h2>'
+          '<h2 class="text-xl font-bold mb-2 text-white">$1</h2>'
         )
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\n/g, "<br>")
