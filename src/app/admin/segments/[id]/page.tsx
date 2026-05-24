@@ -244,11 +244,20 @@ export default function SegmentDetailPage() {
             <h2 className="text-sm font-semibold text-zinc-600">
               Agregar suscriptores
             </h2>
-            {selectedIds.size > 0 && (
-              <Button size="sm" onClick={handleAddSubscribers} disabled={actionLoading}>
-                {actionLoading ? "Agregando..." : `Agregar ${selectedIds.size} seleccionado${selectedIds.size > 1 ? "s" : ""}`}
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {availableSubscribers.filter(s => s.active).length > 0 && (
+                <Button size="sm" variant="outline" onClick={() => {
+                  setSelectedIds(new Set(availableSubscribers.filter(s => s.active).map(s => s.id)))
+                }}>
+                  Seleccionar todos
+                </Button>
+              )}
+              {selectedIds.size > 0 && (
+                <Button size="sm" onClick={handleAddSubscribers} disabled={actionLoading}>
+                  {actionLoading ? "Agregando..." : `Agregar ${selectedIds.size}`}
+                </Button>
+              )}
+            </div>
           </div>
 
           {availableSubscribers.length === 0 ? (
