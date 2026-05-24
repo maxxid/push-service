@@ -35,11 +35,11 @@ export default function NewCompanyPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-zinc-900 mb-6">Nueva empresa</h1>
+      <h1 className="text-2xl font-bold text-white mb-6">Nueva empresa</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="max-w-lg bg-white rounded-xl border border-zinc-200 p-6 space-y-4"
+        className="max-w-lg bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4"
       >
         <div>
           <label className="block text-sm font-medium text-zinc-700 mb-1">
@@ -49,7 +49,7 @@ export default function NewCompanyPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Cámara del Tabaco de Jujuy"
             required
           />
@@ -63,7 +63,7 @@ export default function NewCompanyPage() {
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-            className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="camara-tabaco-jujuy"
             required
           />
@@ -83,7 +83,7 @@ export default function NewCompanyPage() {
                   e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "")
                 )
               }
-              className="flex-1 px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 py-2 border border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="avisos"
               required
             />

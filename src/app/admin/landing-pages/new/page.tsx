@@ -90,12 +90,12 @@ export default function NewLandingPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-zinc-900 mb-6">
+      <h1 className="text-2xl font-bold text-white mb-6">
         Nueva landing page
       </h1>
 
       <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
-        <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700 mb-1">
@@ -166,7 +166,7 @@ export default function NewLandingPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-zinc-200 p-6">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
           <LandingBuilder
             initialBlocks={blocks}
             onChange={setBlocks}

@@ -33,14 +33,14 @@ export default function CompaniesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Empresas</h1>
+        <h1 className="text-2xl font-bold text-white">Empresas</h1>
         <Link href="/admin/companies/new">
           <Button>Nueva empresa</Button>
         </Link>
       </div>
 
       {companies.length === 0 ? (
-        <div className="bg-white rounded-xl border border-zinc-200 p-12 text-center">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
           <p className="text-zinc-500 mb-2">No hay empresas todavía</p>
           <Link href="/admin/companies/new">
             <Button variant="outline" size="sm">
@@ -49,9 +49,9 @@ export default function CompaniesPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 border-b border-zinc-200">
+            <thead className="bg-slate-800 border-b border-slate-700">
               <tr>
                 <th className="text-left px-6 py-3 font-medium text-zinc-600">
                   Empresa
@@ -72,7 +72,7 @@ export default function CompaniesPage() {
             </thead>
             <tbody>
               {companies.map((c) => (
-                <tr key={c.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+                <tr key={c.id} className="border-b border-zinc-100 hover:bg-slate-800">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div
@@ -81,16 +81,16 @@ export default function CompaniesPage() {
                       >
                         {c.name.charAt(0)}
                       </div>
-                      <span className="font-medium text-zinc-900">{c.name}</span>
+                      <span className="font-medium text-white">{c.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-zinc-500">
                     {c.subdomain}.plataforma.com
                   </td>
-                  <td className="px-6 py-4 text-zinc-900">
+                  <td className="px-6 py-4 text-white">
                     {c._count.subscribers}
                   </td>
-                  <td className="px-6 py-4 text-zinc-900">
+                  <td className="px-6 py-4 text-white">
                     {c._count.campaigns}
                   </td>
                   <td className="px-6 py-4 text-right space-x-3">

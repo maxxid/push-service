@@ -82,7 +82,7 @@ export default function EditCompanyPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900">Editar empresa</h1>
+        <h1 className="text-2xl font-bold text-white">Editar empresa</h1>
         <Button variant="danger" size="sm" onClick={handleDelete}>
           Eliminar empresa
         </Button>
@@ -100,7 +100,7 @@ export default function EditCompanyPage() {
       <div className="max-w-lg space-y-6">
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4"
+          className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4"
         >
           <div>
             <label className="block text-sm font-medium text-zinc-700 mb-1">

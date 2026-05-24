@@ -75,14 +75,14 @@ export default function UsersPage() {
     <div>
       <div className="flex items-center gap-3 mb-6">
         <button onClick={() => router.back()} className="text-zinc-400 hover:text-zinc-600">← Volver</button>
-        <h1 className="text-2xl font-bold text-zinc-900">Usuarios de la empresa</h1>
+        <h1 className="text-2xl font-bold text-white">Usuarios de la empresa</h1>
         <Button size="sm" onClick={() => setShowForm(!showForm)}>
           {showForm ? "Cancelar" : "Nuevo usuario"}
         </Button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-zinc-200 p-4 mb-4 max-w-md space-y-3">
+        <form onSubmit={handleCreate} className="bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-4 max-w-md space-y-3">
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">Nombre</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)}
@@ -112,14 +112,14 @@ export default function UsersPage() {
       )}
 
       {users.length === 0 ? (
-        <div className="bg-white rounded-xl border border-zinc-200 p-12 text-center">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
           <p className="text-zinc-500 mb-2">No hay usuarios para esta empresa</p>
           <p className="text-sm text-zinc-400">Creá uno para que puedan gestionar su panel.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 border-b">
+            <thead className="bg-slate-800 border-b">
               <tr>
                 <th className="text-left px-6 py-3 font-medium text-zinc-600">Nombre</th>
                 <th className="text-left px-6 py-3 font-medium text-zinc-600">Email</th>
@@ -129,8 +129,8 @@ export default function UsersPage() {
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                  <td className="px-6 py-3 text-zinc-900">{u.name || "-"}</td>
+                <tr key={u.id} className="border-b border-zinc-100 hover:bg-slate-800">
+                  <td className="px-6 py-3 text-white">{u.name || "-"}</td>
                   <td className="px-6 py-3 text-zinc-600">{u.email}</td>
                   <td className="px-6 py-3">
                     <span className="text-xs bg-zinc-100 text-zinc-600 px-2 py-0.5 rounded-full">
