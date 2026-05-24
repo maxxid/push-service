@@ -4,12 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { NotificationPrompt } from "./notification-prompt"
 import { PortalModules } from "./portal-modules"
 
-type Props = {
-  companyId: string
-  companyName: string
-  primaryColor: string
-  modules: string[]
-}
+type Props = { companyId: string; companyName: string; primaryColor: string; modules: string[] }
 
 export function PortalContent({ companyId, companyName, primaryColor, modules }: Props) {
   const [subscribed, setSubscribed] = useState(false)
@@ -42,30 +37,28 @@ export function PortalContent({ companyId, companyName, primaryColor, modules }:
 
   return (
     <div>
-      <div className="max-w-md mx-auto">
-        {loading ? (
-          <div className="flex items-center justify-center gap-2 py-12">
-            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
-            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: "0.1s" }} />
-            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.3, animationDelay: "0.2s" }} />
+      {loading ? (
+        <div className="flex items-center justify-center gap-2 py-8">
+          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
+          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: "0.1s" }} />
+          <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.3, animationDelay: "0.2s" }} />
+        </div>
+      ) : subscribed ? (
+        <div className="rounded-2xl border border-emerald-100 dark:border-emerald-900/50 bg-emerald-50 dark:bg-emerald-950/30 p-7 text-center animate-scale-in">
+          <div className="h-12 w-12 mx-auto mb-4 rounded-xl bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-200 dark:shadow-emerald-900/50">
+            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
           </div>
-        ) : subscribed ? (
-          <div className="rounded-3xl bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-100 dark:border-green-900 p-8 animate-scale-in">
-            <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-green-500 dark:bg-green-600 flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900">
-              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <p className="text-green-800 dark:text-green-200 font-bold text-xl">¡Notificaciones activadas!</p>
-            <p className="text-green-600 dark:text-green-400 text-sm mt-1.5">Recibirás los avisos de {companyName}</p>
-          </div>
-        ) : (
-          <NotificationPrompt companyId={companyId} companyName={companyName} primaryColor={primaryColor} />
-        )}
-      </div>
+          <p className="text-emerald-800 dark:text-emerald-200 font-bold text-lg">Notificaciones activadas</p>
+          <p className="text-emerald-600 dark:text-emerald-400 text-sm mt-1">Recibirás los avisos de {companyName}</p>
+        </div>
+      ) : (
+        <NotificationPrompt companyId={companyId} companyName={companyName} primaryColor={primaryColor} />
+      )}
 
       {subscribed && modules.length > 0 && (
-        <div className="animate-fade-in stagger-3 mt-16">
+        <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.3s" }}>
           <PortalModules modules={modules} primaryColor={primaryColor} />
         </div>
       )}

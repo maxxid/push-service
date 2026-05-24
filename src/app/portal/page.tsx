@@ -26,68 +26,89 @@ export default async function PortalPage({
   const activeModules: string[] = (company?.modules as string[]) ?? []
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full opacity-[0.03]" style={{ backgroundColor: primaryColor }} />
-        <div className="absolute -bottom-20 -left-20 w-60 h-60 rounded-full opacity-[0.03]" style={{ backgroundColor: primaryColor }} />
-        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] opacity-30" />
-      </div>
+    <div className="min-h-screen">
+      {/* Subtle gradient bar */}
+      <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}40, transparent)` }} />
 
-      <div className="max-w-2xl mx-auto px-6 pt-24 pb-32 text-center">
-        <div className="animate-fade-in-up">
-          {company?.logo && (
-            <div className="inline-block mb-8 p-4 rounded-3xl bg-white dark:bg-zinc-900 shadow-xl shadow-black/5 dark:shadow-black/20 ring-1 ring-black/5 dark:ring-white/5">
-              <img src={company.logo} alt={company.name} className="h-16 w-16 object-contain" />
+      <div className="max-w-3xl mx-auto px-6 pt-16 pb-24">
+        {/* Hero */}
+        <div className="text-center mb-16 animate-fade-in">
+          {company?.logo ? (
+            <div className="inline-flex items-center justify-center p-3 mb-8 rounded-2xl bg-white dark:bg-slate-900 shadow-sm ring-1 ring-black/5 dark:ring-white/5">
+              <img src={company.logo} alt={company.name} className="h-14 w-14 object-contain" />
             </div>
-          )}
-
-          {!company?.logo && company && (
-            <div
-              className="inline-flex items-center justify-center h-16 w-16 rounded-3xl text-white font-bold text-2xl shadow-xl mb-8"
-              style={{ backgroundColor: primaryColor }}
-            >
-              {(company.name).charAt(0).toUpperCase()}
+          ) : company ? (
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl text-white font-bold text-xl shadow-sm mb-8"
+              style={{ backgroundColor: primaryColor }}>
+              {company.name.charAt(0).toUpperCase()}
             </div>
-          )}
+          ) : null}
 
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-[1.1]" style={{ color: primaryColor }}>
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-[1.1] mb-4">
             {company?.portalTitle || `Recibí avisos de ${company?.name || "la institución"}`}
           </h1>
 
-          <p className="text-lg text-[var(--muted-foreground)] mb-12 max-w-lg mx-auto leading-relaxed">
+          <p className="text-lg text-zinc-500 dark:text-slate-400 max-w-xl mx-auto leading-relaxed">
             {company?.portalDescription || "Activá las notificaciones para estar al día con comunicados, alertas y novedades. Directo en tu pantalla."}
           </p>
         </div>
 
-        <div className="animate-fade-in stagger-2">
+        {/* CTA */}
+        <div className="max-w-md mx-auto mb-16 animate-fade-in" style={{ animationDelay: "0.15s" }}>
           {company ? (
-            <PortalContent companyId={company.id} companyName={company.name} primaryColor={primaryColor} modules={activeModules} />
+            <PortalContent
+              companyId={company.id}
+              companyName={company.name}
+              primaryColor={primaryColor}
+              modules={activeModules}
+            />
           ) : (
-            <div className="max-w-md mx-auto rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-6">
-              <p className="text-amber-700 dark:text-amber-300 text-sm">Configurá una empresa desde el panel admin para ver el portal.</p>
+            <div className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 p-6 text-center">
+              <p className="text-amber-700 dark:text-amber-300 text-sm">
+                Configurá una empresa desde el panel admin para ver el portal personalizado.
+              </p>
             </div>
           )}
         </div>
 
+        {/* Feature cards */}
         {!company && (
-          <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: "0.3s" }}>
             {[
               { icon: "📢", title: "Comunicados", desc: "Información oficial al instante" },
-              { icon: "⚡", title: "Alertas Urgentes", desc: "Cambios importantes" },
-              { icon: "📄", title: "Documentación", desc: "PDFs y formularios" },
-            ].map((f, i) => (
+              { icon: "⚡", title: "Alertas Urgentes", desc: "Enterate de cambios importantes" },
+              { icon: "📄", title: "Documentación", desc: "Accedé a PDFs y formularios" },
+            ].map(f => (
               <div key={f.title}
-                className={`animate-fade-in stagger-${i + 3} rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
-              >
-                <div className="h-10 w-10 rounded-xl bg-[var(--accent)] flex items-center justify-center text-xl mb-3 mx-auto">{f.icon}</div>
-                <h3 className="font-semibold text-[var(--foreground)] text-sm">{f.title}</h3>
-                <p className="text-xs text-[var(--muted-foreground)] mt-1">{f.desc}</p>
+                className="rounded-2xl border border-zinc-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 text-center hover:shadow-sm transition-shadow">
+                <div className="h-10 w-10 rounded-xl bg-zinc-50 dark:bg-slate-800 flex items-center justify-center text-lg mb-3 mx-auto">{f.icon}</div>
+                <h3 className="font-semibold text-sm text-zinc-900 dark:text-white">{f.title}</h3>
+                <p className="text-xs text-zinc-500 dark:text-slate-400 mt-1">{f.desc}</p>
               </div>
             ))}
           </div>
         )}
+
+        {/* Divider */}
+        <hr className="my-20 border-zinc-100 dark:border-slate-800" />
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-100 dark:border-slate-800">
+        <div className="max-w-3xl mx-auto px-6 py-8 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
+              {(company?.name || "P").charAt(0).toUpperCase()}
+            </div>
+            <span className="text-sm text-zinc-500 dark:text-slate-500">
+              {company?.headerTitle || company?.name || "Plataforma de Comunicación"}
+            </span>
+          </div>
+          <p className="text-xs text-zinc-400 dark:text-slate-600">
+            Sin spam. Solo avisos importantes.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
