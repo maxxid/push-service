@@ -26,7 +26,7 @@ export default async function PortalPage({
   const activeModules: string[] = (company?.modules as string[]) ?? []
 
   return (
-    <div className="min-h-screen">
+    <div>
       {/* Subtle gradient bar */}
       <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}40, transparent)` }} />
 
