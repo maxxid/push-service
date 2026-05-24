@@ -12,6 +12,9 @@ export function OneSignalInit({ appId }: { appId: string }) {
     w.OneSignalDeferred.push(async (OneSignal: any) => {
       await OneSignal.init({
         appId,
+        promptOptions: {
+          native: { enabled: false, autoPrompt: false },
+        },
       })
     })
   }, [appId])
