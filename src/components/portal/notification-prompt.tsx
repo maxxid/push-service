@@ -31,7 +31,12 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
   }, [])
 
   const handleSubscribe = async () => {
-    if (!supported) { setRegError("El sistema de notificaciones todavía no cargó. Recargá o usá el diagnóstico más abajo."); return }
+    if (!supported) {
+      // OneSignal still loading, wait and retry
+      setRegError("Un momento, estamos preparando todo...")
+      setTimeout(() => { setRegError(""); handleSubscribe() }, 800)
+      return
+    }
     setLoading(true); setRegError("")
     try {
       const OneSignal = (window as any).OneSignal
