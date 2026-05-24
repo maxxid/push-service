@@ -39,6 +39,7 @@ export default function CampaignDetailPage() {
   const [campaign, setCampaign] = useState<CampaignDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
+  const [savingTemplate, setSavingTemplate] = useState(false)
   const [sendError, setSendError] = useState("")
   const [sendSuccess, setSendSuccess] = useState("")
 
@@ -50,35 +51,39 @@ export default function CampaignDetailPage() {
   }, [params.id])
 
   const handleSaveAsTemplate = async () => {
-    const res = await fetch(`/api/campaigns/${params.id}`)
-    const c = await res.json()
+    setSavingTemplate(true)
+    try {
+      const res = await fetch(`/api/campaigns/${params.id}`)
+      const c = await res.json()
 
-    let content = []
-    if (c.landingPageId) {
-      const lRes = await fetch(`/api/landing-pages/${c.landingPageId}`)
-      const l = await lRes.json()
-      content = l.content || []
-    }
+      let content = []
+      if (c.landingPageId) {
+        const lRes = await fetch(`/api/landing-pages/${c.landingPageId}`)
+        const l = await lRes.json()
+        content = l.content || []
+      }
 
-    const tres = await fetch("/api/templates", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: c.title,
-        pushMessage: c.pushMessage,
-        landingTitle: c.landingPage?.title || c.title,
-        landingContent: content,
-        actionType: c.actionType,
-        actionValue: c.actionValue,
-        priority: c.priority,
-        companyId: null,
-      }),
-    })
+      const tres = await fetch("/api/templates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: c.title,
+          pushMessage: c.pushMessage,
+          landingTitle: c.landingPage?.title || c.title,
+          landingContent: content,
+          actionType: c.actionType,
+          actionValue: c.actionValue,
+          priority: c.priority,
+          companyId: null,
+        }),
+      })
 
-    if (tres.ok) {
-      toast.success("Guardada como plantilla")
-    } else {
-      toast.error("Error al guardar plantilla")
+      if (tres.ok) toast.success("Guardada como plantilla")
+      else toast.error("Error al guardar plantilla")
+    } catch {
+      toast.error("Error al guardar")
+    } finally {
+      setSavingTemplate(false)
     }
   }
 
@@ -233,8 +238,8 @@ export default function CampaignDetailPage() {
                 <Button variant="outline" onClick={() => router.push(`/admin/campaigns/${params.id}/edit`)}>
                   Editar
                 </Button>
-                <Button variant="outline" onClick={handleSaveAsTemplate}>
-                  Guardar como plantilla
+                <Button variant="secondary" onClick={handleSaveAsTemplate} disabled={savingTemplate}>
+                  {savingTemplate ? "Guardando..." : "Guardar como plantilla"}
                 </Button>
               </div>
             </div>
