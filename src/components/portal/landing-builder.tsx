@@ -140,12 +140,12 @@ function BlockPreview({ block }: { block: LandingBlock }) {
           /^## (.+)$/gm,
           '<h2 class="text-xl font-bold mb-2 text-white">$1</h2>'
         )
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong class='text-white'>$1</strong>")
         .replace(/\n/g, "<br>")
       return <div dangerouslySetInnerHTML={{ __html: html }} />
     }
     return (
-      <p className="text-slate-200 whitespace-pre-wrap leading-relaxed text-[15px]">
+      <p className="text-white whitespace-pre-wrap leading-relaxed text-[15px]">
         {block.content}
       </p>
     )

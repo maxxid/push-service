@@ -45,14 +45,14 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
 
   return (
     <div className="text-left">
-      <div className="rounded-2xl border border-zinc-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-sm">
+      <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-sm">
         <div className="flex items-center gap-4 mb-6">
           <div className="h-12 w-12 rounded-xl flex items-center justify-center text-xl shadow-sm" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
             🔔
           </div>
           <div>
-            <h3 className="font-bold text-lg text-zinc-900 dark:text-white">¿Querés recibir avisos?</h3>
-            <p className="text-sm text-zinc-500 dark:text-slate-400 mt-0.5">Enterate al instante de comunicados y alertas de {companyName}</p>
+            <h3 className="font-bold text-lg text-white">¿Querés recibir avisos?</h3>
+            <p className="text-sm text-slate-400 mt-0.5">Enterate al instante de comunicados y alertas de {companyName}</p>
           </div>
         </div>
 
@@ -63,7 +63,7 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
         </button>
 
         {regError && (
-          <div className="mt-4 rounded-xl border border-red-100 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30 p-3 text-xs text-red-600 dark:text-red-400">{regError}</div>
+            <div className="mt-4 rounded-xl border border-red-900/50 bg-red-950/30 p-3 text-xs text-red-400">{regError}</div>
         )}
 
         <p className="text-xs text-zinc-400 dark:text-slate-500 mt-4 text-center">Sin spam. Solo avisos importantes.</p>

@@ -2,7 +2,6 @@ import { headers } from "next/headers"
 import { getCompanyFromHeaders } from "@/lib/company-context"
 import { getOneSignalAppId } from "@/lib/onesignal"
 import { OneSignalInit } from "@/components/portal/onesignal-init"
-import { ThemeToggle } from "@/components/portal/theme-toggle"
 import { prisma } from "@/lib/prisma"
 
 export const dynamic = "force-dynamic"
@@ -25,11 +24,8 @@ export default async function PortalLayout({
   const primary = company?.primaryColor ?? "#1a56db"
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
-      <header
-        className="sticky top-0 z-50 border-b border-[var(--card-border)] bg-[var(--background)]/80 backdrop-blur-xl transition-all duration-300"
-        style={{ borderColor: primary + "20" }}
-      >
+    <div className="dark min-h-screen bg-slate-950 text-slate-200">
+      <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
         <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {company?.logo ? (
@@ -51,9 +47,7 @@ export default async function PortalLayout({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-          </div>
+          <div className="flex items-center gap-2" />
         </div>
       </header>
 
