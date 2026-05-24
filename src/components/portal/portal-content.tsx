@@ -24,7 +24,6 @@ export function PortalContent({ companyId, companyName, primaryColor, modules }:
         if (typeof opt === "boolean") resolve(opt)
         else if (opt && typeof opt.then === "function") opt.then(resolve)
         else setLoading(false)
-
         OneSignal.User.PushSubscription.addEventListener("change", (sub: any) => {
           setSubscribed(sub.current?.optedIn ?? false)
         })
@@ -42,39 +41,31 @@ export function PortalContent({ companyId, companyName, primaryColor, modules }:
   }, [checkSub])
 
   return (
-    <div className="animate-scale-in">
+    <div>
       <div className="max-w-md mx-auto">
         {loading ? (
-          <div className="flex items-center justify-center gap-2 py-8">
-            <div className="h-2 w-2 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
-            <div className="h-2 w-2 rounded-full animate-bounce stagger-1" style={{ backgroundColor: primaryColor, opacity: 0.65 }} />
-            <div className="h-2 w-2 rounded-full animate-bounce stagger-2" style={{ backgroundColor: primaryColor, opacity: 0.3 }} />
+          <div className="flex items-center justify-center gap-2 py-12">
+            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor }} />
+            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.6, animationDelay: "0.1s" }} />
+            <div className="h-2.5 w-2.5 rounded-full animate-bounce" style={{ backgroundColor: primaryColor, opacity: 0.3, animationDelay: "0.2s" }} />
           </div>
         ) : subscribed ? (
-          <div className="rounded-2xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950 p-6 animate-scale-in">
-            <div className="h-12 w-12 mx-auto mb-3 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <div className="rounded-3xl bg-gradient-to-b from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 border border-green-100 dark:border-green-900 p-8 animate-scale-in">
+            <div className="h-14 w-14 mx-auto mb-4 rounded-2xl bg-green-500 dark:bg-green-600 flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900">
+              <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="text-green-700 dark:text-green-300 font-semibold text-lg">
-              ¡Notificaciones activadas!
-            </p>
-            <p className="text-green-600 dark:text-green-400 text-sm mt-1">
-              Recibirás los avisos de {companyName}
-            </p>
+            <p className="text-green-800 dark:text-green-200 font-bold text-xl">¡Notificaciones activadas!</p>
+            <p className="text-green-600 dark:text-green-400 text-sm mt-1.5">Recibirás los avisos de {companyName}</p>
           </div>
         ) : (
-          <NotificationPrompt
-            companyId={companyId}
-            companyName={companyName}
-            primaryColor={primaryColor}
-          />
+          <NotificationPrompt companyId={companyId} companyName={companyName} primaryColor={primaryColor} />
         )}
       </div>
 
       {subscribed && modules.length > 0 && (
-        <div className="animate-fade-in stagger-3">
+        <div className="animate-fade-in stagger-3 mt-16">
           <PortalModules modules={modules} primaryColor={primaryColor} />
         </div>
       )}
