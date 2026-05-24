@@ -42,6 +42,7 @@ const statusColors: Record<string, string> = {
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [statusFilter, setStatusFilter] = useState("")
 
   const fetchCampaigns = () => {
@@ -60,11 +61,14 @@ export default function CampaignsPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar esta campaña?")) return
+    setActionLoading(`del-${id}`)
     await fetch(`/api/campaigns/${id}`, { method: "DELETE" })
+    setActionLoading(null)
     fetchCampaigns()
   }
 
   const handleDuplicate = async (c: Campaign) => {
+    setActionLoading(`dup-${c.id}`)
     const res = await fetch("/api/campaigns", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -80,10 +84,8 @@ export default function CampaignsPage() {
         companyId: null,
       }),
     })
-
-    if (res.ok) {
-      fetchCampaigns()
-    }
+    setActionLoading(null)
+    if (res.ok) fetchCampaigns()
   }
 
   if (loading) {
@@ -183,17 +185,19 @@ export default function CampaignsPage() {
                   </Link>
                   <button
                     onClick={() => handleDuplicate(c)}
-                    className="text-zinc-500 hover:text-zinc-700 text-sm"
+                    disabled={actionLoading === `dup-${c.id}`}
+                    className="text-zinc-500 hover:text-zinc-700 text-sm disabled:opacity-50"
                     title="Duplicar"
                   >
-                    Duplicar
+                    {actionLoading === `dup-${c.id}` ? "..." : "Duplicar"}
                   </button>
                   <button
                     onClick={() => handleDelete(c.id)}
-                    className="text-red-500 hover:text-red-700 text-sm"
+                    disabled={actionLoading === `del-${c.id}`}
+                    className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
                     title="Eliminar"
                   >
-                    Eliminar
+                    {actionLoading === `del-${c.id}` ? "..." : "Eliminar"}
                   </button>
                 </div>
               </div>

@@ -40,6 +40,7 @@ export default function SegmentDetailPage() {
   const [newName, setNewName] = useState("")
   const [loading, setLoading] = useState(true)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [actionLoading, setActionLoading] = useState(false)
 
   const fetchSegment = () => {
     fetch(`/api/segments/${params.id}`)
@@ -88,27 +89,27 @@ export default function SegmentDetailPage() {
   }
 
   const handleAddSubscribers = async () => {
-    if (selectedIds.size === 0) return
-
+    if (selectedIds.size === 0 || actionLoading) return
+    setActionLoading(true)
     await fetch(`/api/segments/${params.id}/subscribers`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        subscriberIds: Array.from(selectedIds),
-      }),
+      body: JSON.stringify({ subscriberIds: Array.from(selectedIds) }),
     })
-
     setSelectedIds(new Set())
+    setActionLoading(false)
     fetchSegment()
   }
 
   const handleRemoveSubscriber = async (subscriberId: string) => {
+    if (actionLoading) return
+    setActionLoading(true)
     await fetch(`/api/segments/${params.id}/subscribers`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ subscriberIds: [subscriberId] }),
     })
-
+    setActionLoading(false)
     fetchSegment()
   }
 
@@ -244,9 +245,8 @@ export default function SegmentDetailPage() {
               Agregar suscriptores
             </h2>
             {selectedIds.size > 0 && (
-              <Button size="sm" onClick={handleAddSubscribers}>
-                Agregar {selectedIds.size} seleccionado
-                {selectedIds.size > 1 ? "s" : ""}
+              <Button size="sm" onClick={handleAddSubscribers} disabled={actionLoading}>
+                {actionLoading ? "Agregando..." : `Agregar ${selectedIds.size} seleccionado${selectedIds.size > 1 ? "s" : ""}`}
               </Button>
             )}
           </div>

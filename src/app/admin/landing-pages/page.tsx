@@ -16,6 +16,7 @@ type LandingPage = {
 export default function LandingPagesPage() {
   const [pages, setPages] = useState<LandingPage[]>([])
   const [loading, setLoading] = useState(true)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
 
   const fetchPages = () => {
     fetch("/api/landing-pages")
@@ -30,11 +31,14 @@ export default function LandingPagesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("¿Eliminar esta landing?")) return
+    setActionLoading(`del-${id}`)
     await fetch(`/api/landing-pages/${id}`, { method: "DELETE" })
+    setActionLoading(null)
     fetchPages()
   }
 
   const handleDuplicate = async (lp: LandingPage) => {
+    setActionLoading(`dup-${lp.id}`)
     await fetch("/api/landing-pages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -44,15 +48,18 @@ export default function LandingPagesPage() {
         companyId: null,
       }),
     })
+    setActionLoading(null)
     fetchPages()
   }
 
   const handleTogglePublish = async (lp: LandingPage) => {
+    setActionLoading(`pub-${lp.id}`)
     await fetch(`/api/landing-pages/${lp.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ published: !lp.published }),
     })
+    setActionLoading(null)
     fetchPages()
   }
 
@@ -111,39 +118,30 @@ export default function LandingPagesPage() {
               <div className="flex items-center gap-2 ml-4">
                 <button
                   onClick={() => handleTogglePublish(lp)}
-                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
+                  disabled={actionLoading === `pub-${lp.id}`}
+                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50 ${
                     lp.published
                       ? "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
                       : "bg-green-50 text-green-600 hover:bg-green-100"
                   }`}
                 >
-                  {lp.published ? "Despublicar" : "Publicar"}
+                  {actionLoading === `pub-${lp.id}` ? "..." : lp.published ? "Despublicar" : "Publicar"}
                 </button>
-                <Link
-                  href={`/admin/landing-pages/${lp.id}`}
-                  className="text-blue-600 hover:text-blue-800 text-sm"
-                >
-                  Editar
-                </Link>
+                <Link href={`/admin/landing-pages/${lp.id}`} className="text-blue-600 hover:text-blue-800 text-sm">Editar</Link>
                 <button
                   onClick={() => handleDuplicate(lp)}
-                  className="text-zinc-500 hover:text-zinc-700 text-sm"
+                  disabled={actionLoading === `dup-${lp.id}`}
+                  className="text-zinc-500 hover:text-zinc-700 text-sm disabled:opacity-50"
                 >
-                  Duplicar
+                  {actionLoading === `dup-${lp.id}` ? "..." : "Duplicar"}
                 </button>
-                <a
-                  href={`/portal/landing/${lp.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green-600 hover:text-green-800 text-sm"
-                >
-                  Ver
-                </a>
+                <a href={`/portal/landing/${lp.slug}`} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 text-sm">Ver</a>
                 <button
                   onClick={() => handleDelete(lp.id)}
-                  className="text-red-500 hover:text-red-700 text-sm"
+                  disabled={actionLoading === `del-${lp.id}`}
+                  className="text-red-500 hover:text-red-700 text-sm disabled:opacity-50"
                 >
-                  Eliminar
+                  {actionLoading === `del-${lp.id}` ? "..." : "Eliminar"}
                 </button>
               </div>
             </div>
