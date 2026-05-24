@@ -8,7 +8,7 @@ type Props = { companyId: string; companyName: string; primaryColor: string }
 export function NotificationPrompt({ companyId, companyName, primaryColor }: Props) {
   const [supported, setSupported] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [showInstall, setShowInstall] = useState(false)
+  const [showInstall, setShowInstall] = useState(true)
   const [regError, setRegError] = useState("")
 
   useEffect(() => {
