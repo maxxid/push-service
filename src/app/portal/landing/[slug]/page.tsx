@@ -44,7 +44,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
         {/* Subtle gradient bar at top */}
         <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}40, transparent)` }} />
 
-        <div className="max-w-3xl mx-auto px-6 pt-16 pb-12">
+        <div className="max-w-3xl mx-auto px-6 pt-10 pb-6">
           {/* Metadata row */}
           <div className="flex items-center gap-3 mb-6 text-xs animate-fade-in">
             <span className="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">

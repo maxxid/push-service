@@ -30,7 +30,7 @@ export default async function PortalPage({
       {/* Subtle gradient bar */}
       <div className="h-0.5 w-full" style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}40, transparent)` }} />
 
-      <div className="max-w-3xl mx-auto px-6 pt-16 pb-24">
+      <div className="max-w-3xl mx-auto px-6 pt-10 pb-20">
         {/* Hero */}
         <div className="text-center mb-16 animate-fade-in">
           {company?.logo ? (
