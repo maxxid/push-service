@@ -95,7 +95,7 @@ export default async function PortalPage({
 
       {/* Footer */}
       <footer className="border-t border-slate-800">
-        <div className="max-w-3xl mx-auto px-6 py-8 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
               {(company?.name || "P").charAt(0).toUpperCase()}

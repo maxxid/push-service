@@ -53,11 +53,11 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             <span className="text-slate-400 dark:text-slate-500">
               {date.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}
             </span>
-            <span className="text-slate-300 dark:text-slate-600">·</span>
+            <span className="text-slate-300 text-slate-600">·</span>
             <span className="text-slate-400 dark:text-slate-500">{readTime} min de lectura</span>
             {page.published && (
               <>
-                <span className="text-slate-300 dark:text-slate-600">·</span>
+                <span className="text-slate-300 text-slate-600">·</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium">Publicado</span>
               </>
             )}
@@ -69,7 +69,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
           </h1>
 
           {/* Branding footer of hero */}
-          <div className="flex items-center gap-3 pt-6 border-t border-zinc-100 dark:border-slate-800 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          <div className="flex items-center gap-3 pt-6 border-t border-slate-800 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             {company?.logo ? (
               <img src={company.logo} alt={company.name} className="h-8 w-8 rounded-lg object-contain bg-white dark:bg-slate-800 p-0.5 ring-1 ring-black/5 dark:ring-white/10" />
             ) : (
@@ -79,14 +79,14 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             )}
             <div>
               <p className="text-sm font-semibold text-zinc-800 dark:text-slate-200">{company?.name || "Institución"}</p>
-              <p className="text-xs text-zinc-500 dark:text-slate-500">Comunicación institucional</p>
+              <p className="text-xs text-slate-500">Comunicación institucional</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-3xl mx-auto px-6 pb-20">
+      <div className="max-w-3xl mx-auto px-6 pb-10">
         {blocks.length === 0 ? (
           <div className="py-20 text-center">
             <p className="text-zinc-400 dark:text-slate-500 text-sm">Sin contenido aún</p>
@@ -107,15 +107,15 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
       </div>
 
       {/* Footer */}
-      <div className="border-t border-zinc-100 dark:border-slate-800">
-        <div className="max-w-3xl mx-auto px-6 py-8 flex items-center justify-between">
+      <div className="border-t border-slate-800">
+        <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
               {(company?.name || "P").charAt(0).toUpperCase()}
             </div>
-            <span className="text-sm text-zinc-500 dark:text-slate-500">{company?.name || "Plataforma"}</span>
+            <span className="text-sm text-slate-500">{company?.name || "Plataforma"}</span>
           </div>
-          <p className="text-xs text-zinc-400 dark:text-slate-600">
+          <p className="text-xs text-zinc-400 text-slate-600">
             {date.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
