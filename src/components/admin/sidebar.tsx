@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
@@ -25,18 +26,33 @@ export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
   const role = session?.user?.role
+  const companyId = session?.user?.companyId
+  const [logo, setLogo] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (companyId || role === "SUPERADMIN") {
+      fetch("/api/companies").then(r => r.json()).then((d: any[]) => {
+        const c = Array.isArray(d) && d.length > 0 ? d[0] : null
+        if (c?.logo) setLogo(c.logo)
+      })
+    }
+  }, [companyId, role])
 
   return (
     <aside className="w-64 bg-zinc-900 text-white flex flex-col min-h-screen">
       <div className="p-6 border-b border-zinc-800">
-        <Link
-          href="/admin/dashboard"
-          className="text-lg font-bold hover:text-blue-400 transition-colors"
-        >
-          Panel Admin
+        <Link href="/admin/dashboard" className="flex items-center gap-3 hover:text-blue-400 transition-colors">
+          {logo ? (
+            <img src={logo} alt="" className="h-8 w-8 rounded-lg object-contain bg-white p-0.5" />
+          ) : (
+            <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-sm font-bold">
+              P
+            </div>
+          )}
+          <span className="text-lg font-bold">Panel Admin</span>
         </Link>
         {role === "SUPERADMIN" && (
-          <span className="block text-xs text-blue-400 mt-1">Superadmin</span>
+          <span className="block text-xs text-blue-400 mt-1 ml-11">Superadmin</span>
         )}
       </div>
       <nav className="flex-1 p-4 space-y-1">
