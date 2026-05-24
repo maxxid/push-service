@@ -142,7 +142,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
         )
         .replace(/\*\*(.+?)\*\*/g, "<strong class='text-white'>$1</strong>")
         .replace(/\n/g, "<br>")
-      return <div dangerouslySetInnerHTML={{ __html: html }} />
+      return <div className="text-white" dangerouslySetInnerHTML={{ __html: html }} />
     }
     return (
       <p className="text-white whitespace-pre-wrap leading-relaxed text-[15px]">
