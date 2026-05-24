@@ -32,7 +32,7 @@ export default function NewCampaignPage() {
   const [actionType, setActionType] = useState("LANDING_INTERNA")
   const [actionValue, setActionValue] = useState("")
   const [priority, setPriority] = useState("NORMAL")
-  const [segmentId, setSegmentId] = useState("")
+  const [segmentId, setSegmentId] = useState("__todos__")
   const [companyId, setCompanyId] = useState(userCompanyId || "")
   const [landingPageId, setLandingPageId] = useState("")
   const [scheduledAt, setScheduledAt] = useState("")
@@ -45,7 +45,12 @@ export default function NewCampaignPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetch("/api/segments").then((r) => r.json()).then((d) => setSegments(Array.isArray(d) ? d : []))
+    fetch("/api/segments").then((r) => r.json()).then((d) => {
+      const list = Array.isArray(d) ? d : []
+      setSegments(list)
+      const todos = list.find((s: Segment) => s.name === "Todos")
+      if (todos) setSegmentId(todos.id)
+    })
     fetch("/api/landing-pages").then((r) => r.json()).then((d) => setLandingPages(Array.isArray(d) ? d : []))
     if (role === "SUPERADMIN") {
       fetch("/api/companies").then((r) => r.json()).then(setCompanies)

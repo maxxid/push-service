@@ -99,6 +99,10 @@ export async function DELETE(
     return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
   }
 
+  if (segment.name === "Todos") {
+    return NextResponse.json({ error: "El segmento 'Todos' no se puede eliminar" }, { status: 400 })
+  }
+
   await prisma.segment.delete({ where: { id } })
 
   return NextResponse.json({ ok: true })

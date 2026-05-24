@@ -137,7 +137,7 @@ export default function LandingPagesPage() {
                   rel="noopener noreferrer"
                   className="text-green-600 hover:text-green-800 text-sm"
                 >
-                  Ver →
+                  Ver
                 </a>
                 <button
                   onClick={() => handleDelete(lp.id)}

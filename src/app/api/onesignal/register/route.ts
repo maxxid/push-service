@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { rateLimit, getRateLimitKey } from "@/lib/rate-limit"
+import { addSubscriberToTodos } from "@/lib/default-segment"
 
 export async function POST(request: Request) {
   if (!rateLimit(getRateLimitKey(request), 10, 60000)) {
@@ -45,6 +46,8 @@ export async function POST(request: Request) {
         deviceInfo: deviceInfo || undefined,
       },
     })
+
+    await addSubscriberToTodos(onesignalId, companyId)
 
     return NextResponse.json({ ok: true, subscriberId: subscriber.id })
   } catch (error) {
