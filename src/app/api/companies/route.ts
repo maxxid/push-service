@@ -12,11 +12,15 @@ export async function GET() {
     where: { id: session.user.id },
   })
 
-  if (!user || user.role !== "SUPERADMIN") {
+  if (!user) {
     return NextResponse.json({ error: "Acceso denegado" }, { status: 403 })
   }
 
+  const where =
+    user.role === "SUPERADMIN" ? {} : { id: user.companyId ?? undefined }
+
   const companies = await prisma.company.findMany({
+    where,
     orderBy: { createdAt: "desc" },
     include: { _count: { select: { subscribers: true, campaigns: true } } },
   })

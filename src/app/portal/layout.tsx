@@ -45,7 +45,7 @@ export default async function PortalLayout({
                 {(company?.name ?? "P").charAt(0).toUpperCase()}
               </div>
             )}
-            <span className="font-semibold text-[var(--foreground)] tracking-tight text-base">
+            <span className="font-semibold tracking-tight text-base" style={{ color: "#ffffff" }}>
               {company?.headerTitle || (company?.name ? `Notificaciones ${company.name}` : "Notificaciones")}
             </span>
           </div>
