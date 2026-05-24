@@ -14,6 +14,7 @@ const adminLinks = [
   { href: "/admin/templates", label: "Plantillas", icon: "📋" },
   { href: "/admin/documents", label: "Documentos", icon: "📁" },
   { href: "/admin/events", label: "Agenda", icon: "📅" },
+  { href: "/admin/branding", label: "Branding", icon: "🎨" },
 ]
 
 const superadminLinks = [
