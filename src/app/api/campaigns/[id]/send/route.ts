@@ -70,13 +70,17 @@ export async function POST(
   }
 
   const actionUrl = buildActionUrl(campaign)
+  const baseUrl = process.env.NEXTAUTH_URL || ""
+  const clickUrl = actionUrl
+    ? `${baseUrl}/api/click?c=${campaign.id}&r=${encodeURIComponent(actionUrl)}`
+    : `${baseUrl}/api/click?c=${campaign.id}`
   const priority = campaign.priority === "URGENTE" ? 10 : 5
 
   try {
     const result = await sendPushNotification({
       headings: { es: campaign.title },
       contents: { es: campaign.pushMessage },
-      url: actionUrl,
+      url: clickUrl,
       onesignalPlayerIds: playerIds,
       priority,
     })
