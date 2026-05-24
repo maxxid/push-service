@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import type { LandingBlock } from "@/components/portal/landing-blocks"
 import { headers } from "next/headers"
 import { BlockPreview } from "@/components/portal/landing-preview"
+import { ShareButton } from "@/components/portal/share-button"
 
 export const dynamic = "force-dynamic"
 
@@ -64,9 +65,12 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-[1.1] mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            {page.title}
-          </h1>
+          <div className="flex items-start gap-4 mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+            <h1 className="flex-1 text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
+              {page.title}
+            </h1>
+            <ShareButton />
+          </div>
 
           {/* Branding footer of hero */}
           <div className="flex items-center gap-3 pt-6 border-t border-slate-800 animate-fade-in" style={{ animationDelay: "0.2s" }}>
