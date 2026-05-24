@@ -57,43 +57,56 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
         standalone ? "Ya está instalada en tu pantalla principal" : "Tocá Compartir ↑ → Agregar a pantalla de inicio")
     }
 
-    // 4. Service Worker
-    add("sw", "El sistema de notificaciones funciona")
-    await new Promise(r => setTimeout(r, 500))
-    try {
-      const regs = await navigator.serviceWorker?.getRegistrations()
-      const hasSW = regs && regs.length > 0
-      done("sw", hasSW ? "success" : "error",
-        hasSW ? "Sistema de notificaciones activo" : "Cerrá la página y volvé a entrar. Si sigue fallando, contactanos.")
-    } catch { done("sw", "error", "Cerrá la página y volvé a entrar") }
-
-    // 5. OneSignal
-    add("onesignal", "El servicio de notificaciones está conectado")
-    await new Promise(r => setTimeout(r, 400))
-    const hasOS = typeof window !== "undefined" && "OneSignal" in window
-    if (hasOS) {
+    // 4. Check if user has subscribed before
+    const hasEverSubscribed = typeof window !== "undefined" && "OneSignal" in window
+    let isAlreadySubscribed = false
+    if (hasEverSubscribed) {
       try {
         const OneSignal = (window as any).OneSignal
-        const subscribed = await OneSignal.User?.PushSubscription?.optedIn
-        const isSub = typeof subscribed === "boolean" ? subscribed : await Promise.resolve(subscribed).catch(() => false)
-        done("onesignal", isSub ? "success" : "warning",
-          isSub ? "Estás suscripto y listo para recibir avisos" : "Falta activar. Tocá el botón Activar notificaciones.")
-      } catch { done("onesignal", "warning", "Tocá el botón Activar notificaciones para completar") }
+        const sub = await OneSignal.User?.PushSubscription?.optedIn
+        isAlreadySubscribed = typeof sub === "boolean" ? sub : await Promise.resolve(sub).catch(() => false)
+      } catch {}
+    }
+
+    // 5. OneSignal
+    add("onesignal", "El servicio de notificaciones está listo")
+    await new Promise(r => setTimeout(r, 400))
+    if (hasEverSubscribed) {
+      done("onesignal", isAlreadySubscribed ? "success" : "warning",
+        isAlreadySubscribed ? "Estás suscripto y listo para recibir avisos" : "Tocá el botón Activar notificaciones para terminar")
     } else {
-      done("onesignal", "error", "Recargá la página para intentar de nuevo")
+      done("onesignal", "warning", "Se activa cuando tocás Activar notificaciones")
     }
 
     // 6. Permission
     add("permission", "Diste permiso para recibir notificaciones")
     await new Promise(r => setTimeout(r, 300))
     if ("Notification" in window) {
-      done("permission", Notification.permission === "granted" ? "success" : Notification.permission === "denied" ? "error" : "warning",
-        Notification.permission === "granted" ? "Sí, ya diste permiso" : Notification.permission === "denied"
-          ? "Las notificaciones están bloqueadas. Andá a Ajustes > Safari/Chrome > Notificaciones > Permitir."
-          : "Tocá Activar notificaciones cuando aparezca el mensaje")
+      if (Notification.permission === "granted") {
+        done("permission", "success", "Sí, ya diste permiso")
+      } else if (Notification.permission === "denied") {
+        done("permission", "error", "Las notificaciones están bloqueadas. Andá a Ajustes > Chrome/Safari > Notificaciones > Permitir.")
+      } else {
+        done("permission", "warning", "Tocá Activar notificaciones y aceptá cuando el navegador te pregunte")
+      }
     } else {
       done("permission", "error", "Tu dispositivo no permite notificaciones")
     }
+
+    // 4. Service Worker (only run after OneSignal check)
+    add("sw", "El sistema está listo para funcionar")
+    await new Promise(r => setTimeout(r, 500))
+    try {
+      const regs = await navigator.serviceWorker?.getRegistrations()
+      const hasSW = regs && regs.length > 0
+      if (hasSW) {
+        done("sw", "success", "Todo listo para recibir notificaciones")
+      } else if (isAlreadySubscribed || Notification.permission === "granted") {
+        done("sw", "error", "Algo no cargó bien. Recargá la página.")
+      } else {
+        done("sw", "warning", "Se activa cuando aceptás las notificaciones")
+      }
+    } catch { done("sw", "warning", "Se verificará al activar notificaciones") }
 
     setRunning(false)
   }, [])
