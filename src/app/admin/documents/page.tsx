@@ -21,6 +21,8 @@ export default function DocumentsPage() {
   const [description, setDescription] = useState("")
   const [category, setCategory] = useState("general")
   const [showForm, setShowForm] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [file, setFile] = useState<File | null>(null)
 
   const fetchDocs = () => {
     fetch("/api/documents")
@@ -35,17 +37,29 @@ export default function DocumentsPage() {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    let url = fileUrl
+    if (file) {
+      setUploading(true)
+      const fd = new FormData()
+      fd.append("file", file)
+      const uploadRes = await fetch("/api/upload", { method: "POST", body: fd })
+      if (!uploadRes.ok) { setUploading(false); return }
+      const blob = await uploadRes.json()
+      url = blob.url
+      setUploading(false)
+    }
+
+    if (!url) return
+
     const res = await fetch("/api/documents", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, fileUrl, description: description || undefined, category }),
+      body: JSON.stringify({ title, fileUrl: url, description: description || undefined, category }),
     })
     if (res.ok) {
-      setTitle("")
-      setFileUrl("")
-      setDescription("")
-      setCategory("general")
-      setShowForm(false)
+      setTitle(""); setFileUrl(""); setDescription(""); setCategory("general")
+      setShowForm(false); setFile(null)
       fetchDocs()
     }
   }
@@ -105,7 +119,20 @@ export default function DocumentsPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">
-              URL del archivo (PDF, DOC, etc.)
+              Subir archivo (PDF, imagen, etc.)
+            </label>
+            <input
+              type="file"
+              onChange={(e) => { setFile(e.target.files?.[0] || null); if (e.target.files?.[0]) setFileUrl("") }}
+              className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xls,.xlsx"
+            />
+            <p className="text-xs text-zinc-400 mt-1">{file ? `Archivo: ${file.name}` : "O pegá una URL abajo"}</p>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-zinc-600 mb-1">
+              O pegá una URL
             </label>
             <input
               type="url"
@@ -113,7 +140,7 @@ export default function DocumentsPage() {
               onChange={(e) => setFileUrl(e.target.value)}
               className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://...documento.pdf"
-              required
+              disabled={!!file}
             />
           </div>
           <div>
@@ -128,8 +155,8 @@ export default function DocumentsPage() {
               placeholder="Breve descripción del documento"
             />
           </div>
-          <Button type="submit" size="sm">
-            Agregar
+          <Button type="submit" size="sm" disabled={uploading}>
+            {uploading ? "Subiendo..." : "Agregar"}
           </Button>
         </form>
       )}
