@@ -3,6 +3,7 @@ import { getCompanyFromHeaders } from "@/lib/company-context"
 import { getOneSignalAppId } from "@/lib/onesignal"
 import { OneSignalInit } from "@/components/portal/onesignal-init"
 import { ThemeToggle } from "@/components/portal/theme-toggle"
+import { prisma } from "@/lib/prisma"
 
 export default async function PortalLayout({
   children,
@@ -11,7 +12,12 @@ export default async function PortalLayout({
 }) {
   const headersList = await headers()
   const subdomain = headersList.get("x-company-subdomain")
-  const company = await getCompanyFromHeaders(subdomain)
+
+  let company = await getCompanyFromHeaders(subdomain)
+  if (!company) {
+    company = await prisma.company.findFirst({ orderBy: { createdAt: "asc" } })
+  }
+
   const onesignalAppId = getOneSignalAppId()
 
   const primary = company?.primaryColor ?? "#1a56db"
