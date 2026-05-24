@@ -2,6 +2,7 @@ import { headers } from "next/headers"
 import { getCompanyFromHeaders } from "@/lib/company-context"
 import { prisma } from "@/lib/prisma"
 import { PortalContent } from "@/components/portal/portal-content"
+import { DiagnosticTrigger } from "@/components/portal/diagnostic-trigger"
 
 export const dynamic = "force-dynamic"
 
@@ -89,8 +90,13 @@ export default async function PortalPage({
           </div>
         )}
 
+        {/* Diagnostic */}
+        <div className="max-w-md mx-auto mb-16">
+          <DiagnosticTrigger />
+        </div>
+
         {/* Divider */}
-        <hr className="my-20 border-slate-800" />
+        <hr className="my-10 border-slate-800" />
       </div>
 
       {/* Footer */}

@@ -1,0 +1,181 @@
+"use client"
+
+import { useState, useEffect, useCallback } from "react"
+
+type CheckStatus = "idle" | "loading" | "success" | "error" | "warning"
+type Platform = "android" | "ios"
+
+type Check = { key: string; label: string; status: CheckStatus; detail?: string }
+
+export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [platform, setPlatform] = useState<Platform | null>(null)
+  const [checks, setChecks] = useState<Check[]>([])
+  const [running, setRunning] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    const ua = navigator.userAgent
+    const isIOS = /iPhone|iPad|iPod/.test(ua)
+    setPlatform(isIOS ? "ios" : "android")
+  }, [open])
+
+  const runChecks = useCallback(async (p: Platform) => {
+    setRunning(true)
+    const items: Check[] = []
+    const add = (key: string, label: string) => { items.push({ key, label, status: "loading" }); setChecks([...items]) }
+    const done = (key: string, status: CheckStatus, detail?: string) => {
+      const idx = items.findIndex(c => c.key === key)
+      if (idx >= 0) { items[idx] = { ...items[idx], status, detail }; setChecks([...items]) }
+    }
+
+    // 1. Browser check
+    add("browser", "Navegador compatible")
+    await new Promise(r => setTimeout(r, 400))
+    if (p === "ios") {
+      const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent)
+      done("browser", isSafari ? "success" : "error", isSafari ? "Safari iOS detectado" : "Se requiere Safari en iPhone/iPad")
+    } else {
+      const ok = /Chrome|Edge/.test(navigator.userAgent) && !/CriOS|EdgiOS/.test(navigator.userAgent)
+      done("browser", ok ? "success" : "warning", ok ? "Chrome/Edge detectado" : "Se recomienda Chrome o Edge")
+    }
+
+    // 2. HTTPS
+    add("https", "Conexión segura (HTTPS)")
+    await new Promise(r => setTimeout(r, 300))
+    const isHttps = window.location.protocol === "https:" || window.location.hostname === "localhost"
+    done("https", isHttps ? "success" : "error", isHttps ? "HTTPS activo" : "Se requiere HTTPS para notificaciones")
+
+    // 3. PWA (iOS only)
+    if (p === "ios") {
+      add("pwa", "App instalada (PWA)")
+      await new Promise(r => setTimeout(r, 400))
+      const standalone = (window.navigator as any).standalone || window.matchMedia("(display-mode: standalone)").matches
+      done("pwa", standalone ? "success" : "warning", standalone ? "PWA instalada" : "Instalar en pantalla principal para recibir notificaciones")
+    }
+
+    // 4. Service Worker
+    add("sw", "Service Worker registrado")
+    await new Promise(r => setTimeout(r, 500))
+    try {
+      const regs = await navigator.serviceWorker?.getRegistrations()
+      const hasSW = regs && regs.length > 0
+      done("sw", hasSW ? "success" : "error", hasSW ? `${regs.length} worker(s) activos` : "No se encontró el service worker")
+    } catch { done("sw", "error", "No se pudo verificar") }
+
+    // 5. OneSignal
+    add("onesignal", "OneSignal inicializado")
+    await new Promise(r => setTimeout(r, 400))
+    const hasOS = typeof window !== "undefined" && "OneSignal" in window
+    if (hasOS) {
+      try {
+        const OneSignal = (window as any).OneSignal
+        const subscribed = await OneSignal.User?.PushSubscription?.optedIn
+        const isSub = typeof subscribed === "boolean" ? subscribed : await Promise.resolve(subscribed).catch(() => false)
+        done("onesignal", isSub ? "success" : "warning", isSub ? "Suscripción activa" : "OneSignal OK pero no suscripto")
+      } catch { done("onesignal", "warning", "OneSignal OK - estado desconocido") }
+    } else {
+      done("onesignal", "error", "OneSignal no cargó. Recargá la página.")
+    }
+
+    // 6. Permission
+    add("permission", "Permiso de notificaciones")
+    await new Promise(r => setTimeout(r, 300))
+    if ("Notification" in window) {
+      done("permission", Notification.permission === "granted" ? "success" : Notification.permission === "denied" ? "error" : "warning",
+        Notification.permission === "granted" ? "Concedido" : Notification.permission === "denied" ? "Bloqueado. Revocar en configuración del navegador." : "Pendiente")
+    } else {
+      done("permission", "error", "API de notificaciones no disponible")
+    }
+
+    setRunning(false)
+  }, [])
+
+  useEffect(() => { if (platform) runChecks(platform) }, [platform, runChecks])
+
+  if (!open) return null
+
+  const icon = (s: CheckStatus) => {
+    if (s === "loading") return <div className="h-4 w-4 rounded-full border-2 border-slate-600 border-t-blue-400 animate-spin" />
+    if (s === "success") return <svg className="h-4 w-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
+    if (s === "warning") return <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+    if (s === "error") return <svg className="h-4 w-4 text-red-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    return <div className="h-4 w-4 rounded-full border-2 border-slate-700" />
+  }
+
+  const allDone = checks.length > 0 && checks.every(c => c.status !== "loading")
+  const hasErrors = checks.some(c => c.status === "error")
+  const hasWarnings = checks.some(c => c.status === "warning")
+  const allGood = allDone && !hasErrors && !hasWarnings
+
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-auto animate-scale-in" onClick={e => e.stopPropagation()}>
+        <div className="sticky top-0 bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-bold text-white">Diagnóstico de notificaciones</h2>
+            <p className="text-xs text-slate-400 mt-0.5">{platform === "ios" ? "iPhone / iPad" : "Android"}</p>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-white text-xl">&times;</button>
+        </div>
+
+        <div className="p-6">
+          {/* Platform selector */}
+          {!running && checks.length === 0 && (
+            <div className="text-center py-8 space-y-4">
+              <p className="text-slate-400 text-sm">Seleccioná tu dispositivo</p>
+              <div className="flex gap-3 justify-center">
+                <button onClick={() => { setPlatform("android"); runChecks("android") }}
+                  className="px-6 py-3 rounded-xl border border-slate-800 hover:border-blue-500/50 bg-slate-800/50 text-white font-medium text-sm transition-colors">
+                  📱 Android
+                </button>
+                <button onClick={() => { setPlatform("ios"); runChecks("ios") }}
+                  className="px-6 py-3 rounded-xl border border-slate-800 hover:border-blue-500/50 bg-slate-800/50 text-white font-medium text-sm transition-colors">
+                  📱 iPhone / iPad
+                </button>
+              </div>
+              {platform && (
+                <p className="text-xs text-slate-500">Detectado: {platform === "ios" ? "iOS" : "Android"} · Podés cambiar manualmente</p>
+              )}
+            </div>
+          )}
+
+          {/* Checklist */}
+          {checks.length > 0 && (
+            <div className="space-y-1">
+              {checks.map((c, i) => (
+                <div key={c.key}
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${c.status === "loading" ? "opacity-60" : ""}`}
+                  style={{ animationDelay: `${i * 0.08}s` }}>
+                  <div className="shrink-0">{icon(c.status)}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${c.status === "error" ? "text-red-300" : c.status === "warning" ? "text-amber-300" : c.status === "success" ? "text-emerald-300" : "text-slate-300"}`}>
+                      {c.label}
+                    </p>
+                    {c.detail && (
+                      <p className={`text-xs mt-0.5 ${c.status === "error" ? "text-red-400/70" : c.status === "warning" ? "text-amber-400/70" : "text-slate-500"}`}>
+                        {c.detail}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Result */}
+          {allDone && (
+            <div className={`mt-6 rounded-xl p-4 text-center ${allGood ? "bg-emerald-500/10 border border-emerald-500/20" : hasErrors ? "bg-red-500/10 border border-red-500/20" : "bg-amber-500/10 border border-amber-500/20"}`}>
+              <p className={`font-semibold text-sm ${allGood ? "text-emerald-300" : hasErrors ? "text-red-300" : "text-amber-300"}`}>
+                {allGood ? "✅ Todo funciona correctamente" : hasErrors ? "❗ Hay problemas que resolver" : "⚠️ Algunas recomendaciones"}
+              </p>
+              <button onClick={() => { setChecks([]); setRunning(false); runChecks(platform!) }}
+                className="mt-3 text-xs text-slate-400 hover:text-white underline underline-offset-2">
+                Volver a ejecutar diagnóstico
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
