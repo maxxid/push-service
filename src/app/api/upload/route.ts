@@ -12,13 +12,14 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const formData = await request.formData()
   const file = formData.get("file") as File | null
+  const customName = formData.get("name") as string | null
 
   if (!file) return NextResponse.json({ error: "No se envió ningún archivo" }, { status: 400 })
 
-  const blob = await put(file.name, file, {
+  const blob = await put(customName || file.name, file, {
     access: "public",
     token: process.env.BLOB_READ_WRITE_TOKEN,
   })
 
-  return NextResponse.json({ url: blob.url, name: file.name, size: file.size })
+  return NextResponse.json({ url: blob.url, name: customName || file.name, size: file.size })
 }

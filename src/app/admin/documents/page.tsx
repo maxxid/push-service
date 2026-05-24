@@ -46,8 +46,11 @@ export default function DocumentsPage() {
     if (file) {
       setUploading(true)
       try {
+        const ext = file.name.split(".").pop() || "file"
+        const customName = title ? `${title.replace(/\s+/g, "-").toLowerCase()}.${ext}` : file.name
         const fd = new FormData()
         fd.append("file", file)
+        fd.append("name", customName)
         const uploadRes = await fetch("/api/upload", { method: "POST", body: fd })
         if (!uploadRes.ok) {
           const err = await uploadRes.json().catch(() => ({}))
