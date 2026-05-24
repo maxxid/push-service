@@ -89,14 +89,16 @@ export async function POST(
       sendAfter,
     })
 
-    await prisma.campaign.update({
-      where: { id },
-      data: {
-        status: isScheduled ? "SCHEDULED" : "SENT",
-        sentAt: isScheduled ? null : new Date(),
-        deliveries: playerIds.length,
-      },
-    })
+    const updateData: any = {
+      status: isScheduled ? "SCHEDULED" : "SENT",
+      sentAt: isScheduled ? null : new Date(),
+      deliveries: playerIds.length,
+    }
+    if (isScheduled && (result as any)?.id) {
+      updateData.onesignalNotificationId = (result as any).id
+    }
+
+    await prisma.campaign.update({ where: { id }, data: updateData })
 
     return NextResponse.json({
       ok: true,

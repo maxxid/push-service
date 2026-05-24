@@ -164,6 +164,7 @@ model Campaign {
   landingPage    LandingPage?    @relation(fields: [landingPageId], references: [id])
   deliveries     Int             @default(0)
   clicks         Int             @default(0)
+  onesignalNotificationId String?
   createdBy      String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

@@ -36,6 +36,19 @@ export default function CampaignDetailPage() {
     setSending(false)
   }
 
+  const handleCancel = async () => {
+    if (!confirm("¿Cancelar esta campaña programada? Volverá a estado Borrador.")) return
+    setSending(true)
+    const res = await fetch(`/api/campaigns/${params.id}/cancel`, { method: "POST" })
+    if (res.ok) {
+      toast.success("Envío cancelado")
+      setCampaign(p => p ? { ...p, status: "DRAFT", scheduledAt: null } : p)
+    } else {
+      toast.error("Error al cancelar")
+    }
+    setSending(false)
+  }
+
   const handleSaveAsTemplate = async () => {
     setSavingTemplate(true)
     try {
@@ -96,11 +109,24 @@ export default function CampaignDetailPage() {
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
               <h2 className="text-sm font-semibold text-slate-300 mb-4">Acciones</h2>
               {sendError && <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-3">{sendError}</p>}
-              <div className="flex gap-2">
-                <button onClick={handleSend} disabled={sending}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl transition-colors">
-                  {sending ? "Enviando..." : "Enviar ahora"}
-                </button>
+              <div className="flex gap-2 flex-wrap">
+                {campaign.status === "SCHEDULED" ? (
+                  <>
+                    <button onClick={handleSend} disabled={sending}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl transition-colors">
+                      {sending ? "Enviando..." : "Enviar ahora"}
+                    </button>
+                    <button onClick={handleCancel} disabled={sending}
+                      className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-medium text-sm rounded-xl transition-colors">
+                      {sending ? "Cancelando..." : "Cancelar envío"}
+                    </button>
+                  </>
+                ) : (
+                  <button onClick={handleSend} disabled={sending}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl transition-colors">
+                    {sending ? "Enviando..." : "Enviar ahora"}
+                  </button>
+                )}
                 <button onClick={() => router.push(`/admin/campaigns/${params.id}/edit`)}
                   className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm rounded-xl transition-colors">Editar</button>
                 <button onClick={handleSaveAsTemplate} disabled={savingTemplate}
