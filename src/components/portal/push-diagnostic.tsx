@@ -57,43 +57,47 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
         standalone ? "Ya está instalada en tu pantalla principal" : "Tocá Compartir ↑ → Agregar a pantalla de inicio")
     }
 
-    // 4. Check if user has subscribed before
-    const hasEverSubscribed = typeof window !== "undefined" && "OneSignal" in window
-    let isAlreadySubscribed = false
-    if (hasEverSubscribed) {
+    // Check subscription state first
+    const hasOneSignal = typeof window !== "undefined" && "OneSignal" in window
+    let isSubscribed = false
+    if (hasOneSignal) {
       try {
         const OneSignal = (window as any).OneSignal
         const sub = await OneSignal.User?.PushSubscription?.optedIn
-        isAlreadySubscribed = typeof sub === "boolean" ? sub : await Promise.resolve(sub).catch(() => false)
+        isSubscribed = typeof sub === "boolean" ? sub : await Promise.resolve(sub).catch(() => false)
       } catch {}
+    }
+
+    // Determine root cause
+    const permBlocked = "Notification" in window && Notification.permission === "denied"
+    const permPending = "Notification" in window && Notification.permission === "default"
+    const permGranted = "Notification" in window && Notification.permission === "granted"
+
+    // 4. Permission (ROOT CAUSE DETECTOR)
+    add("permission", "Diste permiso para recibir notificaciones")
+    await new Promise(r => setTimeout(r, 300))
+    if (permBlocked) {
+      done("permission", "error", "⚠️ Este es el problema principal. Andá a Ajustes > Chrome/Safari > Notificaciones > Permitir.")
+    } else if (permGranted) {
+      done("permission", "success", "Sí, ya diste permiso")
+    } else {
+      done("permission", "warning", "Tocá Activar notificaciones y aceptá cuando el navegador pregunte")
     }
 
     // 5. OneSignal
     add("onesignal", "El servicio de notificaciones está listo")
     await new Promise(r => setTimeout(r, 400))
-    if (hasEverSubscribed) {
-      done("onesignal", isAlreadySubscribed ? "success" : "warning",
-        isAlreadySubscribed ? "Estás suscripto y listo para recibir avisos" : "Tocá el botón Activar notificaciones para terminar")
+    if (permBlocked) {
+      done("onesignal", "warning", "Bloqueado porque las notificaciones están denegadas ↑")
+    } else if (isSubscribed) {
+      done("onesignal", "success", "Estás suscripto y listo para recibir avisos")
+    } else if (hasOneSignal) {
+      done("onesignal", "warning", "Tocá Activar notificaciones para completar")
     } else {
-      done("onesignal", "warning", "Se activa cuando tocás Activar notificaciones")
+      done("onesignal", "warning", "Se activa al tocar el botón de notificaciones")
     }
 
-    // 6. Permission
-    add("permission", "Diste permiso para recibir notificaciones")
-    await new Promise(r => setTimeout(r, 300))
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        done("permission", "success", "Sí, ya diste permiso")
-      } else if (Notification.permission === "denied") {
-        done("permission", "error", "Las notificaciones están bloqueadas. Andá a Ajustes > Chrome/Safari > Notificaciones > Permitir.")
-      } else {
-        done("permission", "warning", "Tocá Activar notificaciones y aceptá cuando el navegador te pregunte")
-      }
-    } else {
-      done("permission", "error", "Tu dispositivo no permite notificaciones")
-    }
-
-    // 4. Service Worker (only run after OneSignal check)
+    // 6. Service Worker
     add("sw", "El sistema está listo para funcionar")
     await new Promise(r => setTimeout(r, 500))
     try {
@@ -101,8 +105,10 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
       const hasSW = regs && regs.length > 0
       if (hasSW) {
         done("sw", "success", "Todo listo para recibir notificaciones")
-      } else if (isAlreadySubscribed || Notification.permission === "granted") {
-        done("sw", "error", "Algo no cargó bien. Recargá la página.")
+      } else if (permBlocked) {
+        done("sw", "warning", "Depende de arreglar los permisos bloqueados ↑")
+      } else if (permGranted && !hasSW) {
+        done("sw", "error", "⚠️ Algo no cargó bien. Recargá la página para intentar de nuevo.")
       } else {
         done("sw", "warning", "Se activa cuando aceptás las notificaciones")
       }
@@ -187,7 +193,7 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
           {allDone && (
             <div className={`mt-6 rounded-xl p-4 text-center ${allGood ? "bg-emerald-500/10 border border-emerald-500/20" : hasErrors ? "bg-red-500/10 border border-red-500/20" : "bg-amber-500/10 border border-amber-500/20"}`}>
               <p className={`font-semibold text-sm ${allGood ? "text-emerald-300" : hasErrors ? "text-red-300" : "text-amber-300"}`}>
-                {allGood ? "✅ Todo funciona correctamente" : hasErrors ? "❗ Hay problemas que resolver" : "⚠️ Algunas recomendaciones"}
+                {allGood ? "✅ Todo listo. Ya podés recibir notificaciones." : hasErrors ? "❗ El ítem en rojo es lo que está trabando al resto." : "⚠️ Solo falta activar. Estás a un toque."}
               </p>
               <button onClick={() => { setChecks([]); setRunning(false); runChecks(platform!) }}
                 className="mt-3 text-xs text-slate-400 hover:text-white underline underline-offset-2">
