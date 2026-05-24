@@ -61,7 +61,7 @@ export default function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors">
+        <Link href="/admin/campaigns?status=SENT" className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors block cursor-pointer">
           <div className="flex items-center gap-2 mb-3">
             <div className="h-8 w-8 rounded-lg bg-green-500/10 flex items-center justify-center">
               <svg className="h-4 w-4 text-green-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -72,9 +72,9 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-white">{data?.campaigns.sent || 0}</p>
           <p className="text-xs text-slate-500 mt-1">{data?.campaigns.totalDeliveries || 0} entregas · CTR {data?.campaigns.ctr || "0%"}</p>
-        </div>
+        </Link>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors">
+        <Link href="/admin/campaigns?status=SCHEDULED" className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors block cursor-pointer">
           <div className="flex items-center gap-2 mb-3">
             <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
               <svg className="h-4 w-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -85,9 +85,9 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-white">{data?.campaigns.scheduled || 0}</p>
           <p className="text-xs text-slate-500 mt-1">{(data?.campaigns.total ?? 0) - (data?.campaigns.sent ?? 0) - (data?.campaigns.scheduled ?? 0)} borradores</p>
-        </div>
+        </Link>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors">
+        <Link href="/admin/subscribers" className="bg-slate-900 border border-slate-800 rounded-2xl p-5 hover:border-slate-700 transition-colors block cursor-pointer">
           <div className="flex items-center gap-2 mb-3">
             <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <svg className="h-4 w-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-white">{data?.subscribers.total || 0}</p>
           <p className="text-xs text-slate-500 mt-1">{data?.subscribers.active || 0} activos</p>
-        </div>
+        </Link>
       </div>
 
       {/* Last campaign + Quick actions */}

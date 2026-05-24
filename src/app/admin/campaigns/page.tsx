@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { toast } from "@/lib/toast"
 
@@ -22,10 +23,11 @@ const statusMap: Record<string, { label: string; color: string }> = {
 }
 
 export default function CampaignsPage() {
+  const searchParams = useSearchParams()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState("")
+  const [statusFilter, setStatusFilter] = useState(searchParams.get("status") || "")
 
   const fetchCampaigns = () => {
     const url = statusFilter ? `/api/campaigns?status=${statusFilter}` : "/api/campaigns"
