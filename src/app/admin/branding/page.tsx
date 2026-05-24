@@ -24,6 +24,7 @@ export default function BrandingPage() {
   const [textColor, setTextColor] = useState("#1a1a1a")
   const [portalTitle, setPortalTitle] = useState("")
   const [portalDescription, setPortalDescription] = useState("")
+  const [headerTitle, setHeaderTitle] = useState("")
   const [activeModules, setActiveModules] = useState<string[]>([])
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -43,9 +44,10 @@ export default function BrandingPage() {
         setPrimaryColor(myCompany.primaryColor || "#1a56db")
         setSecondaryColor(myCompany.secondaryColor || "#ffffff")
         setTextColor(myCompany.textColor || "#1a1a1a")
-        setPortalTitle(myCompany.portalTitle || "")
-        setPortalDescription(myCompany.portalDescription || "")
-        setActiveModules(myCompany.modules || [])
+          setPortalTitle(myCompany.portalTitle || "")
+          setPortalDescription(myCompany.portalDescription || "")
+          setHeaderTitle(myCompany.headerTitle || "")
+          setActiveModules(myCompany.modules || [])
         setSelectedCompanyId(myCompany.id)
       }
     }).finally(() => setLoading(false))
@@ -65,6 +67,7 @@ export default function BrandingPage() {
       body: JSON.stringify({
         name, logo: logo || null, primaryColor, secondaryColor,
         textColor, portalTitle: portalTitle || null, portalDescription: portalDescription || null,
+        headerTitle: headerTitle || null,
       }),
     })
 
@@ -135,6 +138,15 @@ export default function BrandingPage() {
 
         <div className="bg-white rounded-xl border border-zinc-200 p-6 space-y-4">
           <h2 className="text-sm font-semibold text-zinc-600">Textos del portal</h2>
+
+          <div>
+            <label className="block text-xs font-medium text-zinc-600 mb-1">
+              Título del header (vacío = &quot;Notificaciones Nombre&quot;)
+            </label>
+            <input type="text" value={headerTitle} onChange={e => setHeaderTitle(e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Notificaciones Cámara del Tabaco" />
+          </div>
 
           <div>
             <label className="block text-xs font-medium text-zinc-600 mb-1">

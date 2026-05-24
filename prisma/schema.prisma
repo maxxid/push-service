@@ -96,6 +96,7 @@ model Company {
   textColor   String   @default("#1a1a1a")
   portalTitle String?
   portalDescription String?
+  headerTitle String?
   users       User[]
   subscribers Subscriber[]
   segments    Segment[]
