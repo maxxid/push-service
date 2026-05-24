@@ -5,6 +5,8 @@ import { OneSignalInit } from "@/components/portal/onesignal-init"
 import { ThemeToggle } from "@/components/portal/theme-toggle"
 import { prisma } from "@/lib/prisma"
 
+export const dynamic = "force-dynamic"
+
 export default async function PortalLayout({
   children,
 }: {
@@ -21,7 +23,6 @@ export default async function PortalLayout({
   const onesignalAppId = getOneSignalAppId()
 
   const primary = company?.primaryColor ?? "#1a56db"
-  const secondary = company?.secondaryColor ?? "#ffffff"
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">

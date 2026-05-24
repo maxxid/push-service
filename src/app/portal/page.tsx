@@ -3,6 +3,8 @@ import { getCompanyFromHeaders } from "@/lib/company-context"
 import { prisma } from "@/lib/prisma"
 import { PortalContent } from "@/components/portal/portal-content"
 
+export const dynamic = "force-dynamic"
+
 export default async function PortalPage({
   searchParams,
 }: {
