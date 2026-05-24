@@ -29,41 +29,46 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
     }
 
     // 1. Browser check
-    add("browser", "Navegador compatible")
+    add("browser", "Estás usando el navegador correcto")
     await new Promise(r => setTimeout(r, 400))
     if (p === "ios") {
       const isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS/.test(navigator.userAgent)
-      done("browser", isSafari ? "success" : "error", isSafari ? "Safari iOS detectado" : "Se requiere Safari en iPhone/iPad")
+      done("browser", isSafari ? "success" : "error",
+        isSafari ? "Perfecto, estás en Safari" : "Abrí esta página en la app Safari de tu iPhone")
     } else {
       const ok = /Chrome|Edge/.test(navigator.userAgent) && !/CriOS|EdgiOS/.test(navigator.userAgent)
-      done("browser", ok ? "success" : "warning", ok ? "Chrome/Edge detectado" : "Se recomienda Chrome o Edge")
+      done("browser", ok ? "success" : "warning",
+        ok ? "Perfecto, estás en Chrome" : "Probá abrir esta página en Google Chrome")
     }
 
     // 2. HTTPS
-    add("https", "Conexión segura (HTTPS)")
+    add("https", "La conexión es segura")
     await new Promise(r => setTimeout(r, 300))
     const isHttps = window.location.protocol === "https:" || window.location.hostname === "localhost"
-    done("https", isHttps ? "success" : "error", isHttps ? "HTTPS activo" : "Se requiere HTTPS para notificaciones")
+    done("https", isHttps ? "success" : "error",
+      isHttps ? "Conexión segura verificada" : "El sitio debe cargar con candado verde (https://)")
 
     // 3. PWA (iOS only)
     if (p === "ios") {
-      add("pwa", "App instalada (PWA)")
+      add("pwa", "La app está instalada en el inicio")
       await new Promise(r => setTimeout(r, 400))
       const standalone = (window.navigator as any).standalone || window.matchMedia("(display-mode: standalone)").matches
-      done("pwa", standalone ? "success" : "warning", standalone ? "PWA instalada" : "Instalar en pantalla principal para recibir notificaciones")
+      done("pwa", standalone ? "success" : "warning",
+        standalone ? "Ya está instalada en tu pantalla principal" : "Tocá Compartir ↑ → Agregar a pantalla de inicio")
     }
 
     // 4. Service Worker
-    add("sw", "Service Worker registrado")
+    add("sw", "El sistema de notificaciones funciona")
     await new Promise(r => setTimeout(r, 500))
     try {
       const regs = await navigator.serviceWorker?.getRegistrations()
       const hasSW = regs && regs.length > 0
-      done("sw", hasSW ? "success" : "error", hasSW ? `${regs.length} worker(s) activos` : "No se encontró el service worker")
-    } catch { done("sw", "error", "No se pudo verificar") }
+      done("sw", hasSW ? "success" : "error",
+        hasSW ? "Sistema de notificaciones activo" : "Cerrá la página y volvé a entrar. Si sigue fallando, contactanos.")
+    } catch { done("sw", "error", "Cerrá la página y volvé a entrar") }
 
     // 5. OneSignal
-    add("onesignal", "OneSignal inicializado")
+    add("onesignal", "El servicio de notificaciones está conectado")
     await new Promise(r => setTimeout(r, 400))
     const hasOS = typeof window !== "undefined" && "OneSignal" in window
     if (hasOS) {
@@ -71,20 +76,23 @@ export function PushDiagnostic({ open, onClose }: { open: boolean; onClose: () =
         const OneSignal = (window as any).OneSignal
         const subscribed = await OneSignal.User?.PushSubscription?.optedIn
         const isSub = typeof subscribed === "boolean" ? subscribed : await Promise.resolve(subscribed).catch(() => false)
-        done("onesignal", isSub ? "success" : "warning", isSub ? "Suscripción activa" : "OneSignal OK pero no suscripto")
-      } catch { done("onesignal", "warning", "OneSignal OK - estado desconocido") }
+        done("onesignal", isSub ? "success" : "warning",
+          isSub ? "Estás suscripto y listo para recibir avisos" : "Falta activar. Tocá el botón Activar notificaciones.")
+      } catch { done("onesignal", "warning", "Tocá el botón Activar notificaciones para completar") }
     } else {
-      done("onesignal", "error", "OneSignal no cargó. Recargá la página.")
+      done("onesignal", "error", "Recargá la página para intentar de nuevo")
     }
 
     // 6. Permission
-    add("permission", "Permiso de notificaciones")
+    add("permission", "Diste permiso para recibir notificaciones")
     await new Promise(r => setTimeout(r, 300))
     if ("Notification" in window) {
       done("permission", Notification.permission === "granted" ? "success" : Notification.permission === "denied" ? "error" : "warning",
-        Notification.permission === "granted" ? "Concedido" : Notification.permission === "denied" ? "Bloqueado. Revocar en configuración del navegador." : "Pendiente")
+        Notification.permission === "granted" ? "Sí, ya diste permiso" : Notification.permission === "denied"
+          ? "Las notificaciones están bloqueadas. Andá a Ajustes > Safari/Chrome > Notificaciones > Permitir."
+          : "Tocá Activar notificaciones cuando aparezca el mensaje")
     } else {
-      done("permission", "error", "API de notificaciones no disponible")
+      done("permission", "error", "Tu dispositivo no permite notificaciones")
     }
 
     setRunning(false)
