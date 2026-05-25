@@ -47,7 +47,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
   const readTime = Math.max(1, Math.ceil(JSON.stringify(blocks).length / 800))
 
   return (
-    <div>
+    <div id="landing-content">
       {/* Hero Section */}
       <div className="relative">
         {/* Subtle gradient bar at top */}
