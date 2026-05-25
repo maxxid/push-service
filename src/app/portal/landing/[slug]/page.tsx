@@ -4,6 +4,7 @@ import { headers } from "next/headers"
 import { BlockPreview } from "@/components/portal/landing-preview"
 import { ShareButton } from "@/components/portal/share-button"
 import { DownloadButton } from "@/components/portal/download-button"
+import { ActiveLandingsTrigger } from "@/components/portal/active-landings-trigger"
 
 export const dynamic = "force-dynamic"
 
@@ -179,9 +180,9 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
               <span className="text-sm text-slate-500">{company?.name || "Plataforma"}</span>
             </div>
           )}
-          <p className="text-xs text-zinc-400 text-slate-600">
-            {date.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}
-          </p>
+          {company && (
+            <ActiveLandingsTrigger subdomain={company.subdomain} />
+          )}
         </div>
       </div>
     </div>

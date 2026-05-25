@@ -3,6 +3,7 @@ import { getCompanyFromHeaders } from "@/lib/company-context"
 import { prisma } from "@/lib/prisma"
 import { PortalContent } from "@/components/portal/portal-content"
 import { DiagnosticTrigger } from "@/components/portal/diagnostic-trigger"
+import { ActiveLandingsTrigger } from "@/components/portal/active-landings-trigger"
 
 export const dynamic = "force-dynamic"
 
@@ -127,9 +128,9 @@ export default async function PortalPage({
               </span>
             </div>
           )}
-          <p className="text-xs text-slate-600">
-            Sin spam. Solo avisos importantes.
-          </p>
+          {company && (
+            <ActiveLandingsTrigger subdomain={company.subdomain} />
+          )}
         </div>
       </footer>
     </div>
