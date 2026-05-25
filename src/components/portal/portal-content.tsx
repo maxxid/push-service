@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback } from "react"
 import { NotificationPrompt } from "./notification-prompt"
 import { PortalModules } from "./portal-modules"
 
-type Props = { companyId: string; companyName: string; primaryColor: string; modules: string[] }
+type Props = { companyId: string; companyName: string; primaryColor: string; modules: string[]; whatsappNumber?: string | null }
 
-export function PortalContent({ companyId, companyName, primaryColor, modules }: Props) {
+export function PortalContent({ companyId, companyName, primaryColor, modules, whatsappNumber }: Props) {
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(true)
 
@@ -62,7 +62,7 @@ export function PortalContent({ companyId, companyName, primaryColor, modules }:
 
       {subscribed && modules.length > 0 && (
         <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-          <PortalModules modules={modules} primaryColor={primaryColor} />
+          <PortalModules modules={modules} primaryColor={primaryColor} whatsappNumber={whatsappNumber} />
         </div>
       )}
     </div>

@@ -30,6 +30,7 @@ export default function BrandingPage() {
   const [headerTitle, setHeaderTitle] = useState("")
   const [portalTitle, setPortalTitle] = useState("")
   const [portalDescription, setPortalDescription] = useState("")
+  const [whatsappNumber, setWhatsappNumber] = useState("")
   const [activeModules, setActiveModules] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -46,6 +47,7 @@ export default function BrandingPage() {
         setHeaderTitle(c.headerTitle || "")
         setPortalTitle(c.portalTitle || "")
         setPortalDescription(c.portalDescription || "")
+        setWhatsappNumber(c.whatsappNumber || "")
         setActiveModules(c.modules || [])
         setSelectedCompanyId(c.id)
       }
@@ -63,7 +65,7 @@ export default function BrandingPage() {
       await fetch(`/api/companies/${targetId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, logo: logo || null, primaryColor, headerTitle: headerTitle || null, portalTitle: portalTitle || null, portalDescription: portalDescription || null }),
+        body: JSON.stringify({ name, logo: logo || null, primaryColor, headerTitle: headerTitle || null, portalTitle: portalTitle || null, portalDescription: portalDescription || null, whatsappNumber: whatsappNumber || null }),
       })
       await fetch("/api/company/modules", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ modules: activeModules }) })
       toast.success("Cambios guardados")
@@ -151,6 +153,18 @@ export default function BrandingPage() {
               <textarea value={portalDescription} onChange={e => setPortalDescription(e.target.value)} rows={2}
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Activá las notificaciones para estar al día..." />
+            </div>
+          </div>
+
+          {/* WhatsApp */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Contacto</h2>
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Número de WhatsApp (código país sin +)</label>
+              <input type="text" value={whatsappNumber} onChange={e => setWhatsappNumber(e.target.value)}
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="5491234567890" />
+              <p className="text-xs text-slate-500 mt-1">Aparece en el footer del portal y en el módulo de contacto. Ej: 5491234567890</p>
             </div>
           </div>
 
