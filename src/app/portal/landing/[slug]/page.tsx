@@ -3,6 +3,7 @@ import type { LandingBlock } from "@/components/portal/landing-blocks"
 import { headers } from "next/headers"
 import { BlockPreview } from "@/components/portal/landing-preview"
 import { ShareButton } from "@/components/portal/share-button"
+import { DownloadButton } from "@/components/portal/download-button"
 
 export const dynamic = "force-dynamic"
 
@@ -76,6 +77,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             <h1 className="flex-1 text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
               {page.title}
             </h1>
+            <DownloadButton filename={page.title} />
             <ShareButton landingId={page.id} />
           </div>
 
@@ -88,7 +90,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
                 {(company?.name || "P").charAt(0).toUpperCase()}
               </div>
             )}
-            <div>
+            <div id="landing-content">
               <p className="text-sm font-semibold text-zinc-800 dark:text-slate-200">{company?.name || "Institución"}</p>
               <p className="text-xs text-slate-500">Comunicación institucional</p>
             </div>
