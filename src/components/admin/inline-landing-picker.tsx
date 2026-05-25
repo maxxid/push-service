@@ -5,7 +5,7 @@ import { LandingBuilder } from "@/components/portal/landing-builder"
 import { getDefaultBlocks, type LandingBlock } from "@/components/portal/landing-blocks"
 import { toast } from "@/lib/toast"
 
-type LP = { id: string; title: string; slug: string; content?: LandingBlock[]; published: boolean; updatedAt: string }
+type LP = { id: string; title: string; slug: string; content?: LandingBlock[]; published: boolean; expiresAt: string | null; updatedAt: string }
 
 type Props = {
   companyId: string
@@ -37,6 +37,9 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
   const [template, setTemplate] = useState("")
   const [creating, setCreating] = useState(false)
   const [previewHover, setPreviewHover] = useState<string | null>(null)
+  const [newExpiresAt, setNewExpiresAt] = useState("")
+  const [editingExpiry, setEditingExpiry] = useState<string | null>(null)
+  const [extendDate, setExtendDate] = useState("")
 
   const [saving, setSaving] = useState(false)
 
@@ -55,7 +58,7 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
     setSaving(true)
     const res = await fetch("/api/landing-pages", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: newTitle, slug: newSlug.toLowerCase().replace(/\s+/g, "-"), content: blocks, companyId: null }),
+      body: JSON.stringify({ title: newTitle, slug: newSlug.toLowerCase().replace(/\s+/g, "-"), content: blocks, expiresAt: newExpiresAt ? `${newExpiresAt}:00-03:00` : null, companyId: null }),
     })
     if (res.ok) {
       const lp = await res.json()
@@ -125,7 +128,15 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                             <div>
                               <p className="text-sm font-medium text-white">{lp.title}</p>
                               <p className="text-xs text-slate-400">/{lp.slug}</p>
-                              <span className={`text-[10px] mt-1 inline-block px-1.5 py-0.5 rounded ${lp.published ? "bg-green-500/10 text-green-400" : "bg-slate-800 text-slate-500"}`}>{lp.published ? "Publicada" : "Borrador"}</span>
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded ${lp.published ? "bg-green-500/10 text-green-400" : "bg-slate-800 text-slate-500"}`}>{lp.published ? "Publicada" : "Borrador"}</span>
+                                {lp.expiresAt && new Date(lp.expiresAt) < new Date() && (
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400">Vencida</span>
+                                )}
+                                {lp.expiresAt && new Date(lp.expiresAt) > new Date() && (
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400">Vence {new Date(lp.expiresAt).toLocaleDateString("es-AR", { day: "numeric", month: "short" })}</span>
+                                )}
+                              </div>
                             </div>
                             {selectedId === lp.id && <span className="text-xs text-blue-400">✓</span>}
                           </div>
@@ -133,6 +144,35 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                       ))}
                     </div>
                   )}
+
+                  {/* Extender vencimiento si seleccionó una vencida */}
+                  {(() => {
+                    const sel = landings.find(l => l.id === selectedId)
+                    if (!sel?.expiresAt || new Date(sel.expiresAt) > new Date()) return null
+                    return (
+                      <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/5 p-4 space-y-3">
+                        <p className="text-xs text-red-400 font-medium">⚠️ Esta landing está vencida. Extendé su vencimiento para usarla.</p>
+                        <div className="flex gap-2">
+                          <input type="datetime-local" value={extendDate} onChange={e => setExtendDate(e.target.value)}
+                            className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                          <button type="button" onClick={async () => {
+                            if (!extendDate) return
+                            await fetch(`/api/landing-pages/${selectedId}`, {
+                              method: "PUT", headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ expiresAt: `${extendDate}:00-03:00` }),
+                            })
+                            toast.success("Vencimiento actualizado")
+                            setEditingExpiry(null); setExtendDate("")
+                            // refresh landings list
+                            fetch("/api/landing-pages").then(r => r.json()).then((d: any[]) => setLandings(Array.isArray(d) ? d : []))
+                          }}
+                            className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-xl">
+                            Extender
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })()}
                 </div>
               ) : (
                 <div className="space-y-6">
@@ -149,6 +189,12 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                         className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="comunicado-mayo-2026" />
                     </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-medium text-slate-400 mb-1.5 block">Vence el <span className="text-slate-600">(opcional, UTC-3)</span></label>
+                    <input type="datetime-local" value={newExpiresAt} onChange={e => setNewExpiresAt(e.target.value)}
+                      className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                   </div>
 
                   <div>

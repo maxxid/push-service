@@ -45,6 +45,34 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
   const primaryColor = company?.primaryColor ?? "#1a56db"
   const date = new Date(page.createdAt)
   const readTime = Math.max(1, Math.ceil(JSON.stringify(blocks).length / 800))
+  const isExpired = page.expiresAt && new Date(page.expiresAt) < new Date()
+  const expireDate = page.expiresAt ? new Date(page.expiresAt) : null
+
+  if (isExpired) {
+    return (
+      <div id="landing-content" className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto px-6">
+          <div className="h-16 w-16 mx-auto rounded-2xl bg-slate-800 flex items-center justify-center">
+            <svg className="h-8 w-8 text-slate-500" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold text-white">Esta landing ya no está disponible</h1>
+          <p className="text-sm text-slate-400">
+            Fue publicada el {date.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })} y venció el {expireDate!.toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}.
+          </p>
+          {company && (
+            <div className="flex items-center justify-center gap-2">
+              <div className="h-6 w-6 rounded-md flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: primaryColor }}>
+                {(company.name || "P").charAt(0).toUpperCase()}
+              </div>
+              <span className="text-sm text-slate-500">{company.name}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div id="landing-content">
