@@ -9,6 +9,7 @@ export async function sendPushNotification({
   onesignalPlayerIds,
   priority = 5,
   sendAfter,
+  retargeting,
 }: {
   headings: Record<string, string>
   contents: Record<string, string>
@@ -17,6 +18,7 @@ export async function sendPushNotification({
   onesignalPlayerIds?: string[]
   priority?: number
   sendAfter?: string
+  retargeting?: { notification_id: string; clicked: boolean }
 }) {
   if (!ONESIGNAL_APP_ID || !ONESIGNAL_REST_API_KEY) {
     throw new Error("OneSignal no está configurado")
@@ -32,6 +34,7 @@ export async function sendPushNotification({
 
   if (url) body.url = url
   if (sendAfter) body.send_after = sendAfter
+  if (retargeting) body.retargeting = retargeting
   if (segmentId) {
     body.filters = [{ field: "tag", key: "company_id", relation: "=", value: segmentId }]
   }

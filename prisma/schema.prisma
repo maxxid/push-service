@@ -166,6 +166,13 @@ model Campaign {
   deliveries     Int             @default(0)
   clicks         Int             @default(0)
   onesignalNotificationId String?
+  reminderEnabled      Boolean   @default(false)
+  reminderDelayHours   Int?
+  reminderTarget       String?
+  reminderSent         Boolean   @default(false)
+  parentCampaignId     String?    @unique
+  parentCampaign       Campaign? @relation("CampaignReminder", fields: [parentCampaignId], references: [id])
+  reminderCampaign     Campaign? @relation("CampaignReminder")
   createdBy      String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

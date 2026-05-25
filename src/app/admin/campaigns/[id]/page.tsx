@@ -11,6 +11,8 @@ type CampaignDetail = {
   deliveries: number; clicks: number; scheduledAt: string | null; sentAt: string | null
   segment?: { id: string; name: string }; landingPage?: { id: string; title: string; slug: string }
   company?: { name: string }; createdAt: string
+  parentCampaignId?: string | null; reminderTarget?: string | null; reminderDelayHours?: number | null
+  reminderSent?: boolean; reminderEnabled?: boolean; parentCampaign?: { id: string; title: string } | null
 }
 
 export default function CampaignDetailPage() {
@@ -159,6 +161,17 @@ export default function CampaignDetailPage() {
           {campaign.scheduledAt && <div className="flex justify-between text-sm"><span className="text-slate-500">Programada</span><span className="text-slate-300">{new Date(campaign.scheduledAt).toLocaleString("es-AR")}</span></div>}
           {campaign.sentAt && <div className="flex justify-between text-sm"><span className="text-slate-500">Enviada</span><span className="text-slate-300">{new Date(campaign.sentAt).toLocaleString("es-AR")}</span></div>}
           <div className="flex justify-between text-sm"><span className="text-slate-500">Creada</span><span className="text-slate-300">{new Date(campaign.createdAt).toLocaleString("es-AR")}</span></div>
+          {campaign.parentCampaignId && (
+            <div className="pt-3 mt-3 border-t border-slate-800">
+              <span className="text-[10px] text-amber-400 uppercase tracking-wider font-semibold">⏰ Recordatorio</span>
+              {campaign.parentCampaign && (
+                <p className="text-xs text-slate-400 mt-1">De: {campaign.parentCampaign.title}</p>
+              )}
+              <p className="text-xs text-slate-400 mt-0.5">
+                {campaign.reminderTarget === "no-clickers" ? "Solo no-clickers" : "Todos"} · {campaign.reminderSent ? "Enviado" : campaign.status === "SCHEDULED" ? "Programado" : "Pendiente"}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

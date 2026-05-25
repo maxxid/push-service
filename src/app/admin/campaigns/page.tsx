@@ -13,6 +13,7 @@ type Campaign = {
   scheduledAt: string | null; sentAt: string | null
   segment?: { name: string; id: string }; landingPage?: { title: string; id: string }
   company?: { name: string }; createdAt: string
+  parentCampaignId?: string | null; reminderTarget?: string | null
 }
 
 const statusMap: Record<string, { label: string; color: string }> = {
@@ -98,6 +99,9 @@ export default function CampaignsPage() {
                     </span>
                     {c.priority === "URGENTE" && (
                       <span className="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full font-medium">Urgente</span>
+                    )}
+                    {c.parentCampaignId && (
+                      <span className="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-medium">⏰ Recordatorio</span>
                     )}
                   </div>
                   <p className="text-sm text-slate-400 truncate">{c.pushMessage}</p>

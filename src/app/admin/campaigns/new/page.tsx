@@ -38,6 +38,11 @@ export default function NewCampaignPage() {
   const [landingPageId, setLandingPageId] = useState("")
   const [sendNow, setSendNow] = useState(true)
   const [scheduledAt, setScheduledAt] = useState("")
+  const [reminderEnabled, setReminderEnabled] = useState(false)
+  const [reminderDelay, setReminderDelay] = useState(6)
+  const [reminderTarget, setReminderTarget] = useState("no-clickers")
+  const [reminderTitle, setReminderTitle] = useState("")
+  const [reminderMessage, setReminderMessage] = useState("")
   const [companyId, setCompanyId] = useState(userCompanyId || "")
 
   const [segments, setSegments] = useState<Segment[]>([])
@@ -61,7 +66,7 @@ export default function NewCampaignPage() {
 
   const handleCreate = async () => {
     setLoading(true); setError("")
-    const body: any = { title, pushMessage, imageUrl: imageUrl || undefined, actionType, actionValue: actionValue || undefined, landingPageId: landingPageId || undefined, priority, segmentId: segmentId || undefined, companyId: role === "SUPERADMIN" ? companyId : undefined, scheduledAt: sendNow ? undefined : scheduledAt ? `${scheduledAt}:00-03:00` : undefined }
+    const body: any = { title, pushMessage, imageUrl: imageUrl || undefined, actionType, actionValue: actionValue || undefined, landingPageId: landingPageId || undefined, priority, segmentId: segmentId || undefined, companyId: role === "SUPERADMIN" ? companyId : undefined, scheduledAt: sendNow ? undefined : scheduledAt ? `${scheduledAt}:00-03:00` : undefined, reminderEnabled, reminderDelayHours: reminderEnabled ? reminderDelay : undefined, reminderTarget: reminderEnabled ? reminderTarget : undefined, reminderTitle: reminderEnabled && reminderTitle ? reminderTitle : undefined, reminderMessage: reminderEnabled && reminderMessage ? reminderMessage : undefined }
     const res = await fetch("/api/campaigns", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
     if (!res.ok) { const d = await res.json(); setError(d.error || "Error"); setLoading(false); return }
     const c = await res.json()
@@ -232,6 +237,53 @@ export default function NewCampaignPage() {
                   </div>
                 </div>
               </label>
+
+              {/* Reminder */}
+              <div className="border-t border-slate-800 pt-4">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" checked={reminderEnabled} onChange={e => setReminderEnabled(e.target.checked)} className="rounded accent-blue-500" />
+                  <span className="text-sm font-medium text-white">Enviar recordatorio</span>
+                </label>
+
+                {reminderEnabled && (
+                  <div className="mt-4 space-y-4 pl-7">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-400">Enviar en</span>
+                      <select value={reminderDelay} onChange={e => setReminderDelay(Number(e.target.value))}
+                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
+                        {[1,3,6,12,24,48].map(h => <option key={h} value={h}>{h}h</option>)}
+                      </select>
+                      <span className="text-xs text-slate-400">después</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-xs text-slate-400">Enviar a</p>
+                      <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer ${reminderTarget === "all" ? "border-blue-500 bg-blue-500/5" : "border-slate-800 hover:border-slate-700"}`}>
+                        <input type="radio" checked={reminderTarget === "all"} onChange={() => setReminderTarget("all")} className="accent-blue-500" />
+                        <span className="text-sm text-white">Todos los suscriptores</span>
+                      </label>
+                      <label className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer ${reminderTarget === "no-clickers" ? "border-blue-500 bg-blue-500/5" : "border-slate-800 hover:border-slate-700"}`}>
+                        <input type="radio" checked={reminderTarget === "no-clickers"} onChange={() => setReminderTarget("no-clickers")} className="accent-blue-500" />
+                        <span className="text-sm text-white">Solo quienes no abrieron</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-slate-400 mb-1.5 block">Título del recordatorio</label>
+                      <input type="text" value={reminderTitle} onChange={e => setReminderTitle(e.target.value)}
+                        placeholder={`⏰ Recordatorio: ${title || "..."}`}
+                        className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-slate-400 mb-1.5 block">Mensaje del recordatorio</label>
+                      <textarea value={reminderMessage} onChange={e => setReminderMessage(e.target.value)} rows={2}
+                        placeholder={pushMessage || "Mismo mensaje que el original"}
+                        className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -246,6 +298,9 @@ export default function NewCampaignPage() {
                 <div className="flex justify-between"><span className="text-slate-400">Acción</span><span className="text-white">{actionTypes.find(a => a.value === actionType)?.label}</span></div>
                 <div className="flex justify-between"><span className="text-slate-400">Segmento</span><span className="text-white">{selectedSegment?.name || "Todos"}</span></div>
                 <div className="flex justify-between"><span className="text-slate-400">Envío</span><span className="text-white">{sendNow ? "Ahora" : scheduledAt ? new Date(scheduledAt).toLocaleString("es-AR") : "Sin fecha"}</span></div>
+                {reminderEnabled && (
+                  <div className="flex justify-between"><span className="text-slate-400">Recordatorio</span><span className="text-amber-400">+{reminderDelay}h · {reminderTarget === "no-clickers" ? "No-clickers" : "Todos"}</span></div>
+                )}
               </div>
               {error && <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 text-sm text-red-400">{error}</div>}
               <button onClick={handleCreate} disabled={loading}

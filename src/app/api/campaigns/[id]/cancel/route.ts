@@ -28,6 +28,21 @@ export async function POST(
     ).catch(() => {})
   }
 
+  // Also cancel linked reminder
+  const reminder = await prisma.campaign.findFirst({
+    where: { parentCampaignId: id, reminderSent: false },
+  })
+  if (reminder?.onesignalNotificationId) {
+    await fetch(
+      `https://onesignal.com/api/v1/notifications/${reminder.onesignalNotificationId}?app_id=${process.env.ONESIGNAL_APP_ID}`,
+      { method: "DELETE", headers: { Authorization: `Key ${process.env.ONESIGNAL_REST_API_KEY}` } }
+    ).catch(() => {})
+    await prisma.campaign.update({
+      where: { id: reminder.id },
+      data: { status: "DRAFT", onesignalNotificationId: null, scheduledAt: null },
+    })
+  }
+
   await prisma.campaign.update({
     where: { id },
     data: { status: "DRAFT", onesignalNotificationId: null, scheduledAt: null },

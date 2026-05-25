@@ -70,6 +70,11 @@ export async function POST(request: Request) {
     priority,
     scheduledAt,
     companyId,
+    reminderEnabled,
+    reminderDelayHours,
+    reminderTarget,
+    reminderTitle,
+    reminderMessage,
   } = body
 
   if (!title || !pushMessage) {
@@ -117,5 +122,35 @@ export async function POST(request: Request) {
     },
   })
 
-  return NextResponse.json(campaign, { status: 201 })
+  // Create reminder campaign if enabled
+  let reminderCampaign = null
+  if (reminderEnabled && reminderDelayHours) {
+    const rTitle = reminderTitle || `⏰ Recordatorio: ${title}`
+    const rMessage = reminderMessage || pushMessage
+    const rScheduledAt = scheduledAt
+      ? new Date(new Date(scheduledAt).getTime() + reminderDelayHours * 3600000)
+      : new Date(Date.now() + reminderDelayHours * 3600000)
+
+    reminderCampaign = await prisma.campaign.create({
+      data: {
+        title: rTitle,
+        pushMessage: rMessage,
+        imageUrl: imageUrl || null,
+        segmentId: segmentId || null,
+        landingPageId: landingPageId || null,
+        actionType: actionType || "LANDING_INTERNA",
+        actionValue: actionValue || null,
+        priority: priority || "NORMAL",
+        scheduledAt: rScheduledAt,
+        status: "SCHEDULED",
+        companyId: targetCompanyId,
+        createdBy: user.id,
+        parentCampaignId: campaign.id,
+        reminderEnabled: false,
+        reminderTarget: reminderTarget || "all",
+      },
+    })
+  }
+
+  return NextResponse.json({ campaign, reminderCampaign }, { status: 201 })
 }

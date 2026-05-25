@@ -77,7 +77,20 @@ export async function POST(
   const priority = campaign.priority === "URGENTE" ? 10 : 5
 
   const isScheduled = !!campaign.scheduledAt
+  const isReminder = !!campaign.parentCampaignId && campaign.reminderTarget
   const sendAfter = isScheduled ? new Date(campaign.scheduledAt!).toISOString() : undefined
+
+  // Build retargeting for reminders targeting no-clickers
+  let retargeting
+  if (isReminder && campaign.reminderTarget === "no-clickers") {
+    const parent = await prisma.campaign.findUnique({
+      where: { id: campaign.parentCampaignId! },
+      select: { onesignalNotificationId: true },
+    })
+    if (parent?.onesignalNotificationId) {
+      retargeting = { notification_id: parent.onesignalNotificationId, clicked: false }
+    }
+  }
 
   try {
     const result = await sendPushNotification({
@@ -87,6 +100,7 @@ export async function POST(
       onesignalPlayerIds: playerIds,
       priority,
       sendAfter,
+      retargeting,
     })
 
     const updateData: any = {
@@ -94,6 +108,7 @@ export async function POST(
       sentAt: isScheduled ? null : new Date(),
       deliveries: playerIds.length,
     }
+    if (isReminder) updateData.reminderSent = true
     if (isScheduled && (result as any)?.id) {
       updateData.onesignalNotificationId = (result as any).id
     }
