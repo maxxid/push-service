@@ -18,7 +18,6 @@ const mainLinks = [
   { href: "/admin/events", label: "Agenda", icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" },
   { href: "/admin/branding", label: "Branding", icon: "M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" },
 ]
-
 const adminLinks = [
   { href: "/admin/companies", label: "Empresas", icon: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" },
 ]
@@ -30,12 +29,14 @@ export function Sidebar() {
   const companyId = session?.user?.companyId
   const [expanded, setExpanded] = useState(false)
   const [logo, setLogo] = useState<string | null>(null)
+  const [requireDni, setRequireDni] = useState(false)
 
   useEffect(() => {
     if (companyId || role === "SUPERADMIN") {
       fetch("/api/companies").then(r => r.json()).then((d: any[]) => {
         const c = Array.isArray(d) && d.length > 0 ? d[0] : null
         if (c?.logo) setLogo(c.logo)
+        if (c?.requireDniVerification) setRequireDni(true)
       })
     }
   }, [companyId, role])
@@ -98,6 +99,29 @@ export function Sidebar() {
               )}
             </Link>
           ))}
+
+          {/* DNI - only for company admins with DNI enabled */}
+          {requireDni && role !== "SUPERADMIN" && (
+            <Link
+              href="/admin/dni"
+              className={`flex items-center rounded-lg transition-all duration-200 ${expanded ? "px-3 py-2 gap-3" : "px-0 py-2 justify-center"} ${
+                isActive("/admin/dni")
+                  ? "bg-blue-600/20 text-blue-400 border border-blue-500/20"
+                  : "text-slate-400 hover:text-slate-200 hover:bg-[#1E293B] border border-transparent"
+              }`}
+              title={!expanded ? "Afiliados" : undefined}
+            >
+              <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span className={`text-sm font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ${expanded ? "opacity-100 w-auto" : "opacity-0 w-0"}`}>
+                Afiliados
+              </span>
+              {isActive("/admin/dni") && expanded && (
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400" />
+              )}
+            </Link>
+          )}
 
           {/* Admin section (superadmin only) */}
           {role === "SUPERADMIN" && (
