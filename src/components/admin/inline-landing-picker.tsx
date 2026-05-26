@@ -120,15 +120,12 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {filtered.map(lp => (
                         <div key={lp.id}
-                          onMouseEnter={() => setPreviewHover(lp.id)}
-                          onMouseLeave={() => setPreviewHover(null)}
-                          className={`relative rounded-xl border p-4 cursor-pointer transition-all ${selectedId === lp.id ? "border-blue-500 bg-blue-500/5" : "border-slate-800 hover:border-slate-700 bg-slate-800/30"}`}
-                          onClick={() => { onSelect(lp.id, lp.title); setOpen(false) }}>
-                          <div className="flex items-start justify-between">
+                          className={`relative rounded-xl border p-4 transition-all ${selectedId === lp.id ? "border-blue-500 bg-blue-500/5" : "border-slate-800 hover:border-slate-700 bg-slate-800/30"}`}>
+                          <div className="flex items-start justify-between mb-3">
                             <div>
                               <p className="text-sm font-medium text-white">{lp.title}</p>
                               <p className="text-xs text-slate-400">/{lp.slug}</p>
-                              <div className="flex items-center gap-1.5 mt-1">
+                              <div className="flex items-center gap-1.5 mt-1.5">
                                 <span className={`text-[10px] px-1.5 py-0.5 rounded ${lp.published ? "bg-green-500/10 text-green-400" : "bg-slate-800 text-slate-500"}`}>{lp.published ? "Publicada" : "Borrador"}</span>
                                 {lp.expiresAt && new Date(lp.expiresAt) < new Date() && (
                                   <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400">Vencida</span>
@@ -139,6 +136,40 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                               </div>
                             </div>
                             {selectedId === lp.id && <span className="text-xs text-blue-400">✓</span>}
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button type="button"
+                              onClick={(e) => { e.stopPropagation(); window.open(`/portal/landing/${lp.slug}`, "_blank") }}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors">
+                              Ver
+                            </button>
+                            <button type="button"
+                              onClick={(e) => { e.stopPropagation(); window.open(`/admin/landing-pages/${lp.id}`, "_blank") }}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-blue-300 hover:text-blue-200 hover:bg-slate-700 transition-colors">
+                              Editar
+                            </button>
+                            <button type="button"
+                              onClick={async (e) => {
+                                e.stopPropagation()
+                                // Auto-publish if not published
+                                if (!lp.published) {
+                                  await fetch(`/api/landing-pages/${lp.id}`, {
+                                    method: "PUT", headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ published: true }),
+                                  })
+                                }
+                                // Refresh list and select
+                                const res = await fetch("/api/landing-pages")
+                                const list = await res.json()
+                                setLandings(Array.isArray(list) ? list : [])
+                                onSelect(lp.id, lp.title)
+                                setOpen(false)
+                                toast.success(lp.published ? "Landing seleccionada" : "Landing publicada y seleccionada")
+                              }}
+                              className="text-xs px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-colors ml-auto">
+                              Seleccionar
+                            </button>
                           </div>
                         </div>
                       ))}
