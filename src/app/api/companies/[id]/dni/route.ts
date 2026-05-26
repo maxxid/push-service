@@ -19,6 +19,27 @@ export async function GET(
   return NextResponse.json(records)
 }
 
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth()
+  if (!session?.user?.id) return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+
+  const { id } = await params
+  const body = await request.json()
+  const { dniId } = body
+
+  if (!dniId) return NextResponse.json({ error: "dniId requerido" }, { status: 400 })
+
+  await prisma.authorizedDni.update({
+    where: { id: dniId },
+    data: { subscribed: false, subscriberId: null, subscribedAt: null, deviceInfo: null },
+  })
+
+  return NextResponse.json({ ok: true })
+}
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

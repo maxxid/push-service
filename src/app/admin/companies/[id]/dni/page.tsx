@@ -61,6 +61,17 @@ export default function DniManagementPage() {
     fetchRecords()
   }
 
+  const handleReset = async (dniId: string) => {
+    if (!confirm("¿Reestablecer este afiliado? Podrá volver a suscribirse.")) return
+    await fetch(`/api/companies/${params.id}/dni`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ dniId }),
+    })
+    toast.success("Reestablecido")
+    fetchRecords()
+  }
+
   const filtered = filter
     ? records.filter(r =>
         r.dni.includes(filter) ||
@@ -131,6 +142,12 @@ export default function DniManagementPage() {
                     {r.deviceInfo || "-"}
                   </td>
                   <td className="px-5 py-3 text-right">
+                    {r.subscribed && (
+                      <button onClick={() => handleReset(r.id)}
+                        className="text-xs text-amber-400 hover:text-amber-300 mr-3">
+                        Reestablecer
+                      </button>
+                    )}
                     <button onClick={() => handleDelete(r.id)}
                       className="text-xs text-red-400 hover:text-red-300">
                       Eliminar
