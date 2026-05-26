@@ -354,8 +354,8 @@ export default function NewCampaignPage() {
                       <span className="text-[11px] text-slate-400">Landing</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Mobile</span>
                     </div>
-                    <div className="p-3 flex justify-center">
-                      <div className="w-[280px] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ height: 420 }}>
+                    <div className="p-3 flex justify-center overflow-hidden">
+                      <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl origin-top-center" style={{ width: 375, height: 520, transform: "scale(0.65)", transformOrigin: "top center" }}>
                         <iframe
                           src={`/portal/landing/${selectedLP.slug}`}
                           className="w-full h-full border-0"
