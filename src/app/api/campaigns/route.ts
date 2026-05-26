@@ -152,5 +152,8 @@ export async function POST(request: Request) {
     })
   }
 
-  return NextResponse.json({ campaign, reminderCampaign }, { status: 201 })
+  const response: any = { ...campaign }
+  if (reminderCampaign) response.reminder = reminderCampaign
+
+  return NextResponse.json(response, { status: 201 })
 }
