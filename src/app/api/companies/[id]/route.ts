@@ -72,6 +72,8 @@ export async function PUT(
       portalDescription: body.portalDescription,
       headerTitle: body.headerTitle,
       whatsappNumber: body.whatsappNumber,
+      showShare: body.showShare,
+      showDownload: body.showDownload,
     },
   })
 

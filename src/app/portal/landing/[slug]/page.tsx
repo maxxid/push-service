@@ -115,8 +115,10 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             <h1 className="flex-1 text-4xl sm:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
               {page.title}
             </h1>
-            <DownloadButton filename={page.title} />
-            <ShareButton landingId={page.id} />
+            <div className="flex gap-1.5">
+              {company?.showDownload !== false && <DownloadButton filename={page.title} />}
+              {company?.showShare !== false && <ShareButton landingId={page.id} />}
+            </div>
           </div>
 
           {/* Branding footer of hero */}

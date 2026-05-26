@@ -97,6 +97,8 @@ model Company {
   portalTitle String?
   portalDescription String?
   headerTitle String?
+  showShare   Boolean   @default(true)
+  showDownload Boolean  @default(true)
   users       User[]
   subscribers Subscriber[]
   segments    Segment[]

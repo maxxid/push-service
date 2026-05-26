@@ -32,6 +32,8 @@ export default function BrandingPage() {
   const [portalDescription, setPortalDescription] = useState("")
   const [whatsappNumber, setWhatsappNumber] = useState("")
   const [activeModules, setActiveModules] = useState<string[]>([])
+  const [showShare, setShowShare] = useState(true)
+  const [showDownload, setShowDownload] = useState(true)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [selectedCompanyId, setSelectedCompanyId] = useState<string | null>(null)
@@ -49,6 +51,8 @@ export default function BrandingPage() {
         setPortalDescription(c.portalDescription || "")
         setWhatsappNumber(c.whatsappNumber || "")
         setActiveModules(c.modules || [])
+        setShowShare(c.showShare !== false)
+        setShowDownload(c.showDownload !== false)
         setSelectedCompanyId(c.id)
       }
     }).finally(() => setLoading(false))
@@ -65,7 +69,7 @@ export default function BrandingPage() {
       await fetch(`/api/companies/${targetId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, logo: logo || null, primaryColor, headerTitle: headerTitle || null, portalTitle: portalTitle || null, portalDescription: portalDescription || null, whatsappNumber: whatsappNumber || null }),
+        body: JSON.stringify({ name, logo: logo || null, primaryColor, headerTitle: headerTitle || null, portalTitle: portalTitle || null, portalDescription: portalDescription || null, showShare, showDownload }),
       })
       await fetch("/api/company/modules", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ modules: activeModules }) })
       toast.success("Cambios guardados")
@@ -179,6 +183,19 @@ export default function BrandingPage() {
                 </label>
               ))}
             </div>
+          </div>
+
+          {/* Landing buttons */}
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-300">Botones en landings</h2>
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 hover:border-blue-500/50 cursor-pointer transition-colors">
+              <input type="checkbox" checked={showShare} onChange={e => setShowShare(e.target.checked)} className="rounded" />
+              <div><p className="text-sm font-medium text-white">Botón Compartir</p><p className="text-xs text-slate-400">Permite copiar el enlace de la landing</p></div>
+            </label>
+            <label className="flex items-center gap-3 p-3 rounded-lg border border-slate-700 hover:border-blue-500/50 cursor-pointer transition-colors">
+              <input type="checkbox" checked={showDownload} onChange={e => setShowDownload(e.target.checked)} className="rounded" />
+              <div><p className="text-sm font-medium text-white">Botón Descargar</p><p className="text-xs text-slate-400">Permite descargar la landing como imagen</p></div>
+            </label>
           </div>
         </div>
 
