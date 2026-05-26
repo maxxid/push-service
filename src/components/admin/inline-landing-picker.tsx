@@ -145,7 +145,7 @@ export function InlineLandingPicker({ companyId, selectedId, onSelect }: Props) 
                               Ver
                             </button>
                             <button type="button"
-                              onClick={(e) => { e.stopPropagation(); window.open(`/admin/landing-pages/${lp.id}`, "_blank") }}
+                              onClick={(e) => { e.stopPropagation(); window.open(`/admin/landing-pages/${lp.id}?from=wizard`, "_blank") }}
                               className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-blue-300 hover:text-blue-200 hover:bg-slate-700 transition-colors">
                               Editar
                             </button>

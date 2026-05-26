@@ -1,9 +1,10 @@
 "use client"
-import { useEffect, useState } from "react"; import { useParams, useRouter } from "next/navigation"; import { toast } from "@/lib/toast"
+import { useEffect, useState } from "react"; import { useParams, useRouter, useSearchParams } from "next/navigation"; import { toast } from "@/lib/toast"
 import { LandingBuilder } from "@/components/portal/landing-builder"; import type { LandingBlock } from "@/components/portal/landing-blocks"
 
 export default function EditLandingPage() {
-  const params = useParams(); const router = useRouter()
+  const params = useParams(); const router = useRouter(); const searchParams = useSearchParams()
+  const fromWizard = searchParams.get("from") === "wizard"
   const [landing, setLanding] = useState<any>(null); const [title, setTitle] = useState("")
   const [blocks, setBlocks] = useState<LandingBlock[]>([]); const [published, setPublished] = useState(false)
   const [expiresAt, setExpiresAt] = useState(""); const [noExpiry, setNoExpiry] = useState(false)
@@ -11,13 +12,18 @@ export default function EditLandingPage() {
 
   useEffect(() => { fetch(`/api/landing-pages/${params.id}`).then(r => r.json()).then(data => { setLanding(data); setTitle(data.title); setBlocks(Array.isArray(data.content) ? data.content : []); setPublished(data.published); if (data.expiresAt) { const d = new Date(data.expiresAt); setExpiresAt(d.toISOString().slice(0, 16)) } else { setExpiresAt(""); setNoExpiry(true) } }).finally(() => setLoading(false)) }, [params.id])
 
-  const handleSave = async () => { setSaving(true); const expiry = noExpiry ? null : expiresAt ? `${expiresAt}:00-03:00` : null; await fetch(`/api/landing-pages/${params.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title, content: blocks, published, expiresAt: expiry }) }); toast.success("Landing actualizada"); setSaving(false) }
+  const handleSave = async () => { setSaving(true); const expiry = noExpiry ? null : expiresAt ? `${expiresAt}:00-03:00` : null; await fetch(`/api/landing-pages/${params.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title, content: blocks, published, expiresAt: expiry }) }); toast.success("Landing actualizada"); setSaving(false); if (fromWizard) toast.info("Volvé a la pestaña del wizard y actualizá la lista") }
 
   if (loading) return <div className="animate-pulse"><div className="h-8 w-48 bg-slate-800 rounded-xl mb-6" /><div className="h-64 bg-slate-800 rounded-2xl" /></div>
   return (
     <div>
+      {fromWizard && (
+        <div className="mb-4 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 flex items-center justify-between">
+          <p className="text-xs text-amber-300">Editando desde el wizard de campaña. Al guardar, volvé a la otra pestaña y actualizá la lista.</p>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3"><button onClick={() => router.push("/admin/landing-pages")} className="text-slate-500 hover:text-slate-300">← Volver</button><h1 className="text-2xl font-bold text-white">Editar landing</h1></div>
+        <div className="flex items-center gap-3"><button onClick={() => fromWizard ? window.close() : router.push("/admin/landing-pages")} className="text-slate-500 hover:text-slate-300">{fromWizard ? "← Volver al wizard" : "← Volver"}</button><h1 className="text-2xl font-bold text-white">Editar landing</h1></div>
         <button onClick={handleSave} disabled={saving} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl">{saving ? "Guardando..." : "Guardar"}</button>
       </div>
       <div className="max-w-4xl space-y-6">
