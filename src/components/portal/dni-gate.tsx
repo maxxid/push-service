@@ -111,7 +111,7 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
               className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-center text-lg text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 tracking-widest"
             />
             {errorType && (
-              <div className={`rounded-xl border p-3 text-xs text-center ${statusColors[errorType]}`}>{error}</div>
+              <div className={`rounded-xl border p-3 text-xs text-center ${statusColors[errorType] || statusColors.red}`}>{error}</div>
             )}
             <button type="submit" disabled={loading || dni.length < 8}
               className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
@@ -119,9 +119,9 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
               {loading ? "Verificando..." : "Verificar DNI"}
             </button>
           </form>
-        ) : errorType === "green" && error ? (
-          <div className={`rounded-xl border p-4 text-sm text-center ${statusColors.green}`}>{error}</div>
-        ) : null}
+        ) : (
+          <div className={`rounded-xl border p-4 text-sm text-center ${statusColors[errorType as keyof typeof statusColors] || statusColors.amber}`}>{error || "✓ Verificado"}</div>
+        )}
 
         <p className="text-xs text-slate-500 text-center mt-4">Solo para afiliados de {companyName}</p>
       </div>
