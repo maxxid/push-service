@@ -85,7 +85,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
   }
 
   return (
-    <div id="landing-content">
+    <div id="landing-content" style={{ colorScheme: "dark" }}>
       {/* Hero Section */}
       <div className="relative">
         {/* Subtle gradient bar at top */}
