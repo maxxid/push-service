@@ -38,7 +38,6 @@ export default function NewCampaignPage() {
   const [landingPageId, setLandingPageId] = useState("")
   const [sendNow, setSendNow] = useState(true)
   const [scheduledAt, setScheduledAt] = useState("")
-  const [showLandingPreview, setShowLandingPreview] = useState(true)
   const [reminderEnabled, setReminderEnabled] = useState(false)
   const [reminderDelay, setReminderDelay] = useState(6)
   const [reminderTarget, setReminderTarget] = useState("no-clickers")
@@ -317,9 +316,9 @@ export default function NewCampaignPage() {
           <div className="sticky top-24">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Vista previa</p>
 
-            <div className={`bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden ${landingPageId ? "grid grid-cols-2" : ""}`}>
-              {/* Notification */}
-              <div className={landingPageId ? "border-r border-slate-800" : ""}>
+            <div className="flex gap-4">
+              {/* Box 1: Notification */}
+              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex-1">
                 <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
                   <span className="text-[11px] text-slate-400">Notificación</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">Android</span>
@@ -343,34 +342,35 @@ export default function NewCampaignPage() {
                     <div className="h-0.5 bg-slate-800" />
                   </div>
                 </div>
+                <div className="px-4 py-2 border-t border-slate-800">
+                  <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS} · {selectedSegment?._count?.subscribers || 0} dest.</span>
+                </div>
               </div>
 
-              {/* Landing preview (side by side) */}
+              {/* Box 2: Landing (fills remaining space) */}
               {landingPageId && (() => {
                 const selectedLP = landingPages.find(lp => lp.id === landingPageId)
                 if (!selectedLP) return null
                 return (
-                  <div className="flex flex-col">
-                    <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex-[2] flex flex-col">
+                    <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
                       <span className="text-[11px] text-slate-400">Landing</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Preview</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Preview</span>
+                        <a href={`/portal/landing/${selectedLP.slug}`} target="_blank" rel="noopener noreferrer"
+                          className="text-[10px] text-slate-400 hover:text-white">↗</a>
+                      </div>
                     </div>
-                    <div className="flex-1 p-3 flex items-center justify-center overflow-hidden min-h-[300px]">
+                    <div className="flex-1 p-3 min-h-0">
                       <iframe
                         src={`/portal/landing/${selectedLP.slug}`}
-                        className="w-full max-w-[320px] h-full min-h-[320px] rounded-xl border border-slate-700"
+                        className="w-full h-full min-h-[350px] rounded-xl border border-slate-700"
                         title="Landing preview"
                       />
                     </div>
                   </div>
                 )
               })()}
-
-              {/* Step indicator across full width */}
-              <div className={`${landingPageId ? "col-span-2" : ""} px-4 py-3 border-t border-slate-800 flex items-center justify-between`}>
-                <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS}</span>
-                <span className="text-[10px] text-slate-500">{selectedSegment?._count?.subscribers || 0} destinatarios</span>
-              </div>
             </div>
           </div>
         </div>
