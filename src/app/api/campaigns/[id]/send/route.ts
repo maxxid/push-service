@@ -120,6 +120,7 @@ export async function POST(
       scheduled: isScheduled,
       sendAfter,
       sent: playerIds.length,
+      targets: playerIds.slice(0, 10),
       result,
     })
   } catch (error) {
