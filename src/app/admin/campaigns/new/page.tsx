@@ -323,9 +323,11 @@ export default function NewCampaignPage() {
                 <div className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl w-full max-w-[280px]">
                   <div className="px-4 py-3">
                     <div className="flex items-center gap-2 mb-1.5">
-                      <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
-                        <span className="text-[7px] text-white font-bold">P</span>
-                      </div>
+                        <div className="h-4 w-4 rounded-full bg-slate-700 flex items-center justify-center">
+                          <svg className="h-2.5 w-2.5 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                            <circle cx="12" cy="12" r="10"/>
+                          </svg>
+                        </div>
                       <span className="text-[10px] text-slate-500">ahora · Notificaciones</span>
                     </div>
                     <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título"}</p>
