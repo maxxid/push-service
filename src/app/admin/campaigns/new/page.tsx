@@ -79,7 +79,7 @@ export default function NewCampaignPage() {
 
   const canNext = () => {
     if (step === 1) return title && pushMessage
-    if (step === 2) return true
+    if (step === 2) return actionType !== "LANDING_INTERNA" || !!landingPageId
     if (step === 3) return !!segmentId
     return true
   }
