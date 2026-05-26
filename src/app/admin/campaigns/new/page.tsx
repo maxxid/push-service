@@ -362,7 +362,7 @@ export default function NewCampaignPage() {
                     </button>
                     {showLandingPreview && (
                       <div className="p-4 flex justify-center">
-                        <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ width: 320, height: 480 }}>
+                        <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ width: 375, height: 600 }}>
                           <iframe
                             src={`/portal/landing/${selectedLP.slug}`}
                             className="w-full h-full border-0"
