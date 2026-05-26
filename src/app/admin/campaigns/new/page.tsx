@@ -102,9 +102,9 @@ export default function NewCampaignPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Form - 3 cols */}
-        <div className="lg:col-span-3 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+        {/* Form - 4 cols (40%) */}
+        <div className="lg:col-span-4 space-y-6">
           {/* STEP 1 */}
           {step === 1 && (
             <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
@@ -311,69 +311,68 @@ export default function NewCampaignPage() {
           )}
         </div>
 
-        {/* Preview - 2 cols */}
-        <div className="lg:col-span-2">
+        {/* Preview Notification - 3 cols (30%) */}
+        <div className="lg:col-span-3">
           <div className="sticky top-24">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Vista previa</p>
-
-            <div className="flex gap-4">
-              {/* Box 1: Notification */}
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex-1">
-                <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
-                  <span className="text-[11px] text-slate-400">Notificación</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">Android</span>
-                </div>
-                <div className="p-4 flex items-center justify-center min-h-[200px]">
-                  <div className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl w-full max-w-[280px]">
-                    <div className="px-4 py-3">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
-                          <span className="text-[7px] text-white font-bold">P</span>
-                        </div>
-                        <span className="text-[10px] text-slate-500">ahora · Notificaciones</span>
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                <span className="text-[11px] text-slate-400">Notificación</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">Android</span>
+              </div>
+              <div className="p-4 flex items-center justify-center min-h-[200px]">
+                <div className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl w-full max-w-[280px]">
+                  <div className="px-4 py-3">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
+                        <span className="text-[7px] text-white font-bold">P</span>
                       </div>
-                      <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título"}</p>
-                      <p className="text-[11px] text-slate-400 mt-0.5 leading-tight line-clamp-3">{pushMessage || "Mensaje..."}</p>
-                      {imageUrl && <img src={imageUrl} alt="" className="mt-2 rounded-lg max-h-12 object-cover w-full" />}
-                      {actionType !== "LANDING_INTERNA" && actionValue && (
-                        <p className="text-[10px] text-blue-400 mt-1.5">{actionType === "WHATSAPP" ? "💬 WhatsApp" : actionType === "MAPS" ? "📍 Google Maps" : actionType === "LLAMAR" ? "📞 Llamar" : "🔗 URL externa"}</p>
-                      )}
+                      <span className="text-[10px] text-slate-500">ahora · Notificaciones</span>
                     </div>
-                    <div className="h-0.5 bg-slate-800" />
+                    <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título"}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5 leading-tight line-clamp-3">{pushMessage || "Mensaje..."}</p>
+                    {imageUrl && <img src={imageUrl} alt="" className="mt-2 rounded-lg max-h-12 object-cover w-full" />}
+                    {actionType !== "LANDING_INTERNA" && actionValue && (
+                      <p className="text-[10px] text-blue-400 mt-1.5">{actionType === "WHATSAPP" ? "💬 WhatsApp" : actionType === "MAPS" ? "📍 Google Maps" : actionType === "LLAMAR" ? "📞 Llamar" : "🔗 URL externa"}</p>
+                    )}
                   </div>
-                </div>
-                <div className="px-4 py-2 border-t border-slate-800">
-                  <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS} · {selectedSegment?._count?.subscribers || 0} dest.</span>
+                  <div className="h-0.5 bg-slate-800" />
                 </div>
               </div>
-
-              {/* Box 2: Landing (fills remaining space) */}
-              {landingPageId && (() => {
-                const selectedLP = landingPages.find(lp => lp.id === landingPageId)
-                if (!selectedLP) return null
-                return (
-                  <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex-[2] flex flex-col">
-                    <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                      <span className="text-[11px] text-slate-400">Landing</span>
-                      <div className="flex gap-2 items-center">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Preview</span>
-                        <a href={`/portal/landing/${selectedLP.slug}`} target="_blank" rel="noopener noreferrer"
-                          className="text-[10px] text-slate-400 hover:text-white">↗</a>
-                      </div>
-                    </div>
-                    <div className="flex-1 p-3 min-h-0">
-                      <iframe
-                        src={`/portal/landing/${selectedLP.slug}`}
-                        className="w-full h-full min-h-[350px] rounded-xl border border-slate-700"
-                        title="Landing preview"
-                      />
-                    </div>
-                  </div>
-                )
-              })()}
+              <div className="px-4 py-2 border-t border-slate-800">
+                <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS} · {selectedSegment?._count?.subscribers || 0} dest.</span>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Preview Landing - 3 cols (30%) */}
+        {landingPageId && (() => {
+          const selectedLP = landingPages.find(lp => lp.id === landingPageId)
+          if (!selectedLP) return null
+          return (
+            <div className="lg:col-span-3">
+              <div className="sticky top-24">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col">
+                  <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
+                    <span className="text-[11px] text-slate-400">Landing</span>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Preview</span>
+                      <a href={`/portal/landing/${selectedLP.slug}`} target="_blank" rel="noopener noreferrer"
+                        className="text-[10px] text-slate-400 hover:text-white">↗</a>
+                    </div>
+                  </div>
+                  <div className="flex-1 p-3 min-h-0" style={{ height: "calc(100vh - 300px)", minHeight: 350 }}>
+                    <iframe
+                      src={`/portal/landing/${selectedLP.slug}`}
+                      className="w-full h-full rounded-xl border border-slate-700"
+                      title="Landing preview"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </div>
 
       {/* Navigation */}
