@@ -16,6 +16,7 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
   const [errorType, setErrorType] = useState<"red" | "amber" | "green" | "">("")
   const [nombre, setNombre] = useState("")
   const [onesignalId, setOnesignalId] = useState("")
+  const [osReady, setOsReady] = useState(false)
 
   useEffect(() => {
     const poll = () => {
@@ -23,14 +24,17 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
         const OneSignal = (window as any).OneSignal
         if (OneSignal?.User?.PushSubscription?.id) {
           const id = OneSignal.User.PushSubscription.id
-          if (typeof id === "string") setOnesignalId(id)
-          else if (id && typeof id.then === "function") id.then((v: string) => { if (v) setOnesignalId(v) })
+          if (typeof id === "string") { setOnesignalId(id); setOsReady(true) }
+          else if (id && typeof id.then === "function") id.then((v: string) => { if (v) { setOnesignalId(v); setOsReady(true) } })
           return
         }
       }
-      setTimeout(poll, 500)
+      setTimeout(poll, 300)
     }
     poll()
+    // Also mark ready after 3s even if OneSignal not loaded
+    const timeout = setTimeout(() => setOsReady(true), 3000)
+    return () => clearTimeout(timeout)
   }, [])
 
   const handleVerify = async (e: React.FormEvent) => {
@@ -115,10 +119,10 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
             {errorType && (
               <div className={`rounded-xl border p-3 text-xs text-center ${statusColors[errorType] || statusColors.red}`}>{error}</div>
             )}
-            <button type="submit" disabled={loading || dni.length < 8}
+            <button type="submit" disabled={loading || dni.length < 8 || !osReady}
               className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60"
               style={{ backgroundColor: primaryColor }}>
-              {loading ? "Verificando..." : "Verificar DNI"}
+              {!osReady ? "Detectando dispositivo..." : loading ? "Verificando..." : "Verificar DNI"}
             </button>
           </form>
         ) : (
