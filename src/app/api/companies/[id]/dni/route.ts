@@ -59,10 +59,30 @@ export async function PUT(
 
   const { id } = await params
   const body = await request.json()
-  const { dniId } = body
+  const { dniId, nombre, apellido, dni, celular } = body
 
   if (!dniId) return NextResponse.json({ error: "dniId requerido" }, { status: 400 })
 
+  // Edit mode: update nombre/apellido/dni/celular
+  if (nombre || apellido || dni !== undefined || celular !== undefined) {
+    const data: any = {}
+    if (nombre) data.nombre = nombre
+    if (apellido) data.apellido = apellido
+    if (dni !== undefined) {
+      const normalized = normalizeDni(dni)
+      if (!normalized) return NextResponse.json({ error: "DNI inválido" }, { status: 400 })
+      data.dni = normalized
+    }
+    if (celular !== undefined) data.celular = celular
+    try {
+      const updated = await prisma.authorizedDni.update({ where: { id: dniId }, data })
+      return NextResponse.json(updated)
+    } catch {
+      return NextResponse.json({ error: "El DNI ya existe" }, { status: 409 })
+    }
+  }
+
+  // Reset mode: clear subscription
   await prisma.authorizedDni.update({
     where: { id: dniId },
     data: { subscribed: false, subscriberId: null, subscribedAt: null, deviceInfo: null },
