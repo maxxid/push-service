@@ -184,7 +184,7 @@ function BlockPreview({ block }: { block: LandingBlock }) {
 
   if (block.type === "video" && block.url) {
     const youtubeMatch = block.url.match(
-      /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]+)/
+      /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/
     )
     if (youtubeMatch) {
       return (

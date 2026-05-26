@@ -66,7 +66,7 @@ export function BlockPreview({ block }: { block: LandingBlock }) {
   }
 
   if (block.type === "video" && block.url) {
-    const youtubeMatch = block.url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([\w-]+)/)
+    const youtubeMatch = block.url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]+)/)
     return (
       <figure className="my-8">
         <div className="rounded-2xl overflow-hidden shadow-sm ring-1 ring-black/5 dark:ring-white/5">
