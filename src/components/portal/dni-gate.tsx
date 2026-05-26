@@ -21,10 +21,12 @@ export function DniGate({ companyId, companyName, primaryColor, onVerified }: Pr
     const poll = () => {
       if (typeof window !== "undefined" && "OneSignal" in window) {
         const OneSignal = (window as any).OneSignal
-        OneSignal.User?.PushSubscription?.id?.then((id: string) => {
-          if (id) setOnesignalId(id)
-        })
-        return
+        if (OneSignal?.User?.PushSubscription?.id) {
+          const id = OneSignal.User.PushSubscription.id
+          if (typeof id === "string") setOnesignalId(id)
+          else if (id && typeof id.then === "function") id.then((v: string) => { if (v) setOnesignalId(v) })
+          return
+        }
       }
       setTimeout(poll, 500)
     }

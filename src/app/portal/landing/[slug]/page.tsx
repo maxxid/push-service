@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import type { LandingBlock } from "@/components/portal/landing-blocks"
-import { headers } from "next/headers"
+import { headers, cookies } from "next/headers"
 import { BlockPreview } from "@/components/portal/landing-preview"
 import { ShareButton } from "@/components/portal/share-button"
 import { DownloadButton } from "@/components/portal/download-button"
@@ -41,9 +41,35 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
     )
   }
 
-  const blocks = (page.content as LandingBlock[]) || []
   const company = page.company
   const primaryColor = company?.primaryColor ?? "#1a56db"
+  const requireDni = company?.requireDniVerification ?? false
+
+  // Check DNI verification cookie
+  const cookieStore = await cookies()
+  const dniVerified = cookieStore.get("dni-verified")?.value === "true"
+
+  if (requireDni && !dniVerified) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md mx-auto px-6">
+          <div className="h-16 w-16 mx-auto rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+            <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h1 className="text-xl font-bold text-white">Contenido exclusivo para afiliados</h1>
+          <p className="text-sm text-slate-400">Verificá tu identidad para acceder a los comunicados de {company?.name || "la institución"}.</p>
+          <a href="/portal" className="inline-block px-6 py-3 rounded-xl font-semibold text-white text-sm transition-colors hover:opacity-90"
+            style={{ backgroundColor: primaryColor }}>
+            Ir al portal
+          </a>
+        </div>
+      </div>
+    )
+  }
+
+  const blocks = (page.content as LandingBlock[]) || []
   const date = new Date(page.createdAt)
   const readTime = Math.max(1, Math.ceil(JSON.stringify(blocks).length / 800))
   const isExpired = page.expiresAt && new Date(page.expiresAt) < new Date()

@@ -57,7 +57,10 @@ export function PortalContent({ companyId, companyName, primaryColor, modules, r
               companyId={companyId}
               companyName={companyName}
               primaryColor={primaryColor}
-              onVerified={(dni) => { setDniVerified(true); setVerifiedDni(dni) }}
+              onVerified={(dni) => {
+            setDniVerified(true); setVerifiedDni(dni)
+            document.cookie = `dni-verified=true;path=/;max-age=2592000;samesite=lax`
+          }}
             />
           )
         }
