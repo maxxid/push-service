@@ -49,31 +49,42 @@ export function PortalContent({ companyId, companyName, primaryColor, modules, r
           </div>
           <p className="text-xs text-slate-500">Verificando estado de notificaciones...</p>
         </div>
-      ) : subscribed ? (
-        <div className="rounded-2xl border border-emerald-900/50 bg-emerald-950/30 p-7 text-center animate-scale-in">
-          <div className="h-12 w-12 mx-auto mb-4 rounded-xl bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-900/50">
-            <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <p className="text-emerald-200 font-bold text-lg">Notificaciones activadas</p>
-          <p className="text-emerald-400 text-sm mt-1">Recibirás los avisos de {companyName}</p>
-        </div>
-      ) : requireDni && !dniVerified ? (
-        <DniGate
-          companyId={companyId}
-          companyName={companyName}
-          primaryColor={primaryColor}
-          onVerified={(dni) => { setDniVerified(true); setVerifiedDni(dni) }}
-        />
-      ) : (
-        <NotificationPrompt
-          companyId={companyId}
-          companyName={companyName}
-          primaryColor={primaryColor}
-          dni={verifiedDni}
-        />
-      )}
+      ) : (() => {
+        // DNI gate required but not verified yet → always show DNI first
+        if (requireDni && !dniVerified) {
+          return (
+            <DniGate
+              companyId={companyId}
+              companyName={companyName}
+              primaryColor={primaryColor}
+              onVerified={(dni) => { setDniVerified(true); setVerifiedDni(dni) }}
+            />
+          )
+        }
+        // Already subscribed (OneSignal) → show success
+        if (subscribed) {
+          return (
+            <div className="rounded-2xl border border-emerald-900/50 bg-emerald-950/30 p-7 text-center animate-scale-in">
+              <div className="h-12 w-12 mx-auto mb-4 rounded-xl bg-emerald-500 flex items-center justify-center shadow-sm shadow-emerald-900/50">
+                <svg className="h-6 w-6 text-white" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <p className="text-emerald-200 font-bold text-lg">Notificaciones activadas</p>
+              <p className="text-emerald-400 text-sm mt-1">Recibirás los avisos de {companyName}</p>
+            </div>
+          )
+        }
+        // Not subscribed, DNI verified or not required → show subscribe prompt
+        return (
+          <NotificationPrompt
+            companyId={companyId}
+            companyName={companyName}
+            primaryColor={primaryColor}
+            dni={verifiedDni}
+          />
+        )
+      })()}
 
       {subscribed && modules.length > 0 && (
         <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.3s" }}>
