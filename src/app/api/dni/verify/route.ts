@@ -24,8 +24,17 @@ export async function POST(request: Request) {
   }
 
   if (record.subscribed) {
-    // Check if same device
-    if (onesignalId && record.subscriberId === onesignalId) {
+    // Check if same device: look up the subscriber's OneSignal ID
+    let isSameDevice = false
+    if (onesignalId && record.subscriberId) {
+      const subscriber = await prisma.subscriber.findUnique({
+        where: { id: record.subscriberId },
+        select: { onesignalId: true },
+      })
+      isSameDevice = subscriber?.onesignalId === onesignalId
+    }
+
+    if (isSameDevice) {
       return NextResponse.json({
         ok: true, dni: normalized, nombre: record.nombre, apellido: record.apellido,
         status: "same_device", detail: "Las notificaciones ya están activadas en este dispositivo.",
