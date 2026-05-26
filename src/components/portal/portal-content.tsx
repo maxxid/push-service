@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { NotificationPrompt } from "./notification-prompt"
+import { DniGate } from "./dni-gate"
 import { PortalModules } from "./portal-modules"
 
-type Props = { companyId: string; companyName: string; primaryColor: string; modules: string[]; whatsappNumber?: string | null }
+type Props = { companyId: string; companyName: string; primaryColor: string; modules: string[]; requireDni?: boolean; whatsappNumber?: string | null }
 
-export function PortalContent({ companyId, companyName, primaryColor, modules, whatsappNumber }: Props) {
+export function PortalContent({ companyId, companyName, primaryColor, modules, requireDni, whatsappNumber }: Props) {
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [dniVerified, setDniVerified] = useState(false)
+  const [verifiedDni, setVerifiedDni] = useState<string | null>(null)
 
   const checkSub = useCallback(() => {
     if (typeof window !== "undefined" && "OneSignal" in window) {
@@ -56,8 +59,20 @@ export function PortalContent({ companyId, companyName, primaryColor, modules, w
           <p className="text-emerald-200 font-bold text-lg">Notificaciones activadas</p>
           <p className="text-emerald-400 text-sm mt-1">Recibirás los avisos de {companyName}</p>
         </div>
+      ) : requireDni && !dniVerified ? (
+        <DniGate
+          companyId={companyId}
+          companyName={companyName}
+          primaryColor={primaryColor}
+          onVerified={(dni) => { setDniVerified(true); setVerifiedDni(dni) }}
+        />
       ) : (
-        <NotificationPrompt companyId={companyId} companyName={companyName} primaryColor={primaryColor} />
+        <NotificationPrompt
+          companyId={companyId}
+          companyName={companyName}
+          primaryColor={primaryColor}
+          dni={verifiedDni}
+        />
       )}
 
       {subscribed && modules.length > 0 && (

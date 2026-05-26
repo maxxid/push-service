@@ -64,6 +64,7 @@ export default async function PortalPage({
               primaryColor={primaryColor}
               modules={activeModules}
               whatsappNumber={company.whatsappNumber ?? null}
+              requireDni={company?.requireDniVerification ?? false}
             />
           ) : (
             <div className="rounded-2xl border border-amber-800 bg-amber-950 p-6 text-center">

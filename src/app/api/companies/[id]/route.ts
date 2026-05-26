@@ -74,6 +74,7 @@ export async function PUT(
       whatsappNumber: body.whatsappNumber,
       showShare: body.showShare,
       showDownload: body.showDownload,
+      requireDniVerification: body.requireDniVerification,
     },
   })
 

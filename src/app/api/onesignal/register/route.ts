@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json()
-    const { onesignalId, companyId, deviceInfo } = body
+    const { onesignalId, companyId, deviceInfo, dni } = body
 
     if (!onesignalId || !companyId) {
       return NextResponse.json(
@@ -48,6 +48,17 @@ export async function POST(request: Request) {
     })
 
     await addSubscriberToTodos(onesignalId, companyId)
+
+    // Mark DNI as used if provided
+    if (dni) {
+      const devInfo = deviceInfo as Record<string, unknown> | null
+      const deviceLabel = devInfo?.platform as string || (devInfo?.userAgent as string)?.includes?.("Android") ? "Android"
+        : (devInfo?.userAgent as string)?.includes?.("iPhone") ? "iOS" : "Web"
+      await prisma.authorizedDni.updateMany({
+        where: { dni, companyId, subscribed: false },
+        data: { subscribed: true, subscriberId: subscriber.id, subscribedAt: new Date(), deviceInfo: deviceLabel },
+      })
+    }
 
     return NextResponse.json({ ok: true, subscriberId: subscriber.id })
   } catch (error) {

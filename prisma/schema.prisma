@@ -99,6 +99,7 @@ model Company {
   headerTitle String?
   showShare   Boolean   @default(true)
   showDownload Boolean  @default(true)
+  requireDniVerification Boolean @default(false)
   users       User[]
   subscribers Subscriber[]
   segments    Segment[]
@@ -107,7 +108,8 @@ model Company {
   documents   Document[]
   events      Event[]
   templates   Template[]
-  modules       Json      @default("[]")
+  authorizedDnis AuthorizedDni[]
+  modules     Json      @default("[]")
   whatsappNumber String?
   createdAt     DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -231,6 +233,23 @@ model Event {
   company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model AuthorizedDni {
+  id            String    @id @default(cuid())
+  nombre        String
+  apellido      String
+  dni           String
+  celular       String
+  companyId     String
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  subscriberId  String?   @unique
+  subscribed    Boolean   @default(false)
+  subscribedAt  DateTime?
+  deviceInfo    String?
+  createdAt     DateTime  @default(now())
+
+  @@unique([dni, companyId])
 }
 
 model Template {

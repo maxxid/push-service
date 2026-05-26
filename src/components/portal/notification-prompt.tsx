@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { PWAInstallGuide } from "./pwa-install-guide"
 
-type Props = { companyId: string; companyName: string; primaryColor: string }
+type Props = { companyId: string; companyName: string; primaryColor: string; dni?: string | null }
 
-export function NotificationPrompt({ companyId, companyName, primaryColor }: Props) {
+export function NotificationPrompt({ companyId, companyName, primaryColor, dni }: Props) {
   const [supported, setSupported] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showInstall, setShowInstall] = useState(true)
@@ -45,7 +45,7 @@ export function NotificationPrompt({ companyId, companyName, primaryColor }: Pro
       if (!id) { setRegError("No se pudo obtener el ID"); return }
       const res = await fetch("/api/onesignal/register", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ onesignalId: id, companyId, deviceInfo: { userAgent: navigator.userAgent, platform: navigator.platform, language: navigator.language } }),
+        body: JSON.stringify({ onesignalId: id, companyId, dni: dni || undefined, deviceInfo: { userAgent: navigator.userAgent, platform: navigator.platform, language: navigator.language } }),
       })
       if (!res.ok) { const d = await res.json().catch(() => ({})); setRegError(d.error || "Error al registrar"); return }
       setShowInstall(true)
