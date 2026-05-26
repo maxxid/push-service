@@ -343,6 +343,30 @@ export default function NewCampaignPage() {
                   <div className="h-0.5 bg-slate-800" />
                 </div>
               </div>
+
+              {/* Landing preview */}
+              {landingPageId && (() => {
+                const selectedLP = landingPages.find(lp => lp.id === landingPageId)
+                if (!selectedLP) return null
+                return (
+                  <div className="border-t border-slate-800">
+                    <div className="bg-slate-800 px-4 py-2.5 flex items-center justify-between">
+                      <span className="text-[11px] text-slate-400">Landing</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Mobile</span>
+                    </div>
+                    <div className="p-3 flex justify-center">
+                      <div className="w-[280px] rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ height: 420 }}>
+                        <iframe
+                          src={`/portal/landing/${selectedLP.slug}`}
+                          className="w-full h-full border-0"
+                          title="Landing preview"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )
+              })()}
+
               {/* Step indicator */}
               <div className="px-4 py-3 border-t border-slate-800 flex items-center justify-between">
                 <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS}</span>
