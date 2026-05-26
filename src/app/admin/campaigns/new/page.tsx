@@ -232,7 +232,7 @@ export default function NewCampaignPage() {
                   <p className="text-sm font-medium text-white">Programar</p>
                   <div className="mt-3">
                     <input type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)}
-                      className="w-full max-w-xs px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                      className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     <p className="text-[10px] text-slate-500 mt-1">Horario: UTC-3 (Buenos Aires)</p>
                   </div>
                 </div>
@@ -361,7 +361,7 @@ export default function NewCampaignPage() {
                         className="text-[10px] text-slate-400 hover:text-white">↗</a>
                     </div>
                   </div>
-                  <div className="flex-1 p-3 min-h-0" style={{ height: "calc(100vh - 300px)", minHeight: 350 }}>
+                  <div className="flex-1 p-3 min-h-0" style={{ height: "calc(100vh - 250px)", minHeight: 400 }}>
                     <iframe
                       src={`/portal/landing/${selectedLP.slug}`}
                       className="w-full h-full rounded-xl border border-slate-700"
