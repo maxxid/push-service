@@ -16,6 +16,12 @@ export default function DniPage() {
   const [uploading, setUploading] = useState(false)
   const [filter, setFilter] = useState("")
   const [companyId, setCompanyId] = useState("")
+  const [showNew, setShowNew] = useState(false)
+  const [newNombre, setNewNombre] = useState("")
+  const [newApellido, setNewApellido] = useState("")
+  const [newDni, setNewDni] = useState("")
+  const [newCel, setNewCel] = useState("")
+  const [saving, setSaving] = useState(false)
 
   const fetchRecords = () => {
     if (!companyId) { setLoading(false); return }
@@ -56,6 +62,25 @@ export default function DniPage() {
     toast.success("Eliminado"); fetchRecords()
   }
 
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newNombre || !newApellido || !newDni) { toast.error("Completá nombre, apellido y DNI"); return }
+    setSaving(true)
+    const res = await fetch(`/api/companies/${companyId}/dni`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre: newNombre, apellido: newApellido, dni: newDni.replace(/\D/g, ""), celular: newCel }),
+    })
+    if (res.ok) {
+      toast.success("Afiliado agregado")
+      setNewNombre(""); setNewApellido(""); setNewDni(""); setNewCel(""); setShowNew(false)
+      fetchRecords()
+    } else {
+      const d = await res.json()
+      toast.error(d.error || "Error al agregar")
+    }
+    setSaving(false)
+  }
+
   const filtered = filter ? records.filter(r => r.dni.includes(filter) || r.nombre.toLowerCase().includes(filter.toLowerCase()) || r.apellido.toLowerCase().includes(filter.toLowerCase())) : records
 
   if (loading) return <div className="animate-pulse space-y-3">{[1,2,3].map(i => <div key={i} className="h-16 bg-slate-800 rounded-2xl" />)}</div>
@@ -65,6 +90,10 @@ export default function DniPage() {
       <div className="flex items-center justify-between mb-6">
         <div><h1 className="text-2xl font-bold text-white">Afiliados autorizados</h1><p className="text-sm text-slate-400 mt-1">Gestioná quién puede suscribirse a las notificaciones</p></div>
         <div className="flex gap-2">
+          <button onClick={() => setShowNew(!showNew)}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-xl transition-colors">
+            {showNew ? "Cancelar" : "✚ Nuevo"}
+          </button>
           <button onClick={() => router.back()} className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-sm rounded-xl transition-colors">Cancelar</button>
           <label className={`px-4 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-colors ${uploading ? "bg-slate-700 text-slate-400" : "bg-blue-600 hover:bg-blue-500 text-white"}`}>
             {uploading ? "Importando..." : "Importar CSV"}
@@ -72,6 +101,38 @@ export default function DniPage() {
           </label>
         </div>
       </div>
+
+      {showNew && (
+        <form onSubmit={handleCreate}
+          className="bg-slate-900 border border-slate-800 rounded-2xl p-6 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="text-xs font-medium text-slate-400 mb-1.5 block">Nombre *</label>
+            <input type="text" value={newNombre} onChange={e => setNewNombre(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Juan" />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-slate-400 mb-1.5 block">Apellido *</label>
+            <input type="text" value={newApellido} onChange={e => setNewApellido(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Perez" />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-slate-400 mb-1.5 block">DNI * (7-8 dígitos)</label>
+            <input type="text" inputMode="numeric" value={newDni} onChange={e => setNewDni(e.target.value.replace(/\D/g, "").slice(0, 8))}
+              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="12345678" />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-slate-400 mb-1.5 block">Celular</label>
+            <input type="text" inputMode="numeric" value={newCel} onChange={e => setNewCel(e.target.value.replace(/\D/g, ""))}
+              className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="3884123456" />
+          </div>
+          <div className="flex items-end pb-0.5">
+            <button type="submit" disabled={saving}
+              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-sm rounded-xl transition-colors">
+              {saving ? "Guardando..." : "Guardar"}
+            </button>
+          </div>
+        </form>
+      )}
 
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-4">
         <p className="text-xs text-slate-400">Formato CSV: <code className="bg-slate-800 px-1.5 py-0.5 rounded text-slate-300">nombre,apellido,dni,celular</code>
