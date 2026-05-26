@@ -316,67 +316,58 @@ export default function NewCampaignPage() {
         <div className="lg:col-span-2">
           <div className="sticky top-24">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Vista previa</p>
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
-              {/* Phone header */}
-              <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
-                <span className="text-[11px] text-slate-400">Notificación</span>
-                <div className="flex gap-1.5">
+
+            <div className={`bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden ${landingPageId ? "grid grid-cols-2" : ""}`}>
+              {/* Notification */}
+              <div className={landingPageId ? "border-r border-slate-800" : ""}>
+                <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                  <span className="text-[11px] text-slate-400">Notificación</span>
                   <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-700 text-slate-300">Android</span>
                 </div>
-              </div>
-              {/* Notification preview */}
-              <div className="p-5">
-                <div className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl max-w-[300px] mx-auto">
-                  <div className="px-4 py-3.5">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
-                        <span className="text-[7px] text-white font-bold">P</span>
+                <div className="p-4 flex items-center justify-center min-h-[200px]">
+                  <div className="bg-slate-950 rounded-2xl overflow-hidden shadow-2xl w-full max-w-[280px]">
+                    <div className="px-4 py-3">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className="h-4 w-4 rounded-full bg-blue-500 flex items-center justify-center">
+                          <span className="text-[7px] text-white font-bold">P</span>
+                        </div>
+                        <span className="text-[10px] text-slate-500">ahora · Notificaciones</span>
                       </div>
-                      <span className="text-[10px] text-slate-500">ahora · Notificaciones</span>
+                      <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título"}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-tight line-clamp-3">{pushMessage || "Mensaje..."}</p>
+                      {imageUrl && <img src={imageUrl} alt="" className="mt-2 rounded-lg max-h-12 object-cover w-full" />}
+                      {actionType !== "LANDING_INTERNA" && actionValue && (
+                        <p className="text-[10px] text-blue-400 mt-1.5">{actionType === "WHATSAPP" ? "💬 WhatsApp" : actionType === "MAPS" ? "📍 Google Maps" : actionType === "LLAMAR" ? "📞 Llamar" : "🔗 URL externa"}</p>
+                      )}
                     </div>
-                    <p className="text-[13px] font-semibold text-white leading-tight">{title || "Título de la campaña"}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">{pushMessage || "Mensaje de la notificación..."}</p>
-                    {imageUrl && <img src={imageUrl} alt="" className="mt-2 rounded-lg max-h-16 object-cover w-full" />}
-                    {actionType !== "LANDING_INTERNA" && actionValue && (
-                      <p className="text-[10px] text-blue-400 mt-1.5">{actionType === "WHATSAPP" ? "💬 WhatsApp" : actionType === "MAPS" ? "📍 Google Maps" : actionType === "LLAMAR" ? "📞 Llamar" : "🔗 URL externa"}</p>
-                    )}
+                    <div className="h-0.5 bg-slate-800" />
                   </div>
-                  <div className="h-0.5 bg-slate-800" />
                 </div>
               </div>
 
-              {/* Landing preview */}
+              {/* Landing preview (side by side) */}
               {landingPageId && (() => {
                 const selectedLP = landingPages.find(lp => lp.id === landingPageId)
                 if (!selectedLP) return null
                 return (
-                  <div className="border-t border-slate-800">
-                    <button
-                      onClick={() => setShowLandingPreview(!showLandingPreview)}
-                      className="w-full bg-slate-800 px-4 py-2.5 flex items-center justify-between hover:bg-slate-700 transition-colors"
-                    >
-                      <span className="text-[11px] text-slate-400">
-                        {showLandingPreview ? "▾" : "▸"} Landing
-                      </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Mobile</span>
-                    </button>
-                    {showLandingPreview && (
-                      <div className="p-4 flex justify-center">
-                        <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ width: 375, height: 600 }}>
-                          <iframe
-                            src={`/portal/landing/${selectedLP.slug}`}
-                            className="w-full h-full border-0"
-                            title="Landing preview"
-                          />
-                        </div>
-                      </div>
-                    )}
+                  <div className="flex flex-col">
+                    <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700">
+                      <span className="text-[11px] text-slate-400">Landing</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Preview</span>
+                    </div>
+                    <div className="flex-1 p-3 flex items-center justify-center overflow-hidden min-h-[300px]">
+                      <iframe
+                        src={`/portal/landing/${selectedLP.slug}`}
+                        className="w-full max-w-[320px] h-full min-h-[320px] rounded-xl border border-slate-700"
+                        title="Landing preview"
+                      />
+                    </div>
                   </div>
                 )
               })()}
 
-              {/* Step indicator */}
-              <div className="px-4 py-3 border-t border-slate-800 flex items-center justify-between">
+              {/* Step indicator across full width */}
+              <div className={`${landingPageId ? "col-span-2" : ""} px-4 py-3 border-t border-slate-800 flex items-center justify-between`}>
                 <span className="text-[10px] text-slate-500">Paso {step}/{TOTAL_STEPS}</span>
                 <span className="text-[10px] text-slate-500">{selectedSegment?._count?.subscribers || 0} destinatarios</span>
               </div>
