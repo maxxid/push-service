@@ -351,8 +351,8 @@ export default function NewCampaignPage() {
           if (!selectedLP) return null
           return (
             <div className="lg:col-span-3">
-              <div className="sticky top-24">
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col">
+              <div className="sticky top-24" style={{ height: "calc(100vh - 120px)" }}>
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col h-full">
                   <div className="bg-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
                     <span className="text-[11px] text-slate-400">Landing</span>
                     <div className="flex gap-2 items-center">
@@ -361,10 +361,10 @@ export default function NewCampaignPage() {
                         className="text-[10px] text-slate-400 hover:text-white">↗</a>
                     </div>
                   </div>
-                  <div className="flex-1 p-3 min-h-0" style={{ height: "calc(100vh - 250px)", minHeight: 400 }}>
+                  <div className="flex-1 p-2 min-h-0">
                     <iframe
                       src={`/portal/landing/${selectedLP.slug}`}
-                      className="w-full h-full rounded-xl border border-slate-700"
+                      className="w-full h-full rounded-lg border border-slate-700"
                       title="Landing preview"
                     />
                   </div>
