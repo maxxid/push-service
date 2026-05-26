@@ -209,7 +209,7 @@ export default async function PublicLandingPage({ params }: { params: Promise<{ 
             </div>
           )}
           {company && (
-            <ActiveLandingsTrigger subdomain={company.subdomain} />
+            <ActiveLandingsTrigger subdomain={company.subdomain} requireDni={company?.requireDniVerification} />
           )}
         </div>
       </div>

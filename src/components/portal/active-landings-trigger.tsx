@@ -3,17 +3,23 @@
 import { useState, useEffect } from "react"
 
 type ActiveLanding = {
-  id: string
-  title: string
-  slug: string
-  views: number
-  createdAt: string
+  id: string; title: string; slug: string; views: number; createdAt: string
 }
 
-export function ActiveLandingsTrigger({ subdomain }: { subdomain: string }) {
+export function ActiveLandingsTrigger({ subdomain, requireDni }: { subdomain: string; requireDni?: boolean }) {
   const [open, setOpen] = useState(false)
   const [pages, setPages] = useState<ActiveLanding[]>([])
   const [loading, setLoading] = useState(false)
+  const [dniOk, setDniOk] = useState(false)
+
+  useEffect(() => {
+    if (requireDni) {
+      const match = document.cookie.match(/dni-verified=true/)
+      setDniOk(!!match)
+    } else {
+      setDniOk(true)
+    }
+  }, [requireDni])
 
   useEffect(() => {
     if (!open) return
@@ -23,6 +29,8 @@ export function ActiveLandingsTrigger({ subdomain }: { subdomain: string }) {
       .then(data => setPages(Array.isArray(data) ? data : []))
       .finally(() => setLoading(false))
   }, [open, subdomain])
+
+  if (requireDni && !dniOk) return null
 
   return (
     <>

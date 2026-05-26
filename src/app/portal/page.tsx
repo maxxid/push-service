@@ -130,7 +130,7 @@ export default async function PortalPage({
             </div>
           )}
           {company && (
-            <ActiveLandingsTrigger subdomain={company.subdomain} />
+            <ActiveLandingsTrigger subdomain={company.subdomain} requireDni={company?.requireDniVerification} />
           )}
         </div>
       </footer>
