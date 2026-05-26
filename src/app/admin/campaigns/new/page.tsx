@@ -85,7 +85,7 @@ export default function NewCampaignPage() {
   }
 
   return (
-    <div className="max-w-5xl">
+    <div>
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
