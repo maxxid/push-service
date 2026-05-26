@@ -38,6 +38,7 @@ export default function NewCampaignPage() {
   const [landingPageId, setLandingPageId] = useState("")
   const [sendNow, setSendNow] = useState(true)
   const [scheduledAt, setScheduledAt] = useState("")
+  const [showLandingPreview, setShowLandingPreview] = useState(true)
   const [reminderEnabled, setReminderEnabled] = useState(false)
   const [reminderDelay, setReminderDelay] = useState(6)
   const [reminderTarget, setReminderTarget] = useState("no-clickers")
@@ -350,19 +351,26 @@ export default function NewCampaignPage() {
                 if (!selectedLP) return null
                 return (
                   <div className="border-t border-slate-800">
-                    <div className="bg-slate-800 px-4 py-2.5 flex items-center justify-between">
-                      <span className="text-[11px] text-slate-400">Landing</span>
+                    <button
+                      onClick={() => setShowLandingPreview(!showLandingPreview)}
+                      className="w-full bg-slate-800 px-4 py-2.5 flex items-center justify-between hover:bg-slate-700 transition-colors"
+                    >
+                      <span className="text-[11px] text-slate-400">
+                        {showLandingPreview ? "▾" : "▸"} Landing
+                      </span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400">Mobile</span>
-                    </div>
-                    <div className="p-3 flex justify-center overflow-hidden">
-                      <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl origin-top-center" style={{ width: 375, height: 520, transform: "scale(0.65)", transformOrigin: "top center" }}>
-                        <iframe
-                          src={`/portal/landing/${selectedLP.slug}`}
-                          className="w-full h-full border-0"
-                          title="Landing preview"
-                        />
+                    </button>
+                    {showLandingPreview && (
+                      <div className="p-4 flex justify-center">
+                        <div className="rounded-2xl overflow-hidden border border-slate-700 shadow-2xl" style={{ width: 320, height: 480 }}>
+                          <iframe
+                            src={`/portal/landing/${selectedLP.slug}`}
+                            className="w-full h-full border-0"
+                            title="Landing preview"
+                          />
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )
               })()}
